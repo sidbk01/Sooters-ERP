@@ -1,0 +1,12 @@
+[package]
+authors = ["Lance Hart (shipsimfan@hotmail.com)"]
+edition = "2021"
+name = "sooters_erp"
+version = "0.1.0"
+
+[dependencies]
+json = {git = "https://github.com/shipsimfan/lib-json"}
+mysql = "23.0.1"
+rocket = "0.5.0-rc.2"
+rustc-hash = "1.1.0"
+tera = "1"
