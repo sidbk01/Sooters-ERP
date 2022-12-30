@@ -1,9 +1,14 @@
 #[macro_use]
 extern crate rocket;
+extern crate mysql;
 
 mod config;
 mod database;
+mod model;
+mod routes;
 mod state;
+
+pub use model::*;
 
 const DEFAULT_CONFIG_PATH: &'static str = "./config.json";
 
@@ -33,13 +38,10 @@ async fn main() -> Result<(), rocket::Error> {
         }
     };
 
-    // Launch the server
-    let _ = rocket::build()
-        .manage(state)
-        .ignite()
-        .await?
-        .launch()
-        .await?;
+    // Build the server
+    let server = routes::add_routes(rocket::build().manage(state));
 
+    // Launch the server
+    let _ = server.ignite().await?.launch().await?;
     Ok(())
 }

@@ -3,14 +3,17 @@ use crate::{
     database::{Database, DatabaseError},
 };
 use std::path::Path;
+use tera::Tera;
 
 pub enum StateCreationError {
     ConfigurationLoadError(ConfigError),
     DatabaseError(DatabaseError),
+    TemplateError(tera::Error),
 }
 
 pub struct State {
     database: Database,
+    templates: Tera,
 }
 
 impl State {
@@ -22,8 +25,25 @@ impl State {
         // Connect to the database
         let database = Database::connect(configuration.database_info())?;
 
+        // Load the templates
+        let templates = match Tera::new("templates/**/*.html") {
+            Ok(templates) => templates,
+            Err(error) => return Err(StateCreationError::TemplateError(error)),
+        };
+
         // Create the state
-        Ok(State { database })
+        Ok(State {
+            database,
+            templates,
+        })
+    }
+
+    pub fn database(&self) -> &Database {
+        &self.database
+    }
+
+    pub fn templates(&self) -> &Tera {
+        &self.templates
     }
 }
 
@@ -44,6 +64,9 @@ impl std::fmt::Display for StateCreationError {
         match self {
             StateCreationError::ConfigurationLoadError(error) => error.fmt(f),
             StateCreationError::DatabaseError(error) => error.fmt(f),
+            StateCreationError::TemplateError(error) => {
+                write!(f, "Unable to load templates - {}", error)
+            }
         }
     }
 }

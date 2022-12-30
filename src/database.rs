@@ -1,46 +1,66 @@
+use crate::{config::DatabaseInfo, Employee, Location};
+use mysql::{
+    prelude::{FromRow, Queryable},
+    OptsBuilder, Pool,
+};
 use std::net::ToSocketAddrs;
 
-use mysql::{Conn, OptsBuilder};
-
-use crate::config::DatabaseInfo;
-
 pub enum DatabaseError {
-    ConnectionError,
+    ConnectionError(mysql::Error),
     InvalidAddress,
+    QueryError(mysql::Error),
+    PoolError,
 }
 
 pub struct Database {
-    connection: Conn,
+    connection: Pool,
 }
 
 impl Database {
     pub fn connect(info: &DatabaseInfo) -> Result<Self, DatabaseError> {
-        // Parse the address
-        let address = info
-            .address()
-            .to_socket_addrs()
-            .map_err(|_| DatabaseError::InvalidAddress)?
-            .next()
-            .ok_or(DatabaseError::InvalidAddress)?;
-
+        // Connect to the database
         println!(
             "Connecting to {}@{}/{} . . .",
             info.username(),
-            address,
+            info.address(),
             info.name()
         );
-
-        // Create the connection options
-        let opts = OptsBuilder::new()
-            .user(Some(info.username()))
-            .pass(Some(info.password()))
-            .bind_address(Some(address))
-            .db_name(Some(info.name()));
-
-        // Connect to the database
-        let connection = Conn::new(opts).map_err(|_| DatabaseError::ConnectionError)?;
+        let connection = Pool::new(
+            format!(
+                "mysql://{}:{}@{}/{}",
+                info.username(),
+                info.password(),
+                info.address(),
+                info.name()
+            )
+            .as_str(),
+        )
+        .map_err(|error| DatabaseError::ConnectionError(error))?;
 
         Ok(Database { connection })
+    }
+
+    pub async fn locations(&self) -> Result<Vec<Location>, DatabaseError> {
+        self.execute_query("SELECT * FROM Locations").await
+    }
+
+    pub async fn employees(&self) -> Result<Vec<Employee>, DatabaseError> {
+        self.execute_query("SELECT * FROM Employees").await
+    }
+
+    async fn execute_query<Q: AsRef<str> + Send + 'static, T: FromRow + Send + 'static>(
+        &self,
+        query: Q,
+    ) -> Result<Vec<T>, DatabaseError> {
+        let pool = self.connection.clone();
+        rocket::tokio::task::spawn_blocking(move || {
+            pool.get_conn()
+                .map_err(|_| DatabaseError::PoolError)?
+                .query(query)
+                .map_err(|error| DatabaseError::QueryError(error))
+        })
+        .await
+        .unwrap()
     }
 }
 
@@ -59,10 +79,12 @@ impl std::fmt::Debug for DatabaseError {
 impl std::fmt::Display for DatabaseError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            DatabaseError::ConnectionError => {
-                write!(f, "Unable to connect to the database")
+            DatabaseError::ConnectionError(error) => {
+                write!(f, "Unable to connect to the database - {}", error)
             }
             DatabaseError::InvalidAddress => write!(f, "Invalid address for database connection"),
+            DatabaseError::QueryError(error) => write!(f, "Unable to perform query - {}", error),
+            DatabaseError::PoolError => write!(f, "Unable to get connection from pool"),
         }
     }
 }

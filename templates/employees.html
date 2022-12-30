@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Employees{% endblock title %}
+
+{% block content %}
+<h2>Employees</h2>
+{% for location in locations %}
+<h3>{{ location.name }}</h3>
+<ul>
+    {% for employee in location.employees %}
+    <li><a href="employees/{{ employee.id }}">{{ employee.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endfor %}
+{% endblock content %}
