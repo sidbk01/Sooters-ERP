@@ -1,4 +1,7 @@
-use mysql::prelude::FromRow;
+use mysql::{
+    prelude::FromRow,
+    serde::{ser::SerializeMap, Serialize},
+};
 
 pub struct Location {
     id: usize,
@@ -36,5 +39,20 @@ impl FromRow for Location {
         let address = row.take("Address").ok_or(mysql::FromRowError(row))?;
 
         Ok(Location { id, name, address })
+    }
+}
+
+impl Serialize for Location {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: mysql::serde::Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(3))?;
+
+        map.serialize_entry("id", &self.id)?;
+        map.serialize_entry("name", &self.name)?;
+        map.serialize_entry("address", &self.address)?;
+
+        map.end()
     }
 }

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Customer{% endblock title %}
+
+{% block head %}
+<script src="/js/customer" type="text/javascript"></script>
+<script type="text/javascript">
+    const ID = {{ id }};
+</script>
+{% endblock %}
+
+{% block content %}
+<h2 id="name"></h2>
+<div id="name-error" style="display: none; color: red;">A name is required!</div>
+<a id="back-link" href="/customers">Back</a><br />
+<button onclick="begin_edit()" id="edit-button">Edit</button><br /><br />
+
+<div id="info">
+    <b>Phone Number: </b>
+    <div style="display: inline;" id="phone-number"></div><br />
+    <b>Email: </b>
+    <div style="display: inline;" id="email"></div><br />
+</div><br />
+
+<div id="buttons"></div>
+
+{% endblock content %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Employee{% endblock title %}
+
+{% block head %}
+<script src="/js/employee" type="text/javascript"></script>
+<script type="text/javascript">
+    const ID = {{ id }};
+</script>
+{% endblock %}
+
+{% block content %}
+<h2 id="name"></h2>
+<div id="name-error" style="display: none; color: red;">A name is required!</div>
+<a id="back-link" href="/employees">Back</a><br />
+<button onclick="begin_edit()" id="edit-button">Edit</button><br /><br />
+
+<div id="info">
+    <b>Primary Location: </b>
+    <div style="display: inline;" id="primary-location"></div><br />
+</div><br />
+
+<div id="buttons"></div>
+
+{% endblock content %}

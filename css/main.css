@@ -1,0 +1,25 @@
+table {
+    border-collapse: collapse;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+}
+
+th,
+td {
+    text-align: center;
+    padding: 0.25rem;
+    border-top: 1px solid black;
+    border-left: 1px solid black;
+}
+
+th {
+    border-bottom: 1px solid black;
+}
+
+tr.clickable {
+    cursor: pointer;
+}
+
+tr.clickable:hover {
+    background-color: lightgray;
+}

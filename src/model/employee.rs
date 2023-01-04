@@ -6,6 +6,7 @@ use mysql::{
 pub struct Employee {
     id: usize,
     name: String,
+    active: bool,
     primary_location: usize,
 }
 
@@ -36,6 +37,10 @@ impl FromRow for Employee {
             Some(name) => name,
             None => return Err(mysql::FromRowError(row)),
         };
+        let active = match row.take("Active") {
+            Some(active) => active,
+            None => return Err(mysql::FromRowError(row)),
+        };
         let primary_location = row
             .take("PrimaryLocation")
             .ok_or(mysql::FromRowError(row))?;
@@ -43,6 +48,7 @@ impl FromRow for Employee {
         Ok(Employee {
             id,
             name,
+            active,
             primary_location,
         })
     }
@@ -57,6 +63,7 @@ impl Serialize for Employee {
 
         map.serialize_entry("id", &self.id)?;
         map.serialize_entry("name", &self.name)?;
+        map.serialize_entry("active", &self.active)?;
         map.serialize_entry("primary_location", &self.primary_location)?;
 
         map.end()

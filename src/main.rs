@@ -1,7 +1,9 @@
 #[macro_use]
 extern crate rocket;
 extern crate mysql;
+extern crate serde;
 
+mod cache;
 mod config;
 mod database;
 mod model;

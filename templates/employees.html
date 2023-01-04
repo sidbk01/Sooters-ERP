@@ -1,14 +1,24 @@
 {% extends "base.html" %}
-{% block title %}Employees{% endblock title %}
+{% block title %}{% if not active %}Deactivated {% endif %}Employees{% endblock title %}
+
+{% block head %}
+<script src="/js/employees" type="text/javascript"></script>
+<script type="text/javascript">
+    const ACTIVE = {{ active }};
+</script>
+{% endblock %}
 
 {% block content %}
-<h2>Employees</h2>
-{% for location in locations %}
-<h3>{{ location.name }}</h3>
-<ul>
-    {% for employee in location.employees %}
-    <li><a href="employees/{{ employee.id }}">{{ employee.name }}</a></li>
-    {% endfor %}
-</ul>
-{% endfor %}
+
+<h2>{% if not active %}Deactivated {% endif %}Employees</h2>
+
+{% if active %}
+<a href="/">Back</a><br />
+<a href="/employees?active=false">View Deactived Employees</a><br />
+{% else %}
+<a href="/employees">Back</a><br />
+{% endif %}
+
+<div id="employees"></div>
+
 {% endblock content %}

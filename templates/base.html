@@ -3,12 +3,19 @@
 
 <head>
     <title>{% block title %}{% endblock title %} - Sooter's ERP</title>
+
+    <link rel="stylesheet" href="/css/main" />
+    <script src="/js/ajax" type="text/javascript"></script>
+
+    {% block head %}
+    {% endblock %}
 </head>
 
-<body>
+<body onload='if (typeof on_load === "function") { on_load() }'>
     <div id="content">
         <h1>Sooter's</h1>
-        {% block content %}{% endblock content %}
+        {% block content %}
+        {% endblock content %}
     </div>
 </body>
 

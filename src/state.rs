@@ -1,4 +1,5 @@
 use crate::{
+    cache::FileCache,
     config::{Config, ConfigError},
     database::{Database, DatabaseError},
 };
@@ -9,12 +10,20 @@ pub enum StateCreationError {
     ConfigurationLoadError(ConfigError),
     DatabaseError(DatabaseError),
     TemplateError(tera::Error),
+    JSLoadError(std::io::Error),
+    CSSLoadError(std::io::Error),
 }
 
 pub struct State {
     database: Database,
     templates: Tera,
+
+    js_cache: FileCache,
+    css_cache: FileCache,
 }
+
+const JS_BASE_PATH: &'static str = "./js/";
+const CSS_BASE_PATH: &'static str = "./css/";
 
 impl State {
     // Creates a new state based on the configuration file
@@ -31,10 +40,20 @@ impl State {
             Err(error) => return Err(StateCreationError::TemplateError(error)),
         };
 
+        // Load javascript
+        let js_cache = FileCache::load(JS_BASE_PATH)
+            .map_err(|error| StateCreationError::JSLoadError(error))?;
+
+        // Load CSS
+        let css_cache = FileCache::load(CSS_BASE_PATH)
+            .map_err(|error| StateCreationError::CSSLoadError(error))?;
+
         // Create the state
         Ok(State {
             database,
             templates,
+            js_cache,
+            css_cache,
         })
     }
 
@@ -44,6 +63,14 @@ impl State {
 
     pub fn templates(&self) -> &Tera {
         &self.templates
+    }
+
+    pub fn js(&self) -> &FileCache {
+        &self.js_cache
+    }
+
+    pub fn css(&self) -> &FileCache {
+        &self.css_cache
     }
 }
 
@@ -66,6 +93,12 @@ impl std::fmt::Display for StateCreationError {
             StateCreationError::DatabaseError(error) => error.fmt(f),
             StateCreationError::TemplateError(error) => {
                 write!(f, "Unable to load templates - {}", error)
+            }
+            StateCreationError::JSLoadError(error) => {
+                write!(f, "Unable to load javascript - {}", error)
+            }
+            StateCreationError::CSSLoadError(error) => {
+                write!(f, "Unable to load CSS - {}", error)
             }
         }
     }

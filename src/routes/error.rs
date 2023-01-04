@@ -4,6 +4,9 @@ use rocket::{http::Status, response::Responder};
 pub enum RouteError {
     RenderError(tera::Error),
     DatabaseError(DatabaseError),
+    JSError(String),
+    CSSError(String),
+    InputError(&'static str),
 }
 
 impl<'r, 'o: 'r> Responder<'r, 'o> for RouteError {
@@ -15,6 +18,9 @@ impl<'r, 'o: 'r> Responder<'r, 'o> for RouteError {
                 eprintln!("Unable to render template - {}", error);
             }
             RouteError::DatabaseError(error) => eprintln!("{}", error),
+            RouteError::JSError(file) => eprintln!("Unable to find JS file \"{}\"", file),
+            RouteError::CSSError(file) => eprintln!("Unable to find CSS file \"{}\"", file),
+            RouteError::InputError(message) => eprintln!("Invalid input recieved - {}", message),
         }
 
         Status::InternalServerError.respond_to(request)

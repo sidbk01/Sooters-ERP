@@ -1,16 +1,16 @@
-use crate::{config::DatabaseInfo, Employee, Location};
+use crate::config::DatabaseInfo;
 use mysql::{
     prelude::{FromRow, Queryable},
-    OptsBuilder, Pool,
+    Params, Pool,
 };
-use std::net::ToSocketAddrs;
 
 pub enum DatabaseError {
     ConnectionError(mysql::Error),
-    InvalidAddress,
     QueryError(mysql::Error),
     PoolError,
 }
+
+pub struct Empty;
 
 pub struct Database {
     connection: Pool,
@@ -40,15 +40,7 @@ impl Database {
         Ok(Database { connection })
     }
 
-    pub async fn locations(&self) -> Result<Vec<Location>, DatabaseError> {
-        self.execute_query("SELECT * FROM Locations").await
-    }
-
-    pub async fn employees(&self) -> Result<Vec<Employee>, DatabaseError> {
-        self.execute_query("SELECT * FROM Employees").await
-    }
-
-    async fn execute_query<Q: AsRef<str> + Send + 'static, T: FromRow + Send + 'static>(
+    pub async fn execute_query<Q: AsRef<str> + Send + 'static, T: FromRow + Send + 'static>(
         &self,
         query: Q,
     ) -> Result<Vec<T>, DatabaseError> {
@@ -61,6 +53,35 @@ impl Database {
         })
         .await
         .unwrap()
+    }
+
+    pub async fn execute_query_parameters<
+        Q: AsRef<str> + Send + 'static,
+        T: FromRow + Send + 'static,
+        P: Into<Params> + Send + 'static,
+    >(
+        &self,
+        query: Q,
+        params: P,
+    ) -> Result<Vec<T>, DatabaseError> {
+        let pool = self.connection.clone();
+        rocket::tokio::task::spawn_blocking(move || {
+            pool.get_conn()
+                .map_err(|_| DatabaseError::PoolError)?
+                .exec(query, params)
+                .map_err(|error| DatabaseError::QueryError(error))
+        })
+        .await
+        .unwrap()
+    }
+}
+
+impl FromRow for Empty {
+    fn from_row_opt(_: mysql::Row) -> Result<Self, mysql::FromRowError>
+    where
+        Self: Sized,
+    {
+        Ok(Empty)
     }
 }
 
@@ -82,7 +103,6 @@ impl std::fmt::Display for DatabaseError {
             DatabaseError::ConnectionError(error) => {
                 write!(f, "Unable to connect to the database - {}", error)
             }
-            DatabaseError::InvalidAddress => write!(f, "Invalid address for database connection"),
             DatabaseError::QueryError(error) => write!(f, "Unable to perform query - {}", error),
             DatabaseError::PoolError => write!(f, "Unable to get connection from pool"),
         }

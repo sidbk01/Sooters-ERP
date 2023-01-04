@@ -2071,6 +2071,7 @@ dependencies = [
  "rocket_codegen",
  "rocket_http",
  "serde",
+ "serde_json",
  "state",
  "tempfile",
  "time",
@@ -2358,6 +2359,7 @@ dependencies = [
  "mysql",
  "rocket",
  "rustc-hash",
+ "serde",
  "tera",
 ]
 
