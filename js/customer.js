@@ -5,6 +5,17 @@ function on_load() {
         customer = JSON.parse(responseText);
         display_info();
     }, load_error);
+
+    get(`/data/employees`, (responseText) => {
+        let employees = JSON.parse(responseText);
+        update_employees(employees);
+        get(`/data/customers/notes?id=${ID}`, (responseText) => {
+            let notes = JSON.parse(responseText);
+            display_notes(notes, employees);
+        }, load_error);
+    }, load_error);
+
+
 }
 
 function load_error() {
@@ -88,4 +99,72 @@ function confirm_edit() {
 function finalize_edit(new_customer_info) {
     customer = new_customer_info;
     display_info();
+}
+
+function update_employees(employees) {
+    let html = "";
+
+    for (let employee of employees)
+        html += `<option value="${employee.id}">${employee.name}</option>`;
+
+    document.getElementById("creator").innerHTML = html;
+}
+
+function display_notes(notes, employees) {
+    let html = "";
+
+    for (let note of notes) {
+        let creator;
+        for (let employee of employees) {
+            if (employee.id == note.creator) {
+                creator = employee.name;
+                break;
+            }
+        }
+
+        html += "<div class='note'>";
+        html += `Created ${note.date_time} by ${creator}<br />`;
+        html += note.note;
+        html += `</div>`;
+        html += `<hr />`;
+    }
+
+    document.getElementById("notes").innerHTML = html;
+}
+
+function begin_create_note() {
+    document.getElementById("new-note-button").style.display = "none";
+    document.getElementById("create-note").style.display = "block";
+}
+
+function cancel_create_note() {
+    document.getElementById("note").value = "";
+    document.getElementById("creator").selectedIndex = 0;
+    document.getElementById("create-note").style.display = "none";
+    document.getElementById("new-note-button").style.display = "block";
+}
+
+function create_note() {
+    // Collect and validate the information
+    let creator = document.getElementById("creator").value;
+
+    let note = document.getElementById("note").value;
+    if (note == "") {
+        document.getElementById("note-error").style.display = "block";
+        return;
+    } else
+        document.getElementById("note-error").style.display = "none";
+
+    // Send the request
+    post(`/data/customers/create_note`, () => {
+        location.reload();
+    }, create_error, {
+        customer: ID,
+        creator: Number(creator),
+        note: note,
+    });
+}
+
+function create_error() {
+    alert("There was an error while creating the note");
 }

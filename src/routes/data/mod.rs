@@ -15,6 +15,8 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
             customers::one,
             customers::update,
             customers::create,
+            customers::notes,
+            customers::create_note,
             employees::all,
             employees::one,
             employees::set_active,

@@ -23,4 +23,20 @@
 
 <div id="buttons"></div>
 
+<div id="notes-container">
+    <h3>Notes</h3>
+    <div id="new-note-button">
+        <button onclick="begin_create_note()">New Note</button>
+    </div>
+    <form id="create-note" style="display: none" onsubmit="return false;">
+        Creator: <select id="creator"></select><br />
+        <div id="note-error" style="display: none; color: red;">You must enter a note</div>
+        <textarea id="note"></textarea><br />
+        <input type="submit" onclick="create_note()" value="Create" />
+        <button onclick="cancel_create_note()">Cancel</button>
+    </form>
+    <br />
+    <div id="notes"></div>
+</div>
+
 {% endblock content %}
