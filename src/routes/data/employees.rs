@@ -10,6 +10,9 @@ const SET_ACTIVE_QUERY: &'static str = "UPDATE Employees SET Active = :active WH
 const UPDATE_QUERY: &'static str =
     "UPDATE Employees SET Name = :name, PrimaryLocation = :primary_location WHERE ID = :id";
 
+const CREATE_QUERY: &'static str =
+    "INSERT INTO Employees (Name, PrimaryLocation) VALUES (:name, :primary_location)";
+
 #[get("/employees?<active>")]
 pub(crate) async fn all(
     active: Option<bool>,
@@ -96,6 +99,33 @@ pub(crate) async fn update(
             UPDATE_QUERY,
             params! {
                 "id" => id,
+                "name" => &info.name,
+                "primary_location" => info.primary_location,
+            },
+        )
+        .await?;
+
+    Ok(String::new())
+}
+
+#[post("/employees/create", data = "<info>")]
+pub(crate) async fn create(
+    info: Json<UpdateInfo>,
+    state: &rocket::State<State>,
+) -> Result<String, RouteError> {
+    // Validate input
+    if &info.name == "" {
+        return Err(RouteError::InputError(
+            "Cannot create an employee without a name",
+        ));
+    }
+
+    // Perform query
+    state
+        .database()
+        .execute_query_parameters::<_, Empty, _>(
+            CREATE_QUERY,
+            params! {
                 "name" => &info.name,
                 "primary_location" => info.primary_location,
             },

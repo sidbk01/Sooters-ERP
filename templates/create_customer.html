@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Create Customer{% endblock title %}
+
+{% block head %}
+<script src="/js/create_customer" type="text/javascript"></script>
+{% endblock %}
+
+{% block content %}
+<h2>Create Customer</h2>
+<a id="back-link" href="/customers">Back</a><br /><br />
+
+<form id="create-form" onsubmit="return false;">
+    <input type="text" id="name" name="name" placeholder="Name" required /><br />
+    <div style="display: none; color: red;" id="name-error">A name is required</div>
+    <input type="email" id="email" name="email" placeholder="E-Mail" /><br />
+    <input type="text" id="phone-number" name="phone-number" placeholder="Phone Number" /><br />
+    <input type="submit" value="Create" onclick="form_submit();" />
+</form>
+
+{% endblock content %}

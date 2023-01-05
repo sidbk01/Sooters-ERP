@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Create Employee{% endblock title %}
+
+{% block head %}
+<script src="/js/create_employee" type="text/javascript"></script>
+{% endblock %}
+
+{% block content %}
+<h2>Create Employee</h2>
+<a id="back-link" href="/employees">Back</a><br /><br />
+
+<form id="create-form" onsubmit="return false;">
+    <input type="text" id="name" name="name" placeholder="Name" required /><br />
+    <div style="display: none; color: red;" id="name-error">A name is required</div>
+    <select id="primary-location" name="primary-location">
+    </select><br />
+    <input type="submit" value="Create" onclick="form_submit()" />
+</form>
+
+{% endblock content %}

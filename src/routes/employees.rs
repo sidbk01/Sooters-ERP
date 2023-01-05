@@ -3,7 +3,7 @@ use rocket::response::content::RawHtml;
 use tera::Context;
 
 #[get("/employees?<active>")]
-pub(super) async fn employees(
+pub(super) async fn all(
     active: Option<bool>,
     state: &rocket::State<State>,
 ) -> Result<RawHtml<String>, RouteError> {
@@ -16,7 +16,7 @@ pub(super) async fn employees(
 }
 
 #[get("/employee?<id>")]
-pub(super) async fn employee(
+pub(super) async fn one(
     id: usize,
     state: &rocket::State<State>,
 ) -> Result<RawHtml<String>, RouteError> {
@@ -25,5 +25,14 @@ pub(super) async fn employee(
 
     Ok(RawHtml(
         state.templates().render("employee.html", &context)?,
+    ))
+}
+
+#[get("/employees/create")]
+pub(super) async fn create(state: &rocket::State<State>) -> Result<RawHtml<String>, RouteError> {
+    Ok(RawHtml(
+        state
+            .templates()
+            .render("create_employee.html", &Context::new())?,
     ))
 }

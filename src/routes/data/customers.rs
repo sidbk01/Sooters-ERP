@@ -10,6 +10,9 @@ const CUSTOMER_QUERY: &'static str = "SELECT * FROM Customers WHERE ID = :id";
 const UPDATE_QUERY: &'static str =
     "UPDATE Customers SET Name = :name, Email = :email, PhoneNumber = :phone_number WHERE ID = :id";
 
+const CREATE_QUERY: &'static str =
+    "INSERT INTO Customers (Name, Email, PhoneNumber) VALUES (:name, :email, :phone_number)";
+
 #[get("/customers")]
 pub(crate) async fn all(state: &rocket::State<State>) -> Result<RawJson<String>, RouteError> {
     // Perform the query
@@ -69,6 +72,37 @@ pub(crate) async fn update(
                 "name" => &info.name,
                 "email" => info.email.as_ref(),
                 "phone_number" => info.phone_number.as_ref(),
+            },
+        )
+        .await?;
+
+    Ok(String::new())
+}
+
+#[post("/customers/create", data = "<info>")]
+pub(crate) async fn create(
+    mut info: Json<UpdateInfo>,
+    state: &rocket::State<State>,
+) -> Result<String, RouteError> {
+    // Validate input
+    if &info.name == "" {
+        return Err(RouteError::InputError(
+            "Cannot create a customer without a name",
+        ));
+    }
+
+    validate_empty(&mut info.phone_number);
+    validate_empty(&mut info.email);
+
+    // Perform query
+    state
+        .database()
+        .execute_query_parameters::<_, Empty, _>(
+            CREATE_QUERY,
+            params! {
+                "name" => &info.name,
+                "email" => &info.email,
+                "phone_number" => &info.phone_number
             },
         )
         .await?;

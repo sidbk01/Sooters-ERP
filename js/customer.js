@@ -46,7 +46,7 @@ function begin_edit() {
 
     // Update other information
     document.getElementById("phone-number").innerHTML = `<input type="text" id="phone-number-input" placeholder="Phone Number" value="${convert_undefined(customer.phone_number)}" />`;
-    document.getElementById("email").innerHTML = `<input type="email" id="email-input" placeholder="Email" value="${convert_undefined(customer.email)}" />`;
+    document.getElementById("email").innerHTML = `<input type="email" id="email-input" placeholder="E-Mail" value="${convert_undefined(customer.email)}" />`;
 
     // Update buttons
     document.getElementById("buttons").innerHTML = "<button onclick='confirm_edit()'>Confirm</button><br /><button onclick='display_info()'>Cancel</button>";
