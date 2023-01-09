@@ -7,6 +7,7 @@ mod employees;
 mod error;
 mod index;
 mod js;
+mod orders;
 
 pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
     data::add_routes(server).mount(
@@ -21,6 +22,8 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
             employees::all,
             employees::one,
             employees::create,
+            orders::all,
+            orders::create,
         },
     )
 }

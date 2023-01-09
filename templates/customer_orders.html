@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Orders{% endblock title %}
+
+{% block head %}
+<script src="/js/customer_orders" type="text/javascript"></script>
+<script type="text/javascript">
+    const ID = {{ id }};
+</script>
+{% endblock %}
+
+{% block content %}
+<h2>Orders</h2>
+<a id="back-link" href="/customer?id={{ id }}">Back</a><br />
+<button onclick='window.location.href = "/orders/create?customer={{ id }}";'>Create Order</button><br /><br />
+
+<div id="orders"></div>
+
+{% endblock content %}

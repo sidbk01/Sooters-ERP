@@ -3,6 +3,7 @@ use rocket::{Build, Rocket};
 mod customers;
 mod employees;
 mod locations;
+mod orders;
 mod util;
 
 pub(self) use util::*;
@@ -22,7 +23,10 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
             employees::set_active,
             employees::update,
             employees::create,
-            locations::all
+            locations::all,
+            orders::all,
+            orders::types,
+            orders::create,
         ],
     )
 }

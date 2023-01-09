@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Create Order{% endblock title %}
+
+{% block head %}
+<script src="/js/create_order" type="text/javascript"></script>
+<script type="text/javascript">
+    const CUSTOMER = {{ customer }};
+</script>
+{% endblock %}
+
+{% block content %}
+<h2>Create Order</h2>
+<a id="back-link" href="/orders?id={{ customer }}">Back</a><br /><br />
+
+<form id="create-form" onsubmit="return false;">
+    <input type="number" id="envelope-id" placeholder="Envelope ID" /><br />
+    <label for="due-date">Due Date: </label>
+    <input type="date" id="due-date" name="due-date"
+        onchange="document.getElementById('date-error').style.display = 'none'" /><br />
+    <div style="display: none; color: red;" id="date-error">Must select a due date</div>
+    <label for="rush">Rush: </label>
+    <input type="checkbox" id="rush" name="rush" /><br />
+    <label for="employee">Employee: </label>
+    <select id="employee" name="employee"></select><br />
+    <label for="location">Location: </label>
+    <select id="location" name="location"></select><br />
+    <label for="type">Type: </label>
+    <select id="type" name="type"></select><br />
+    <div style="display: none; color: red;" id="type-error">Must select an order type</div>
+    <div id="order-type-inputs"></div>
+    <input type="submit" value="Create" onclick="form_submit()" />
+</form>
+
+{% endblock content %}

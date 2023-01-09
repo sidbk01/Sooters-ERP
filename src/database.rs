@@ -74,6 +74,34 @@ impl Database {
         .await
         .unwrap()
     }
+
+    pub async fn execute_transaction<
+        Q: AsRef<str> + Send + 'static,
+        P: Into<Params> + Send + 'static,
+    >(
+        &self,
+        queries: Vec<(Q, P)>,
+    ) -> Result<(), DatabaseError> {
+        let pool = self.connection.clone();
+        rocket::tokio::task::spawn_blocking(move || {
+            let mut conn = pool.get_conn().map_err(|_| DatabaseError::PoolError)?;
+            let mut transaction = conn
+                .start_transaction(mysql::TxOpts::default())
+                .map_err(|error| DatabaseError::QueryError(error))?;
+
+            for (query, params) in queries {
+                transaction
+                    .exec::<Empty, _, _>(query, params)
+                    .map_err(|error| DatabaseError::QueryError(error))?;
+            }
+
+            transaction
+                .commit()
+                .map_err(|error| DatabaseError::QueryError(error))
+        })
+        .await
+        .unwrap()
+    }
 }
 
 impl FromRow for Empty {
