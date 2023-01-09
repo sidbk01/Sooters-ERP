@@ -12,7 +12,8 @@
 <h2 id="name"></h2>
 <div id="name-error" style="display: none; color: red;">A name is required!</div>
 <a id="back-link" href="/customers">Back</a><br />
-<a href="/orders?id={{ id }}">View Orders</a>
+<a href="/orders?id={{ id }}">View Orders</a><br />
+<button onclick='window.location.href = "/orders/create?customer={{ id }}";'>Create Order</button><br />
 <button onclick="begin_edit()" id="edit-button">Edit</button><br /><br />
 
 <div id="info">

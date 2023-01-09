@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Create Order{% endblock title %}
+{% block title %}Create Order for {{ customer_name }}{% endblock title %}
 
 {% block head %}
 <script src="/js/create_order" type="text/javascript"></script>
@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-<h2>Create Order</h2>
+<h2>Create Order for {{ customer_name }}</h2>
 <a id="back-link" href="/orders?id={{ customer }}">Back</a><br /><br />
 
 <form id="create-form" onsubmit="return false;">

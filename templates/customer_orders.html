@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Orders{% endblock title %}
+{% block title %}{{ customer_name }}'s Orders{% endblock title %}
 
 {% block head %}
 <script src="/js/customer_orders" type="text/javascript"></script>
@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-<h2>Orders</h2>
+<h2>{{ customer_name }}'s Orders</h2>
 <a id="back-link" href="/customer?id={{ id }}">Back</a><br />
 <button onclick='window.location.href = "/orders/create?customer={{ id }}";'>Create Order</button><br /><br />
 
