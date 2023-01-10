@@ -1,4 +1,6 @@
-use crate::{routes::error::RouteError, state::State, Order, OrderType};
+use crate::{
+    database::Empty, routes::error::RouteError, state::State, Order, OrderNote, OrderType,
+};
 use mysql::{params, serde_json};
 use rocket::{response::content::RawJson, serde::json::Json};
 use serde::{
@@ -6,11 +8,23 @@ use serde::{
     Deserialize,
 };
 
-const ORDERS_QUERY: &'static str = "SELECT * FROM Orders WHERE ID = :id ORDER BY DateReceived ASC";
+const ORDERS_QUERY: &'static str =
+    "SELECT * FROM Orders WHERE Customer = :id ORDER BY DateReceived ASC";
 const ORDER_TYPES_QUERY: &'static str = "SELECT * FROM Order_Types ORDER BY Name ASC";
+const ORDER_QUERY: &'static str = "SELECT * FROM Orders WHERE ID = :id";
+const NOTES_QUERY: &'static str =
+    "SELECT * FROM Order_Notes WHERE OrderID = :id ORDER BY DateTime DESC";
+
+const PAID_QUERY: &'static str = "UPDATE Orders SET Paid = '1' WHERE ID = :id";
+const COMPLETED_QUERY: &'static str = "UPDATE Orders SET DateComplete = CURDATE() WHERE ID = :id";
+const PICKED_UP_QUERY: &'static str = "UPDATE Orders SET PickedUp = '1' WHERE ID = :id";
+const CHANGE_LOCATION_QUERY: &'static str =
+    "UPDATE Orders SET CurrentLocation = :location WHERE ID = :id";
 
 const CREATE_QUERY: &'static str = "INSERT INTO Orders (EnvelopeID, CurrentLocation, SourceLocation, Receiver, OrderType, Customer, DateDue, Rush) VALUES (:envelope_id, :location, :location, :employee, :order_type, :customer, :due_date, :rush);";
 const CREATE_FILM_QUERY: &'static str = "INSERT INTO Film_Orders (ID, Prints, Digital, NumberOfRolls, Color) VALUES (LAST_INSERT_ID(), :prints, :digital, :num_rolls, :color);";
+const CREATE_NOTE_QUERY: &'static str =
+    "INSERT INTO Order_Notes (OrderID, Creator, Note) VALUES (:order, :creator, :note)";
 
 #[get("/orders?<customer>")]
 pub(crate) async fn all(
@@ -39,6 +53,56 @@ pub(crate) async fn types(state: &rocket::State<State>) -> Result<RawJson<String
     Ok(RawJson(serde_json::to_string(&orders).unwrap()))
 }
 
+#[get("/order/notes?<id>")]
+pub(crate) async fn notes(
+    id: usize,
+    state: &rocket::State<State>,
+) -> Result<RawJson<String>, RouteError> {
+    // Perform the query
+    let notes: Vec<OrderNote> = state
+        .database()
+        .execute_query_parameters(
+            NOTES_QUERY,
+            params! {
+                "id" => id,
+            },
+        )
+        .await?;
+
+    Ok(RawJson(serde_json::to_string(&notes).unwrap()))
+}
+
+#[derive(Deserialize)]
+pub struct NewNoteInfo {
+    order: usize,
+    creator: usize,
+    note: String,
+}
+
+#[post("/order/create_note", data = "<info>")]
+pub(crate) async fn create_note(
+    info: Json<NewNoteInfo>,
+    state: &rocket::State<State>,
+) -> Result<String, RouteError> {
+    if &info.note == "" {
+        return Err(RouteError::InputError("Cannot create a note without text"));
+    }
+
+    state
+        .database()
+        .execute_query_parameters::<_, Empty, _>(
+            CREATE_NOTE_QUERY,
+            params! {
+                "order" => info.order,
+                "creator" => info.creator,
+                "note" => &info.note,
+            },
+        )
+        .await?;
+
+    Ok(String::new())
+}
+
 pub struct CreateInfo {
     envelope_id: Option<usize>,
     due_date: String,
@@ -57,10 +121,101 @@ enum OrderTypeInfo {
 }
 
 struct FilmInfo {
-    prints: bool,
+    prints: usize,
     digital: bool,
     color: bool,
     num_rolls: usize,
+}
+
+#[get("/order?<id>")]
+pub(crate) async fn one(
+    id: usize,
+    state: &rocket::State<State>,
+) -> Result<RawJson<String>, RouteError> {
+    let order: Order = state
+        .database()
+        .execute_query_parameters(
+            ORDER_QUERY,
+            params! {
+                "id" => id,
+            },
+        )
+        .await?
+        .pop()
+        .ok_or(RouteError::InputError("Invalid order ID"))?;
+
+    Ok(RawJson(serde_json::to_string(&order).unwrap()))
+}
+
+#[post("/order/paid?<id>")]
+pub(crate) async fn paid(id: usize, state: &rocket::State<State>) -> Result<String, RouteError> {
+    state
+        .database()
+        .execute_query_parameters::<_, Empty, _>(
+            PAID_QUERY,
+            params! {
+                "id" => id,
+            },
+        )
+        .await?;
+
+    Ok(String::new())
+}
+
+#[post("/order/completed?<id>")]
+pub(crate) async fn completed(
+    id: usize,
+    state: &rocket::State<State>,
+) -> Result<String, RouteError> {
+    state
+        .database()
+        .execute_query_parameters::<_, Empty, _>(
+            COMPLETED_QUERY,
+            params! {
+                "id" => id,
+            },
+        )
+        .await?;
+
+    Ok(String::new())
+}
+
+#[post("/order/picked_up?<id>")]
+pub(crate) async fn picked_up(
+    id: usize,
+    state: &rocket::State<State>,
+) -> Result<String, RouteError> {
+    state
+        .database()
+        .execute_query_parameters::<_, Empty, _>(
+            PICKED_UP_QUERY,
+            params! {
+                "id" => id,
+            },
+        )
+        .await?;
+
+    Ok(String::new())
+}
+
+#[post("/order/change_location?<id>&<location>")]
+pub(crate) async fn change_location(
+    id: usize,
+    location: usize,
+    state: &rocket::State<State>,
+) -> Result<String, RouteError> {
+    state
+        .database()
+        .execute_query_parameters::<_, Empty, _>(
+            CHANGE_LOCATION_QUERY,
+            params! {
+                "id" => id,
+                "location" => location,
+            },
+        )
+        .await?;
+
+    Ok(String::new())
 }
 
 #[post("/orders/create?<customer>", data = "<info>")]
@@ -218,9 +373,15 @@ impl FilmInfo {
         map: &serde_json::Map<String, serde_json::Value>,
     ) -> Result<Self, E> {
         let prints = match map.get("prints") {
-            Some(prints) => match prints.as_bool() {
-                Some(prints) => prints,
-                None => return Err(E::custom("Expected a boolean for prints")),
+            Some(prints) => match prints.as_u64() {
+                Some(prints) => {
+                    if prints > 2 {
+                        return Err(E::custom("Invalid prints value received"));
+                    } else {
+                        prints as usize
+                    }
+                }
+                None => return Err(E::custom("Expected an unsigned integer for prints")),
             },
             None => return Err(E::missing_field("prints")),
         };

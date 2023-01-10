@@ -1,5 +1,5 @@
 use mysql::prelude::FromRow;
-use rocket::time::Date;
+use rocket::time::{Date, PrimitiveDateTime};
 use serde::{ser::SerializeMap, Serialize};
 
 pub struct Order {
@@ -15,6 +15,15 @@ pub struct Order {
     date_complete: Option<Date>,
     paid: bool,
     rush: bool,
+    picked_up: bool,
+}
+
+pub struct OrderNote {
+    id: usize,
+    order: usize,
+    creator: usize,
+    date_time: PrimitiveDateTime,
+    note: String,
 }
 
 pub struct OrderType {
@@ -129,6 +138,10 @@ impl FromRow for Order {
             Some(rush) => rush,
             None => return Err(mysql::FromRowError(row)),
         };
+        let picked_up = match row.take("PickedUp") {
+            Some(picked_up) => picked_up,
+            None => return Err(mysql::FromRowError(row)),
+        };
 
         Ok(Order {
             id,
@@ -143,6 +156,7 @@ impl FromRow for Order {
             date_complete,
             paid,
             rush,
+            picked_up,
         })
     }
 }
@@ -169,6 +183,7 @@ impl Serialize for Order {
         )?;
         map.serialize_entry("paid", &self.paid)?;
         map.serialize_entry("rush", &self.rush)?;
+        map.serialize_entry("picked_up", &self.picked_up)?;
 
         map.end()
     }
@@ -213,6 +228,86 @@ impl Serialize for OrderType {
         map.serialize_entry("id", &self.id)?;
         map.serialize_entry("name", &self.name)?;
 
+        map.end()
+    }
+}
+
+impl OrderNote {
+    pub fn id(&self) -> usize {
+        self.id
+    }
+
+    pub fn order(&self) -> usize {
+        self.order
+    }
+
+    pub fn creator(&self) -> usize {
+        self.creator
+    }
+
+    pub fn date_time(&self) -> PrimitiveDateTime {
+        self.date_time
+    }
+}
+
+impl FromRow for OrderNote {
+    fn from_row_opt(mut row: mysql::Row) -> Result<Self, mysql::FromRowError>
+    where
+        Self: Sized,
+    {
+        let id = match row.take("ID") {
+            Some(id) => id,
+            None => return Err(mysql::FromRowError(row)),
+        };
+        let order = match row.take("OrderID") {
+            Some(order) => order,
+            None => return Err(mysql::FromRowError(row)),
+        };
+        let creator = match row.take("Creator") {
+            Some(creator) => creator,
+            None => return Err(mysql::FromRowError(row)),
+        };
+        let date_time = match row.take("DateTime") {
+            Some(date_time) => date_time,
+            None => return Err(mysql::FromRowError(row)),
+        };
+        let note = match row.take("Note") {
+            Some(note) => note,
+            None => return Err(mysql::FromRowError(row)),
+        };
+
+        Ok(OrderNote {
+            id,
+            order,
+            creator,
+            date_time,
+            note,
+        })
+    }
+}
+
+impl Serialize for OrderNote {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(5))?;
+
+        map.serialize_entry("id", &self.id)?;
+        map.serialize_entry("order", &self.order)?;
+        map.serialize_entry("creator", &self.creator)?;
+        map.serialize_entry(
+            "date_time",
+            &format!(
+                "{} {}, {} at {}:{}",
+                self.date_time.month(),
+                self.date_time.day(),
+                self.date_time.year(),
+                self.date_time.hour(),
+                self.date_time.minute()
+            ),
+        )?;
+        map.serialize_entry("note", &self.note)?;
         map.end()
     }
 }

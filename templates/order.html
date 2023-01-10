@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Order{% endblock title %}
+
+{% block head %}
+<script src="/js/order" type="text/javascript"></script>
+<script type="text/javascript">
+    const ID = {{ id }};
+</script>
+{% endblock %}
+
+{% block content %}
+<h2>Order</h2>
+
+<a href="/customers" id="back-link">Back</a><br />
+<button id="mark-complete" onclick="mark_complete()">Mark Complete</button>
+<button id="mark-paid" onclick="mark_paid()">Mark Paid</button><br /><br />
+
+<div id="order-info">
+    <b>Order ID: </b>
+    <div id="order-id" style="display: inline;"></div><br />
+    <div id="envelope-id" style="display: inline;"></div>
+    <b>Customer: </b>
+    <div id="customer" style="display: inline;"></div><br /><br />
+    <b>Date Received: </b>
+    <div id="date-received" style="display: inline;"></div><br />
+    <b>Date Due: </b>
+    <div id="date-due" style="display: inline;"></div><br />
+    <b>Rush: </b>
+    <div id="rush" style="display: inline;"></div><br />
+    <b>Date Completed: </b>
+    <div id="date-completed" style="display: inline;"></div><br /><br />
+    <b>Current Location: </b>
+    <div id="current-location" style="display: inline;"></div><br />
+    <b>Source Location: </b>
+    <div id="source-location" style="display: inline;"></div><br />
+    <b>Receiving Employee: </b>
+    <div id="receiver" style="display: inline;"></div><br /><br />
+    <b>Paid: </b>
+    <div id="paid" style="display: inline;"></div><br /><br />
+
+    <div id="type-info"></div>
+</div>
+
+<div id="notes-container">
+    <h3>Notes</h3>
+    <div id="new-note-button">
+        <button onclick="begin_create_note()">New Note</button>
+    </div>
+    <form id="create-note" style="display: none" onsubmit="return false;">
+        Creator: <select id="creator"></select><br />
+        <div id="note-error" style="display: none; color: red;">You must enter a note</div>
+        <textarea id="note"></textarea><br />
+        <input type="submit" onclick="create_note()" value="Create" />
+        <button onclick="cancel_create_note()">Cancel</button>
+    </form>
+    <br />
+    <div id="notes"></div>
+</div>
+
+{% endblock content %}

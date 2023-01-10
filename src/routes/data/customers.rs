@@ -41,7 +41,7 @@ pub(crate) async fn one(
         )
         .await?
         .pop()
-        .unwrap();
+        .ok_or(RouteError::InputError("Invalid customer id"))?;
 
     Ok(RawJson(serde_json::to_string(&customer).unwrap()))
 }

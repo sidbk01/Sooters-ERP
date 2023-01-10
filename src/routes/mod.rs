@@ -23,6 +23,7 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
             employees::one,
             employees::create,
             orders::all,
+            orders::one,
             orders::create,
         },
     )

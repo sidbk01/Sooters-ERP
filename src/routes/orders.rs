@@ -27,6 +27,17 @@ pub(super) async fn all(
     ))
 }
 
+#[get("/order?<id>")]
+pub(super) async fn one(
+    id: usize,
+    state: &rocket::State<State>,
+) -> Result<RawHtml<String>, RouteError> {
+    let mut context = Context::new();
+    context.insert("id", &id);
+
+    Ok(RawHtml(state.templates().render("order.html", &context)?))
+}
+
 #[get("/orders/create?<customer>")]
 pub(super) async fn create(
     customer: usize,
