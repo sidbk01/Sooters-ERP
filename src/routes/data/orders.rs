@@ -14,6 +14,8 @@ const ORDER_TYPES_QUERY: &'static str = "SELECT * FROM Order_Types ORDER BY Name
 const ORDER_QUERY: &'static str = "SELECT * FROM Orders WHERE ID = :id";
 const NOTES_QUERY: &'static str =
     "SELECT * FROM Order_Notes WHERE OrderID = :id ORDER BY DateTime DESC";
+const UPCOMING_ORDERS_QUERY: &'static str = "SELECT * FROM Orders WHERE DateComplete IS NULL AND DateDue BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 7 DAY) ORDER BY DateDue ASC";
+const RECENT_ORDERS_QUERY: &'static str = "SELECT * FROM Orders WHERE DateReceived BETWEEN DATE_SUB(NOW(), INTERVAL 2 DAY) AND NOW() ORDER BY DateReceived DESC";
 
 const PAID_QUERY: &'static str = "UPDATE Orders SET Paid = '1' WHERE ID = :id";
 const COMPLETED_QUERY: &'static str = "UPDATE Orders SET DateComplete = CURDATE() WHERE ID = :id";
@@ -145,6 +147,23 @@ pub(crate) async fn one(
         .ok_or(RouteError::InputError("Invalid order ID"))?;
 
     Ok(RawJson(serde_json::to_string(&order).unwrap()))
+}
+
+#[get("/orders/upcoming")]
+pub(crate) async fn upcoming(state: &rocket::State<State>) -> Result<RawJson<String>, RouteError> {
+    let orders: Vec<Order> = state
+        .database()
+        .execute_query(UPCOMING_ORDERS_QUERY)
+        .await?;
+
+    Ok(RawJson(serde_json::to_string(&orders).unwrap()))
+}
+
+#[get("/orders/recent")]
+pub(crate) async fn recent(state: &rocket::State<State>) -> Result<RawJson<String>, RouteError> {
+    let orders: Vec<Order> = state.database().execute_query(RECENT_ORDERS_QUERY).await?;
+
+    Ok(RawJson(serde_json::to_string(&orders).unwrap()))
 }
 
 #[post("/order/paid?<id>")]

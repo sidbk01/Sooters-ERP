@@ -1,7 +1,19 @@
 {% extends "base.html" %}
 {% block title %}Home{% endblock title %}
 
+{% block head %}
+<script src="/js/index" type="text/javascript"></script>
+{% endblock %}
+
 {% block content %}
 <button onclick="window.location.href = '/employees'">Employees</button>
 <button onclick="window.location.href ='/customers'">Customers</button>
+<button onclick="window.location.href ='/orders/recent'">Recent Orders</button>
+
+<br />
+<h2>Upcoming Orders</h2>
+<div id="upcoming-orders">
+
+</div>
+
 {% endblock content %}

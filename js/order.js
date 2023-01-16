@@ -53,9 +53,6 @@ function error() {
 }
 
 function display_info(order, customer, employee) {
-    // Update back link
-    document.getElementById("back-link").onclick = () => window.location.href = `/customer?id=${order.customer}`;
-
     // Update mark button (mark complete/mark picked up/hide)
     if (order.date_complete != null) {
         let button = document.getElementById("mark-complete");

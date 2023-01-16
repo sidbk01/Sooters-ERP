@@ -27,15 +27,26 @@ pub(super) async fn all(
     ))
 }
 
-#[get("/order?<id>")]
+#[get("/order?<id>&<back>")]
 pub(super) async fn one(
     id: usize,
+    back: String,
     state: &rocket::State<State>,
 ) -> Result<RawHtml<String>, RouteError> {
     let mut context = Context::new();
     context.insert("id", &id);
+    context.insert("back", &back);
+
+    println!("{}", back);
 
     Ok(RawHtml(state.templates().render("order.html", &context)?))
+}
+
+#[get("/orders/recent")]
+pub(super) async fn recent(state: &rocket::State<State>) -> Result<RawHtml<String>, RouteError> {
+    Ok(RawHtml(
+        state.templates().render("recent.html", &Context::new())?,
+    ))
 }
 
 #[get("/orders/create?<customer>")]

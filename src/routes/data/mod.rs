@@ -27,6 +27,8 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
             locations::all,
             orders::all,
             orders::one,
+            orders::upcoming,
+            orders::recent,
             orders::types,
             orders::create,
             orders::paid,

@@ -33,15 +33,15 @@ function display_orders(orders, order_types) {
         let status_color = "red";
         let status = "Not Complete";
         if (order.date_complete) {
-            status_color = "yellow";
+            status_color = "green";
             status = "Complete";
             if (order.picked_up) {
-                status_color = "green";
+                status_color = "blue";
                 status = "Picked Up";
             }
         }
 
-        html += `<tr class="clickable" onclick="window.location.href = '/order?id=${order.id}';">`;
+        html += `<tr class="clickable" onclick="window.location.href = '/order?id=${order.id}&back=/orders?id=${ID}';">`;
         html += `<td>${order.formatted_id}</td>`;
         html += `<td>${order.date_received}</td>`;
         html += `<td>${order_type}</td>`;
