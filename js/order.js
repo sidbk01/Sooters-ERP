@@ -54,7 +54,7 @@ function error() {
 
 function display_info(order, customer, employee) {
     // Update back link
-    document.getElementById("back-link").href = `/customer?id=${order.customer}`;
+    document.getElementById("back-link").onclick = () => window.location.href = `/customer?id=${order.customer}`;
 
     // Update mark button (mark complete/mark picked up/hide)
     if (order.date_complete != null) {
@@ -73,7 +73,7 @@ function display_info(order, customer, employee) {
         document.getElementById("mark-paid").remove();
 
     // Update basic information
-    document.getElementById("order-id").innerText = order.id;
+    document.getElementById("order-id").innerText = `${order.formatted_id}`;
     if (order.envelope_id == null)
         document.getElementById("envelope-id").remove();
     else
@@ -108,7 +108,7 @@ function display_info(order, customer, employee) {
             }
         }
 
-        html += `&emsp;<button onclick='begin_edit_location()'>Edit</button>`;
+        html += `&emsp;<button style="display: inline; width: min(150px, 25%); margin: 0" onclick='begin_edit_location()'>Edit</button>`;
         current_location_obj.innerHTML = html;
     }
 
@@ -143,13 +143,22 @@ function display_film_info(type_info) {
             return;
     }
 
-    let html = "";
-    html += `<b>Prints: </b>${print_type}<br />`;
-    html += `<b>Digital: </b>${type_info.digital ? "Yes" : "No"}<br />`;
-    html += `<b>Color: </b>${type_info.color ? "Yes" : "No"}<br />`;
-    html += `<b>Number of Rolls: </b>${type_info.num_rolls}<br />`;
+    let label_html = document.getElementById("order-labels").innerHTML;
+    let input_html = document.getElementById("order-inputs").innerHTML;
 
-    document.getElementById("type-info").innerHTML = html;
+    label_html += `<div>Prints:</div>`;
+    label_html += `<div>Digital:</div>`;
+    label_html += `<div>Color:</div>`;
+    label_html += `<div>Number of Rolls:</div>`;
+
+    input_html += `<div>Film</div>`;
+    input_html += `<div>${print_type}</div>`;
+    input_html += `<div>${type_info.digital ? "Yes" : "No"}</div>`;
+    input_html += `<div>${type_info.color ? "Yes" : "No"}</div>`;
+    input_html += `<div>${type_info.num_rolls}</div>`;
+
+    document.getElementById("order-labels").innerHTML = label_html;
+    document.getElementById("order-inputs").innerHTML = input_html;
 }
 
 function mark_paid() {
@@ -181,10 +190,13 @@ function begin_edit_location() {
         html += `<option value="${location.id}"${location.id == current_location ? " selected" : ""}>${location.name}</option>`;
 
     html += "</select>";
-    html += "<button onclick='confirm_location();'>Confirm</button>";
-    html += "<button onclick='cancel_location();'>Cancel</button>";
 
     document.getElementById("current-location").innerHTML = html;
+
+    html = "<button onclick='confirm_location();'>Confirm</button>";
+    html += "<button onclick='cancel_location();'>Cancel</button>";
+
+    document.getElementById("buttons").innerHTML = html;
 }
 
 function cancel_location() {
@@ -196,8 +208,9 @@ function cancel_location() {
         }
     }
 
-    html += `&emsp;<button onclick='begin_edit_location()'>Edit</button>`;
+    html += `&emsp;<button style="display: inline; width: min(150px, 25%); margin: 0;" onclick='begin_edit_location()'>Edit</button>`;
     document.getElementById("current-location").innerHTML = html;
+    document.getElementById("buttons").innerHTML = "";
 }
 
 function confirm_location() {
@@ -225,9 +238,12 @@ function display_notes(notes, employees) {
             }
         }
 
-        html += "<div class='note'>";
-        html += `Created ${note.date_time} by ${creator}<br />`;
-        html += note.note;
+        html += `<div class='note'>`;
+        html += `<div class='note-header'>`;
+        html += `<div class='note-creator'>${creator}</div>`;
+        html += `<div class='note-date'>${note.date_time}</div>`;
+        html += `</div>`;
+        html += `<div class='note-content'>${note.note}</div>`
         html += `</div>`;
         html += `<hr />`;
     }

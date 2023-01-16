@@ -9,7 +9,7 @@ use serde::{
 };
 
 const ORDERS_QUERY: &'static str =
-    "SELECT * FROM Orders WHERE Customer = :id ORDER BY DateReceived ASC";
+    "SELECT * FROM Orders WHERE Customer = :id ORDER BY DateReceived DESC";
 const ORDER_TYPES_QUERY: &'static str = "SELECT * FROM Order_Types ORDER BY Name ASC";
 const ORDER_QUERY: &'static str = "SELECT * FROM Orders WHERE ID = :id";
 const NOTES_QUERY: &'static str =

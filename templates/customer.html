@@ -11,19 +11,24 @@
 {% block content %}
 <h2 id="name"></h2>
 <div id="name-error" style="display: none; color: red;">A name is required!</div>
-<a id="back-link" href="/customers">Back</a><br />
-<a href="/orders?id={{ id }}">View Orders</a><br />
-<button onclick='window.location.href = "/orders/create?customer={{ id }}";'>Create Order</button><br />
-<button onclick="begin_edit()" id="edit-button">Edit</button><br /><br />
 
-<div id="info">
-    <b>Phone Number: </b>
-    <div style="display: inline;" id="phone-number"></div><br />
-    <b>E-Mail: </b>
-    <div style="display: inline;" id="email"></div><br />
+<div class="info-block" id="info">
+    <div class="info-labels">
+        <div>Phone Number:</div>
+        <div>E-Mail:</div>
+    </div>
+    <div class="info-inputs">
+        <div id="phone-number"></div>
+        <div id="email"></div>
+    </div>
 </div><br />
 
 <div id="buttons"></div>
+
+<button onclick="window.location.href = '/orders?id={{ id }}'">View Orders</button>
+<button onclick='window.location.href = "/orders/create?customer={{ id }}";'>Create Order</button>
+<button onclick="begin_edit()" id="edit-button">Edit</button>
+<button onclick="window.location.href = '/customers'">Back</button>
 
 <div id="notes-container">
     <h3>Notes</h3>

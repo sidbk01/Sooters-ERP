@@ -1,7 +1,11 @@
 let customer;
 let locations;
 
+let name_padding;
+
 function on_load() {
+    name_padding = document.getElementById("name").style.padding;
+
     get(`/data/employee?id=${ID}`, (responseText) => {
         customer = JSON.parse(responseText);
         get(`/data/locations`, (responseText) => {
@@ -33,10 +37,12 @@ function display_info() {
 
     // Set the back link
     if (!customer.active)
-        document.getElementById("back-link").href = "/employees?active=false";
+        document.getElementById("back-link").onclick = () => window.location.href = "/employees?active=false";
 
     // Set the name
-    document.getElementById("name").innerText = customer.name;
+    let name = document.getElementById("name");
+    name.style.padding = name_padding;
+    name.innerText = customer.name;
 
     // Display the other info
     document.getElementById("primary-location").innerText = location_name;
@@ -72,7 +78,9 @@ function update_error() {
 
 function begin_edit() {
     // Update name
-    document.getElementById("name").innerHTML = `<input type="text" id="name-input" placeholder="Name" value="${customer.name}"/>`;
+    let name = document.getElementById("name");
+    name.style.padding = '0';
+    name.innerHTML = `<input type="text" id="name-input" placeholder="Name" value="${customer.name}"/>`;
 
     // Hide the edit button
     document.getElementById("edit-button").style.display = "none";
@@ -93,7 +101,7 @@ function begin_edit() {
     document.getElementById("primary-location").innerHTML = primary_location_html;
 
     // Update buttons
-    document.getElementById("buttons").innerHTML = "<button onclick='confirm_edit()'>Confirm</button><br /><button onclick='display_info()'>Cancel</button>";
+    document.getElementById("buttons").innerHTML = "<button onclick='confirm_edit()'>Confirm</button><button onclick='display_info()'>Cancel</button>";
 }
 
 function confirm_edit() {

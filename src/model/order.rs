@@ -16,6 +16,7 @@ pub struct Order {
     paid: bool,
     rush: bool,
     picked_up: bool,
+    formatted_id: String,
 }
 
 pub struct OrderNote {
@@ -142,6 +143,10 @@ impl FromRow for Order {
             Some(picked_up) => picked_up,
             None => return Err(mysql::FromRowError(row)),
         };
+        let formatted_id = match row.take("FormattedID") {
+            Some(formatted_id) => formatted_id,
+            None => return Err(mysql::FromRowError(row)),
+        };
 
         Ok(Order {
             id,
@@ -157,6 +162,7 @@ impl FromRow for Order {
             paid,
             rush,
             picked_up,
+            formatted_id,
         })
     }
 }
@@ -184,6 +190,7 @@ impl Serialize for Order {
         map.serialize_entry("paid", &self.paid)?;
         map.serialize_entry("rush", &self.rush)?;
         map.serialize_entry("picked_up", &self.picked_up)?;
+        map.serialize_entry("formatted_id", &self.formatted_id)?;
 
         map.end()
     }

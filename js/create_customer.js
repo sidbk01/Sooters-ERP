@@ -3,9 +3,12 @@ function form_submit() {
     let name = document.getElementById("name").value;
     if (name == "") {
         document.getElementById("name-error").style.display = "block";
+        document.getElementById("name-error-label").style.display = "block";
         return;
-    } else
+    } else {
         document.getElementById("name-error").style.display = "none";
+        document.getElementById("name-error-label").style.display = "none";
+    }
 
     let email = document.getElementById("email").value;
     if (email == "")

@@ -11,17 +11,17 @@ function error() {
 
 function display_customers(customers) {
     let html = "<table>";
-    html += "<tr><th>Name</th><th>Phone Number</th><th>E-Mail</th></tr>";
+    html += "<thead><tr><th>Name</th><th>Phone Number</th><th>E-Mail</th></tr></thead><tbody>";
 
     for (let customer of customers) {
         html += `<tr class="clickable" onclick="window.location.href = '/customer?id=${customer.id}';">`;
-        html += `<td>${customer.name}</td>`;
-        html += `<td>${typeof customer.phone_number !== "undefined" ? customer.phone_number : ""}</td>`;
-        html += `<td>${typeof customer.email !== "undefined" ? customer.email : ""}</td>`;
+        html += `<td style='width: 1%; white-space: nowrap;'>${customer.name}</td>`;
+        html += `<td style='text-align: center;'>${typeof customer.phone_number !== "undefined" ? customer.phone_number : ""}</td>`;
+        html += `<td style='text-align: center;'>${typeof customer.email !== "undefined" ? customer.email : ""}</td>`;
         html += "</tr>";
     }
 
-    html += "</table>";
+    html += "</tbody></table>";
 
     document.getElementById("customers").innerHTML = html;
 }

@@ -10,8 +10,8 @@
 
 {% block content %}
 <h2>{{ customer_name }}'s Orders</h2>
-<a id="back-link" href="/customer?id={{ id }}">Back</a><br />
-<button onclick='window.location.href = "/orders/create?customer={{ id }}";'>Create Order</button><br /><br />
+<button onclick='window.location.href = "/orders/create?customer={{ id }}";'>Create Order</button>
+<button onclick="window.location.href = '/customer?id={{ id }}'">Back</button>
 
 <div id="orders"></div>
 

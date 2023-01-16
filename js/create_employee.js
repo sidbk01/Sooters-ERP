@@ -23,9 +23,12 @@ function form_submit() {
     let name = document.getElementById("name").value;
     if (name == "") {
         document.getElementById("name-error").style.display = "block";
+        document.getElementById("name-error-label").style.display = "block";
         return;
-    } else
-        document.getElementById("name-error").style.display = "none";
+    } else {
+        document.getElementById("name-error").style.display = "block";
+        document.getElementById("name-error-label").style.display = "none";
+    }
 
     let primary_location = document.getElementById("primary-location").value;
 

@@ -7,14 +7,25 @@
 
 {% block content %}
 <h2>Create Customer</h2>
-<a id="back-link" href="/customers">Back</a><br /><br />
-
 <form id="create-form" onsubmit="return false;">
-    <input type="text" id="name" name="name" placeholder="Name" required /><br />
-    <div style="display: none; color: red;" id="name-error">A name is required</div>
-    <input type="email" id="email" name="email" placeholder="E-Mail" /><br />
-    <input type="text" id="phone-number" name="phone-number" placeholder="Phone Number" /><br />
+    <div class="info-block">
+        <div class="info-labels">
+            <label for="name">Name:</label>
+            <div style="display: none;" id="name-error-label"></div>
+            <label for="email">E-Mail:</label>
+            <label for="phone-number">Phone Number:</label>
+        </div>
+        <div class="info-inputs">
+            <input type="text" id="name" name="name" required />
+            <div style="display: none; color: red;" id="name-error">A name is required</div>
+            <input type="email" id="email" name="email" />
+            <input type="text" id="phone-number" name="phone-number" />
+        </div>
+    </div>
     <input type="submit" value="Create" onclick="form_submit();" />
 </form>
+
+<button onclick="window.location.href = '/customers'">Back</button>
+
 
 {% endblock content %}

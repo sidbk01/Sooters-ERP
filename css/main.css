@@ -1,19 +1,226 @@
-table {
-    border-collapse: collapse;
-    border-bottom: 1px solid black;
-    border-right: 1px solid black;
+/*
+ *  ||  BASE STYLES
+ */
+
+:root {
+    font-size: 12pt;
+    font-family: 'Lato', sans-serif;
 }
 
-th,
-td {
+body {
+    width: 100%;
+}
+
+#content {
+    width: 95%;
+    margin: 0 auto;
     text-align: center;
+}
+
+/*
+ *  ||  HEADER
+ */
+#header {
+    width: 100%;
+    border-bottom: 1px solid black;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+/*
+ *  ||  TYPOGRAPHY
+ */
+h1 {
+    font-size: 2.5rem;
+    padding: 0.5rem;
+}
+
+h2 {
+    font-size: 2rem;
+    padding: 0.5rem;
+}
+
+h3 {
+    font-size: 1.75rem;
+    padding: 0.4rem;
+}
+
+/*
+ *  ||  FORMS
+ */
+form input,
+form textarea,
+form select {
+    margin: 0.25rem 0;
+}
+
+button,
+input[type=submit] {
+    position: relative;
+
+    display: block;
+    width: min(300px, 60%);
+    padding: 0.5rem;
+    background-color: white;
+    border: 1px solid black;
+    margin: 0.5rem auto;
+    border-radius: 0.5rem;
+    -webkit-box-shadow: 0 0 1rem 0 #000000;
+    box-shadow: 0 0 0.25rem 0 #000000;
+}
+
+button:hover,
+input[type=submit]:hover {
+    background-color: lightgray;
+}
+
+button:active,
+input[type=submit]:active {
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+input[type=text],
+input[type=email],
+input[type=number],
+input[type=date],
+select {
+    border: 1px solid gray;
+    border-radius: 0.25rem;
+    height: 1.5rem;
     padding: 0.25rem;
-    border-top: 1px solid black;
-    border-left: 1px solid black;
+    width: min(300px, 60%);
+    background-color: white;
+}
+
+input[type=checkbox] {
+    border: 1px solid gray;
+    border-radius: 0.25rem;
+    height: 1.0rem;
+    width: 1.0rem;
+    margin: 0.5rem 0;
+}
+
+h2 input[type=text] {
+    font-size: 2.0rem;
+    height: 3.0rem;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+textarea {
+    border: 1px solid gray;
+    border-radius: 0.25rem;
+    height: 4.5rem;
+    padding: 0.25rem;
+    width: min(450px, 95%);
+}
+
+/*
+ *  ||  NOTES
+ */
+.note-header {
+    display: block;
+    height: 1.5rem;
+}
+
+.note-creator {
+    line-height: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: bold;
+    vertical-align: middle;
+    float: left;
+}
+
+.note-date {
+    margin-left: 0.25rem;
+    font-size: 0.75rem;
+    color: gray;
+    line-height: 1.5rem;
+    vertical-align: middle;
+    float: right;
+}
+
+.note-content {
+    text-align: left;
+    margin-left: 2.0rem;
+}
+
+/*
+ *  ||  INFO TABLES
+ */
+.info-block {
+    width: 100%;
+    margin: 0 auto;
+
+    display: flex;
+    flex-direction: row;
+}
+
+.info-labels {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+}
+
+.info-labels div,
+.info-labels label {
+    text-align: right;
+    font-weight: bold;
+    height: 2.0rem;
+    padding: 0.25rem;
+    line-height: 1.5rem;
+}
+
+.info-inputs {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.info-inputs div {
+    text-align: left;
+    height: 2.0rem;
+    line-height: 2.0rem;
+}
+
+/*
+ *  ||  TABLES
+ */
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.35rem;
 }
 
 th {
-    border-bottom: 1px solid black;
+    text-align: center;
+    padding: 0.5rem;
+    position: sticky;
+    top: 0;
+    background-color: #CCC;
+}
+
+th:first-child,
+td:first-child {
+    border-radius: 0.5rem 0 0 0.5rem;
+}
+
+th:last-child,
+td:last-child {
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+
+td {
+    text-align: center;
+    padding: 0.5rem;
+    padding-left: 1rem;
+}
+
+tbody tr {
+    border-radius: 0.5rem;
+    box-shadow: 0 0 0.25rem 0 #000000;
 }
 
 tr.clickable {
@@ -21,5 +228,18 @@ tr.clickable {
 }
 
 tr.clickable:hover {
-    background-color: lightgray;
+    background-color: #AAA;
+}
+
+tr.clickable:active {
+    box-shadow: none;
+}
+
+.dot {
+    width: 1rem;
+    height: 1rem;
+    display: inline-block;
+    border-radius: 50%;
+    border: 1px solid gray;
+    margin-left: 1rem;
 }

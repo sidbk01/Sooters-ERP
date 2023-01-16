@@ -19,7 +19,7 @@ function display_orders(orders, order_types) {
     }
 
     let html = "<table>";
-    html += "<tr><th>ID</th><th>Date Received</th><th>Type</th><th>Due Date</th></tr>";
+    html += "<tr><th>ID</th><th>Date Received</th><th>Type</th><th>Due Date</th><th>Status</th></tr>";
 
     for (let order of orders) {
         let order_type;
@@ -30,11 +30,23 @@ function display_orders(orders, order_types) {
             }
         }
 
+        let status_color = "red";
+        let status = "Not Complete";
+        if (order.date_complete) {
+            status_color = "yellow";
+            status = "Complete";
+            if (order.picked_up) {
+                status_color = "green";
+                status = "Picked Up";
+            }
+        }
+
         html += `<tr class="clickable" onclick="window.location.href = '/order?id=${order.id}';">`;
-        html += `<td>${order.id}</td>`;
+        html += `<td>${order.formatted_id}</td>`;
         html += `<td>${order.date_received}</td>`;
         html += `<td>${order_type}</td>`;
         html += `<td>${order.date_due}</td>`;
+        html += `<td style='text-align: right'>${status}<span class="dot" style="background-color: ${status_color}"></span></td>`;
         html += "</tr>";
     }
 

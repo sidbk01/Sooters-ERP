@@ -1,6 +1,10 @@
 let customer;
 
+let name_padding;
+
 function on_load() {
+    name_padding = document.getElementById("name").style.padding;
+
     get(`/data/customer?id=${ID}`, (responseText) => {
         customer = JSON.parse(responseText);
         display_info();
@@ -14,8 +18,6 @@ function on_load() {
             display_notes(notes, employees);
         }, load_error);
     }, load_error);
-
-
 }
 
 function load_error() {
@@ -34,7 +36,9 @@ function display_info() {
     document.getElementById("edit-button").style.display = "block";
 
     // Set the name
-    document.getElementById("name").innerText = customer.name;
+    let name = document.getElementById("name");
+    name.style.padding = name_padding;
+    name.innerText = customer.name;
 
     // Display the other info
     document.getElementById("phone-number").innerText = convert_undefined(customer.phone_number);
@@ -50,17 +54,19 @@ function update_error() {
 
 function begin_edit() {
     // Update name
-    document.getElementById("name").innerHTML = `<input type="text" id="name-input" placeholder="Name" value="${customer.name}"/>`;
+    let name = document.getElementById("name");
+    name.style.padding = '0';
+    name.innerHTML = `<input type="text" id="name-input" placeholder="Name" value="${customer.name}"/>`;
 
     // Hide the edit button
     document.getElementById("edit-button").style.display = "none";
 
     // Update other information
-    document.getElementById("phone-number").innerHTML = `<input type="text" id="phone-number-input" placeholder="Phone Number" value="${convert_undefined(customer.phone_number)}" />`;
-    document.getElementById("email").innerHTML = `<input type="email" id="email-input" placeholder="E-Mail" value="${convert_undefined(customer.email)}" />`;
+    document.getElementById("phone-number").innerHTML = `<input type="text" id="phone-number-input" value="${convert_undefined(customer.phone_number)}" />`;
+    document.getElementById("email").innerHTML = `<input type="email" id="email-input"  value="${convert_undefined(customer.email)}" />`;
 
     // Update buttons
-    document.getElementById("buttons").innerHTML = "<button onclick='confirm_edit()'>Confirm</button><br /><button onclick='display_info()'>Cancel</button>";
+    document.getElementById("buttons").innerHTML = "<button onclick='confirm_edit()'>Confirm</button><button onclick='display_info()'>Cancel</button><br />";
 }
 
 function confirm_edit() {
@@ -122,9 +128,12 @@ function display_notes(notes, employees) {
             }
         }
 
-        html += "<div class='note'>";
-        html += `Created ${note.date_time} by ${creator}<br />`;
-        html += note.note;
+        html += `<div class='note'>`;
+        html += `<div class='note-header'>`;
+        html += `<div class='note-creator'>${creator}</div>`;
+        html += `<div class='note-date'>${note.date_time}</div>`;
+        html += `</div>`;
+        html += `<div class='note-content'>${note.note}</div>`
         html += `</div>`;
         html += `<hr />`;
     }

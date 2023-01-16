@@ -12,13 +12,13 @@
 
 <h2>{% if not active %}Deactivated {% endif %}Employees</h2>
 
+<button onclick="window.location.href = '/employees/create'">Create Employee</button>
 {% if active %}
-<a href="/">Back</a><br />
-<a href="/employees?active=false">View Deactived Employees</a><br />
+<button onclick="window.location.href = '/employees?active=false'">View Deactived Employees</button>
+<button onclick="window.location.href = '/'">Back</button>
 {% else %}
-<a href="/employees">Back</a><br />
+<button onclick="window.location.href = '/employees'">Back</button>
 {% endif %}
-<a href="/employees/create">Create Employee</a><br />
 
 <div id="employees"></div>
 

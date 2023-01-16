@@ -11,35 +11,42 @@
 {% block content %}
 <h2>Order</h2>
 
-<a href="/customers" id="back-link">Back</a><br />
-<button id="mark-complete" onclick="mark_complete()">Mark Complete</button>
-<button id="mark-paid" onclick="mark_paid()">Mark Paid</button><br /><br />
-
-<div id="order-info">
-    <b>Order ID: </b>
-    <div id="order-id" style="display: inline;"></div><br />
-    <div id="envelope-id" style="display: inline;"></div>
-    <b>Customer: </b>
-    <div id="customer" style="display: inline;"></div><br /><br />
-    <b>Date Received: </b>
-    <div id="date-received" style="display: inline;"></div><br />
-    <b>Date Due: </b>
-    <div id="date-due" style="display: inline;"></div><br />
-    <b>Rush: </b>
-    <div id="rush" style="display: inline;"></div><br />
-    <b>Date Completed: </b>
-    <div id="date-completed" style="display: inline;"></div><br /><br />
-    <b>Current Location: </b>
-    <div id="current-location" style="display: inline;"></div><br />
-    <b>Source Location: </b>
-    <div id="source-location" style="display: inline;"></div><br />
-    <b>Receiving Employee: </b>
-    <div id="receiver" style="display: inline;"></div><br /><br />
-    <b>Paid: </b>
-    <div id="paid" style="display: inline;"></div><br /><br />
-
-    <div id="type-info"></div>
+<div class="info-block" id="order-info">
+    <div class="info-labels" id="order-labels">
+        <div>Order ID:</div>
+        <div>Customer:</div>
+        <div>Date Received: </div>
+        <div>Date Due: </div>
+        <div>Rush: </div>
+        <div>Date Completed: </div>
+        <div>Current Location: </div>
+        <div>Source Location: </div>
+        <div>Receiving Employee: </div>
+        <div>Paid: </div>
+        <div></div>
+        <div>Type:</div>
+    </div>
+    <div class="info-inputs" id="order-inputs">
+        <div id="order-id" style="display: inline;"></div>
+        <div id="envelope-id" style="display: inline;"></div>
+        <div id="customer" style="display: inline;"></div>
+        <div id="date-received" style="display: inline;"></div>
+        <div id="date-due" style="display: inline;"></div>
+        <div id="rush" style="display: inline;"></div>
+        <div id="date-completed" style="display: inline;"></div>
+        <div id="current-location" style="display: inline;"></div>
+        <div id="source-location" style="display: inline;"></div>
+        <div id="receiver" style="display: inline;"></div>
+        <div id="paid" style="display: inline;"></div>
+        <div></div>
+    </div>
 </div>
+
+<div id="buttons"></div>
+
+<button id="mark-complete" onclick="mark_complete()">Mark Complete</button>
+<button id="mark-paid" onclick="mark_paid()">Mark Paid</button>
+<button onclick="window.location.href = '/customers'" id="back-link">Back</button>
 
 <div id="notes-container">
     <h3>Notes</h3>

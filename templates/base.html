@@ -4,6 +4,16 @@
 <head>
     <title>{% block title %}{% endblock title %} - Sooter's ERP</title>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+    </style>
+
+    <link rel="stylesheet" href="/css/reset" />
     <link rel="stylesheet" href="/css/main" />
     <script src="/js/ajax" type="text/javascript"></script>
 
@@ -12,8 +22,11 @@
 </head>
 
 <body onload='if (typeof on_load === "function") { on_load() }'>
-    <div id="content">
+    <div id="header">
         <h1>Sooter's</h1>
+    </div>
+
+    <div id="content">
         {% block content %}
         {% endblock content %}
     </div>

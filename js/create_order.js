@@ -1,7 +1,7 @@
 let employee_locations = [];
 let removed_first;
 
-const FILM_HTML = "<label for='prints'>Prints: </label><input type='checkbox' id='prints' name='prints' /><br /><label for='digital'>Digital: </label><input type='checkbox' id='digital' name='digital'/><br /><label for='color'>Color: </label><input type='checkbox' id='color' name='color' /><br /><label for='num-rolls'>Number of Rolls: </label><input type='number' id='num-rolls' name='num-rolls' value='1' onchange='document.getElementById(`num-rolls-error`).style.display = `none`;'/><br /><div id='num-rolls-error' style='display: none; color: red;'>Number of rolls must be at least 1</div>";
+const FILM_HTML = "<div class='info-labels'><label for='prints'>Prints: </label><label for='digital'>Digital: </label><label for='color'>Color: </label><label for='num-rolls'>Number of Rolls: </label><div style='display: none;' id='num-rolls-error-label'></div></div><div class='info-inputs'><select id='prints' name='prints'><option value='0'>None</option><option value='1'>Matte</option><option value='2'>Glossy</option></select><input type='checkbox' id='digital' name='digital' /><input type='checkbox' id='color' name='color' /><input type='number' id='num-rolls' name='num-rolls' value='1'onchange='document.getElementById(`num-rolls-error`).style.display = `none`;' /><div id='num-rolls-error' style='display: none; color: red;'>Number of rolls must be at least 1</div></div>";
 
 function on_load() {
     get("/data/employees", (responseText) => {
@@ -81,14 +81,21 @@ function update_type() {
 
 function form_submit() {
     document.getElementById("type-error").style.display = "none";
+    document.getElementById("type-error-label").style.display = "none";
+
+    document.getElementById("date-error").style.display = "none";
+    document.getElementById("date-error-label").style.display = "none";
 
     let envelope_id = document.getElementById("envelope-id").value;
     if (envelope_id == "")
         envelope_id = undefined;
+    else
+        envelope_id = Number(envelope_id);
 
     let due_date = document.getElementById("due-date").value;
     if (due_date == "") {
         document.getElementById("date-error").style.display = "block";
+        document.getElementById("date-error-label").style.display = "block";
         return;
     }
 
@@ -97,6 +104,7 @@ function form_submit() {
     let location = Number(document.getElementById("location").value);
 
     let order = {
+        envelope_id: envelope_id,
         due_date: due_date,
         rush: rush,
         employee: employee,
@@ -113,6 +121,7 @@ function form_submit() {
 
         default:
             document.getElementById("type-error").style.display = "block";
+            document.getElementById("type-error-label").style.display = "block";
             return;
     }
 
@@ -124,14 +133,18 @@ function submit_error() {
 }
 
 function film_submit() {
-    let prints = document.getElementById("prints").checked;
+    let prints = Number(document.getElementById("prints").value);
     let digital = document.getElementById("digital").checked;
     let color = document.getElementById("color").checked;
     let num_rolls = Number(document.getElementById("num-rolls").value);
 
     if (num_rolls < 1) {
         document.getElementById("num-rolls-error").style.display = "block";
+        document.getElementById("num-rolls-error-label").style.display = "block";
         return;
+    } else {
+        document.getElementById("num-rolls-error").style.display = "none";
+        document.getElementById("num-rolls-error-label").style.display = "none";
     }
 
     return {

@@ -11,14 +11,18 @@
 {% block content %}
 <h2 id="name"></h2>
 <div id="name-error" style="display: none; color: red;">A name is required!</div>
-<a id="back-link" href="/employees">Back</a><br />
-<button onclick="begin_edit()" id="edit-button">Edit</button><br /><br />
 
-<div id="info">
-    <b>Primary Location: </b>
-    <div style="display: inline;" id="primary-location"></div><br />
-</div><br />
+<div class="info-block" id="info">
+    <div class="info-labels">
+        <div>Primary Location: </div>
+    </div>
+    <div class="info-inputs">
+        <div id="primary-location"></div>
+    </div>
+</div>
 
 <div id="buttons"></div>
+<button onclick="begin_edit()" id="edit-button">Edit</button>
+<button id="back-link" onclick="window.location.href = '/employees'">Back</button>
 
 {% endblock content %}

@@ -7,14 +7,24 @@
 
 {% block content %}
 <h2>Create Employee</h2>
-<a id="back-link" href="/employees">Back</a><br /><br />
 
 <form id="create-form" onsubmit="return false;">
-    <input type="text" id="name" name="name" placeholder="Name" required /><br />
-    <div style="display: none; color: red;" id="name-error">A name is required</div>
-    <select id="primary-location" name="primary-location">
-    </select><br />
+    <div class="info-block">
+        <div class="info-labels">
+            <label for="name">Name:</label>
+            <div style="display: none;" id="name-error-label"></div>
+            <label for="primary-location">Primary Location:</label>
+        </div>
+        <div class="info-inputs">
+            <input type="text" id="name" name="name" required />
+            <div style="display: none; color: red;" id="name-error">A name is required</div>
+            <select id="primary-location" name="primary-location">
+            </select>
+        </div>
+    </div>
     <input type="submit" value="Create" onclick="form_submit()" />
 </form>
+
+<button onclick="window.location.href = '/employees'">Back</button>
 
 {% endblock content %}
