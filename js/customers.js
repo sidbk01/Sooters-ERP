@@ -11,7 +11,7 @@ function error() {
 
 function display_customers(customers) {
     let html = "<table>";
-    html += "<thead><tr><th>Name</th><th>Phone Number</th><th>E-Mail</th></tr></thead><tbody>";
+    html += "<thead><tr><th>Name</th><th>Phone Number</th><th>E-Mail</th></tr></thead><tbody id='customers-body'>";
 
     for (let customer of customers) {
         html += `<tr class="clickable" onclick="window.location.href = '/customer?id=${customer.id}';">`;
@@ -24,4 +24,24 @@ function display_customers(customers) {
     html += "</tbody></table>";
 
     document.getElementById("customers").innerHTML = html;
+}
+
+function search() {
+    // Get the search term
+    let term = document.getElementById("search").value.toUpperCase();
+
+    // Filter the results
+    let rows = document.getElementById("customers-body").children;
+    for (let row of rows) {
+        let include = false;
+
+        // Search all children to include name, phone number, and e-mail in search
+        for (let child of row.children)
+            include |= child.innerText.toUpperCase().indexOf(term) > -1;
+
+        if (include)
+            row.style.display = "";
+        else
+            row.style.display = "none";
+    }
 }

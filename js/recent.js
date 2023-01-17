@@ -22,8 +22,8 @@ function display_recent(orders, order_types, customers) {
         return;
     }
 
-    let html = "<table>";
-    html += "<tr><th>ID</th><th>Customer</th><th>Date Received</th><th>Type</th><th>Due Date</th></tr>";
+    let html = "<table><thead>";
+    html += "<tr><th>ID</th><th>Customer</th><th>Date Received</th><th>Type</th><th>Due Date</th></tr></thead><tbody id='orders-body'>";
 
     for (let order of orders) {
         let order_type;
@@ -49,9 +49,31 @@ function display_recent(orders, order_types, customers) {
         html += `<td>${order_type}</td>`;
         html += `<td>${order.date_due}</td>`;
         html += "</tr>";
+        // TODO: Add status
+        //      Adjust search below to not search status
     }
 
-    html += "</table>";
+    html += "</tbody></table>";
 
     document.getElementById("recent-orders").innerHTML = html;
+}
+
+
+function search() {
+    // Get the search term
+    let term = document.getElementById("search").value.toUpperCase();
+
+    // Filter the results
+    let rows = document.getElementById("orders-body").children;
+    for (let row of rows) {
+        let include = false;
+
+        for (let i = 0; i < row.children.length; i++)
+            include |= row.children[i].innerText.toUpperCase().indexOf(term) > -1;
+
+        if (include)
+            row.style.display = "";
+        else
+            row.style.display = "none";
+    }
 }

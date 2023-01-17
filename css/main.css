@@ -46,6 +46,11 @@ h3 {
     padding: 0.4rem;
 }
 
+h4 {
+    font-size: 1.25rem;
+    padding: 0.25rem;
+}
+
 /*
  *  ||  FORMS
  */
@@ -236,6 +241,10 @@ tr.clickable:active {
     box-shadow: none;
 }
 
+/*
+ *  ||  MISC
+ */
+
 .dot {
     width: 1rem;
     height: 1rem;
@@ -243,4 +252,37 @@ tr.clickable:active {
     border-radius: 50%;
     border: 1px solid gray;
     margin-left: 1rem;
+}
+
+.filter {
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+    border: 1px solid black;
+    border-radius: 0.25rem;
+    background-color: white;
+}
+
+.filter-dropdown {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0.5rem);
+    z-index: 1;
+    background-color: white;
+    border: 1px solid black;
+    border-top: none;
+    border-radius: 0 0 0.25rem 0.25rem;
+    width: 100%;
+}
+
+input[type=text].search {
+    margin: 0 0 0 auto;
+    float: right;
+
+    background-image: url("/images/search");
+    background-repeat: no-repeat;
+    background-position: 0.25rem 0.25rem;
+    background-size: 1rem 1rem;
+
+    padding-left: 1.5rem;
 }

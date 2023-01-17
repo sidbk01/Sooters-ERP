@@ -18,8 +18,8 @@ function display_orders(orders, order_types) {
         return;
     }
 
-    let html = "<table>";
-    html += "<tr><th>ID</th><th>Date Received</th><th>Type</th><th>Due Date</th><th>Status</th></tr>";
+    let html = "<table><thead>";
+    html += "<tr><th>ID</th><th>Date Received</th><th>Type</th><th>Due Date</th><th>Status</th></tr></thead><tbody id='orders-body'>";
 
     for (let order of orders) {
         let order_type;
@@ -50,7 +50,26 @@ function display_orders(orders, order_types) {
         html += "</tr>";
     }
 
-    html += "</table>";
+    html += "</tbody></table>";
 
     document.getElementById("orders").innerHTML = html;
+}
+
+function search() {
+    // Get the search term
+    let term = document.getElementById("search").value.toUpperCase();
+
+    // Filter the results
+    let rows = document.getElementById("orders-body").children;
+    for (let row of rows) {
+        let include = false;
+
+        for (let i = 0; i < row.children.length - 1; i++)
+            include |= row.children[i].innerText.toUpperCase().indexOf(term) > -1;
+
+        if (include)
+            row.style.display = "";
+        else
+            row.style.display = "none";
+    }
 }

@@ -6,6 +6,7 @@ extern crate serde;
 mod cache;
 mod config;
 mod database;
+mod image_cache;
 mod model;
 mod routes;
 mod state;

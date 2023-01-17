@@ -2,6 +2,7 @@ use crate::{
     cache::FileCache,
     config::{Config, ConfigError},
     database::{Database, DatabaseError},
+    image_cache::ImageCache,
 };
 use std::path::Path;
 use tera::Tera;
@@ -12,6 +13,7 @@ pub enum StateCreationError {
     TemplateError(tera::Error),
     JSLoadError(std::io::Error),
     CSSLoadError(std::io::Error),
+    ImageLoadError(std::io::Error),
 }
 
 pub struct State {
@@ -20,10 +22,12 @@ pub struct State {
 
     js_cache: FileCache,
     css_cache: FileCache,
+    image_cache: ImageCache,
 }
 
 const JS_BASE_PATH: &'static str = "./js/";
 const CSS_BASE_PATH: &'static str = "./css/";
+const IMAGE_BASE_PATH: &'static str = "./images/";
 
 impl State {
     // Creates a new state based on the configuration file
@@ -48,12 +52,17 @@ impl State {
         let css_cache = FileCache::load(CSS_BASE_PATH)
             .map_err(|error| StateCreationError::CSSLoadError(error))?;
 
+        // Load images
+        let image_cache = ImageCache::load(IMAGE_BASE_PATH)
+            .map_err(|error| StateCreationError::ImageLoadError(error))?;
+
         // Create the state
         Ok(State {
             database,
             templates,
             js_cache,
             css_cache,
+            image_cache,
         })
     }
 
@@ -71,6 +80,10 @@ impl State {
 
     pub fn css(&self) -> &FileCache {
         &self.css_cache
+    }
+
+    pub fn images(&self) -> &ImageCache {
+        &self.image_cache
     }
 }
 
@@ -99,6 +112,9 @@ impl std::fmt::Display for StateCreationError {
             }
             StateCreationError::CSSLoadError(error) => {
                 write!(f, "Unable to load CSS - {}", error)
+            }
+            StateCreationError::ImageLoadError(error) => {
+                write!(f, "Unable to load images - {}", error)
             }
         }
     }

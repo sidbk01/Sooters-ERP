@@ -5,6 +5,7 @@ mod customers;
 mod data;
 mod employees;
 mod error;
+mod images;
 mod index;
 mod js;
 mod orders;
@@ -15,6 +16,7 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
         routes! {
             js::js,
             css::css,
+            images::images,
             index::index,
             customers::all,
             customers::one,
