@@ -263,6 +263,18 @@ tr.clickable:active {
     background-color: white;
 }
 
+.filter:hover {
+    background-color: lightgray;
+}
+
+.filter:active,
+.filter-active {
+    /* Will be inverted to blue */
+    background-color: yellow;
+    border: 1px solid white;
+    filter: invert(1);
+}
+
 .filter-dropdown {
     position: absolute;
     left: 50%;

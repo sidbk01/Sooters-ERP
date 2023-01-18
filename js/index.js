@@ -67,8 +67,13 @@ function search() {
     // Get the search term
     let term = document.getElementById("search").value.toUpperCase();
 
+    // Get the rows
+    let body = document.getElementById("orders-body");
+    if (!body)
+        return;
+    let rows = body.children;
+
     // Filter the results
-    let rows = document.getElementById("orders-body").children;
     for (let row of rows) {
         // Check filters
         let filtered = false;
@@ -103,7 +108,9 @@ window.onclick = (event) => {
 function hide_type_filter() {
     document.getElementById('type-filter-dropdown').remove();
     type_filter_active = false;
-    document.getElementById('type').getElementsByTagName("img")[0].onclick = show_type_filter;
+    let image_obj = document.getElementById('type').getElementsByTagName("img")[0];
+    image_obj.onclick = show_type_filter;
+    image_obj.classList.remove("filter-active")
 }
 
 function show_type_filter() {
@@ -129,7 +136,9 @@ function show_type_filter() {
     type_obj.innerHTML = type_obj.innerHTML + html;
     type_obj.onclick = (event) => { event.stopPropagation() };
 
-    type_obj.getElementsByTagName("img")[0].onclick = hide_type_filter;
+    let image_obj = type_obj.getElementsByTagName("img")[0];
+    image_obj.onclick = hide_type_filter;
+    image_obj.classList.add("filter-active");
 }
 
 function adjust_filter(order_type_id, selected) {

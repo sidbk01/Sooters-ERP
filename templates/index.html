@@ -9,10 +9,12 @@
 <button onclick="window.location.href = '/employees'">Employees</button>
 <button onclick="window.location.href ='/customers'">Customers</button>
 <button onclick="window.location.href ='/orders/recent'">Recent Orders</button>
-
 <br />
-<input type="text" class="search" id="search" onkeyup="search();" placeholder="Search . . ." /><br />
+
 <h2>Upcoming Orders</h2>
+<div style="overflow: auto;">
+    <input type="text" class="search" id="search" onkeyup="search();" placeholder="Search . . ." />
+</div>
 <div id="upcoming-orders">
 
 </div>
