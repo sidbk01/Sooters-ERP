@@ -27,6 +27,7 @@ fn load_directory<P: AsRef<Path>>(
                         "jpg" | "jpeg" => ContentType::JPEG,
                         "png" => ContentType::PNG,
                         "bmp" => ContentType::BMP,
+                        "ico" => ContentType::Icon,
                         _ => {
                             eprintln!("Warning: Unknown image extension \"{}\"", extension);
                             continue;
