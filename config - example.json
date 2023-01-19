@@ -4,5 +4,6 @@
         "password": "password",
         "address": "127.0.0.1:3307",
         "name": "name"
-    }
+    },
+    "error_log": "error.log"
 }
