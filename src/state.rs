@@ -4,6 +4,7 @@ use crate::{
     database::{Database, DatabaseError},
     image_cache::ImageCache,
 };
+use rocket::tokio::{fs::File, io::AsyncWriteExt, sync::Mutex};
 use std::path::Path;
 use tera::Tera;
 
@@ -14,6 +15,7 @@ pub enum StateCreationError {
     JSLoadError(std::io::Error),
     CSSLoadError(std::io::Error),
     ImageLoadError(std::io::Error),
+    OpenErrorLogError(std::io::Error),
 }
 
 pub struct State {
@@ -23,6 +25,8 @@ pub struct State {
     js_cache: FileCache,
     css_cache: FileCache,
     image_cache: ImageCache,
+
+    error_log: Option<Mutex<File>>,
 }
 
 const JS_BASE_PATH: &'static str = "./js/";
@@ -56,6 +60,20 @@ impl State {
         let image_cache = ImageCache::load(IMAGE_BASE_PATH)
             .map_err(|error| StateCreationError::ImageLoadError(error))?;
 
+        // Open the error log
+        let error_log = match configuration.error_log() {
+            Some(error_log_path) => Some(Mutex::new(
+                rocket::tokio::fs::OpenOptions::new()
+                    .write(true)
+                    .append(true)
+                    .create(true)
+                    .open(error_log_path)
+                    .await
+                    .map_err(|error| StateCreationError::OpenErrorLogError(error))?,
+            )),
+            None => None,
+        };
+
         // Create the state
         Ok(State {
             database,
@@ -63,6 +81,7 @@ impl State {
             js_cache,
             css_cache,
             image_cache,
+            error_log,
         })
     }
 
@@ -84,6 +103,18 @@ impl State {
 
     pub fn images(&self) -> &ImageCache {
         &self.image_cache
+    }
+
+    pub async fn log_error<E: std::error::Error>(&self, error: E) {
+        match self.error_log.as_ref() {
+            Some(file) => file
+                .lock()
+                .await
+                .write_all(error.to_string().as_bytes())
+                .await
+                .unwrap_or(()),
+            None => {}
+        }
     }
 }
 
@@ -115,6 +146,9 @@ impl std::fmt::Display for StateCreationError {
             }
             StateCreationError::ImageLoadError(error) => {
                 write!(f, "Unable to load images - {}", error)
+            }
+            StateCreationError::OpenErrorLogError(error) => {
+                write!(f, "Unable to open error log - {}", error)
             }
         }
     }

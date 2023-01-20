@@ -1,14 +1,9 @@
 use json::Value;
-use rocket::{
-    futures::TryFutureExt,
-    tokio::{fs::File, io::AsyncWriteExt, sync::Mutex},
-};
 use rustc_hash::FxHashMap;
 use std::path::Path;
 
 pub enum ConfigError {
     ReadError(std::io::Error),
-    LogError(std::io::Error),
     ParseError(json::Error),
     MissingParameter(&'static str),
     InvalidParameter(&'static str),
@@ -23,7 +18,7 @@ pub struct DatabaseInfo {
 
 pub struct Config {
     database_info: DatabaseInfo,
-    error_log: Option<Mutex<File>>,
+    error_log: Option<String>,
 }
 
 fn remove_value(
@@ -68,20 +63,11 @@ impl Config {
 
         // Get the log file (if it exists)
         let error_log = match object.remove("error_log") {
-            Some(value) => {
-                let path = value
+            Some(value) => Some(
+                value
                     .to_string()
-                    .ok_or(ConfigError::InvalidParameter("error_log"))?;
-                Some(Mutex::new(
-                    rocket::tokio::fs::OpenOptions::new()
-                        .write(true)
-                        .append(true)
-                        .create(true)
-                        .open(path)
-                        .map_err(|error| ConfigError::LogError(error))
-                        .await?,
-                ))
-            }
+                    .ok_or(ConfigError::InvalidParameter("error_log"))?,
+            ),
             None => None,
         };
 
@@ -96,16 +82,8 @@ impl Config {
         &self.database_info
     }
 
-    pub async fn log_error<E: std::error::Error>(&self, error: E) -> Result<(), ConfigError> {
-        match &self.error_log {
-            Some(log) => log
-                .lock()
-                .await
-                .write_all(format!("{}", error).as_bytes())
-                .await
-                .map_err(|error| ConfigError::LogError(error)),
-            None => Ok(()),
-        }
+    pub fn error_log(&self) -> Option<&str> {
+        self.error_log.as_ref().map(|error_log| error_log.as_str())
     }
 }
 
@@ -170,9 +148,6 @@ impl std::fmt::Display for ConfigError {
                 "Configuration file has an invalid type for {}",
                 parameter
             ),
-            ConfigError::LogError(error) => {
-                write!(f, "Error while interacting with log file - {}", error)
-            }
         }
     }
 }
