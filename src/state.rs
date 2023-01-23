@@ -107,12 +107,11 @@ impl State {
 
     pub async fn log_error<E: std::error::Error>(&self, error: E) {
         match self.error_log.as_ref() {
-            Some(file) => file
-                .lock()
-                .await
-                .write_all(error.to_string().as_bytes())
-                .await
-                .unwrap_or(()),
+            Some(file) => {
+                let mut file = file.lock().await;
+                file.write_all(error.to_string().as_bytes()).await.ok();
+                file.flush().await.unwrap_or(())
+            }
             None => {}
         }
     }

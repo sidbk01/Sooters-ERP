@@ -26,7 +26,7 @@ function form_submit() {
         document.getElementById("name-error-label").style.display = "block";
         return;
     } else {
-        document.getElementById("name-error").style.display = "block";
+        document.getElementById("name-error").style.display = "none";
         document.getElementById("name-error-label").style.display = "none";
     }
 

@@ -71,10 +71,12 @@ function display_info(order, customer, employee) {
 
     // Update basic information
     document.getElementById("order-id").innerText = `${order.formatted_id}`;
-    if (order.envelope_id == null)
+    if (order.envelope_id == null) {
         document.getElementById("envelope-id").remove();
-    else
-        document.getElementById("envelope-id").innerHTML = `<b>Envelope ID: </b>${order.envelope_id}<br />`;
+        document.getElementById("envelope-id-label").remove();
+    } else
+        document.getElementById("envelope-id").innerText = `${order.envelope_id}`;
+
     document.getElementById("customer").innerText = customer.name;
     document.getElementById("date-received").innerText = order.date_received;
     document.getElementById("date-due").innerText = order.date_due;
@@ -143,6 +145,7 @@ function display_film_info(type_info) {
     let label_html = document.getElementById("order-labels").innerHTML;
     let input_html = document.getElementById("order-inputs").innerHTML;
 
+    label_html += `<div>Type: </div>`;
     label_html += `<div>Prints:</div>`;
     label_html += `<div>Digital:</div>`;
     label_html += `<div>Color:</div>`;
