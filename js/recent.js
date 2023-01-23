@@ -1,5 +1,6 @@
 let order_types;
 let type_filter_active = false;
+let selected_location = 0;
 
 function on_load() {
     // Get the upcoming orders
@@ -17,10 +18,23 @@ function on_load() {
             });
         }, load_error);
     }, load_error);
+
+    // Get the locations
+    get(`/data/locations`, (responseText) => {
+        update_locations(JSON.parse(responseText))
+    }, load_error)
 }
 
 function load_error() {
     alert("There was an error while loading the upcoming orders!")
+}
+
+function update_locations(locations) {
+    let html = "<option value='0' selected>Any</option>";
+    for (let location of locations)
+        html += `<option value='${location.id}'>${location.name}</option>`;
+
+    document.getElementById("location-filter").innerHTML = html;
 }
 
 function display_recent(orders, order_types, customers) {
@@ -30,7 +44,7 @@ function display_recent(orders, order_types, customers) {
     }
 
     let html = "<table><thead>";
-    html += "<tr><th>ID</th><th>Customer</th><th>Date Received</th><th id='type'>Type <img src='/images/filter' onclick='show_type_filter();' class='filter' /></th><th>Due Date</th></tr></thead><tbody id='orders-body'>";
+    html += "<tr><th>ID</th><th>Customer</th><th>Date Received</th><th id='type'>Type <img src='/images/filter' onclick='show_type_filter();' class='filter' /></th><th>Due Date</th><th>Status</th></tr></thead><tbody id='orders-body'>";
 
     for (let order of orders) {
         let order_type;
@@ -49,15 +63,25 @@ function display_recent(orders, order_types, customers) {
             }
         }
 
+        let status_color = "red";
+        let status = "Not Complete";
+        if (order.date_complete) {
+            status_color = "green";
+            status = "Complete";
+            if (order.picked_up) {
+                status_color = "blue";
+                status = "Picked Up";
+            }
+        }
+
         html += `<tr class="clickable" onclick="window.location.href = '/order?id=${order.id}&back=/orders/recent';">`;
-        html += `<td>${order.formatted_id}</td>`;
+        html += `<td>${order.formatted_id}<input type="hidden" class="location-id" value="${order.source_location}"/></td>`;
         html += `<td>${customer_name}</td>`;
         html += `<td>${order.date_received}</td>`;
         html += `<td>${order_type}<input type='hidden' value='${order.type}' /></td>`;
         html += `<td>${order.date_due}</td>`;
+        html += `<td style='text-align: right'>${status}<span class="dot" style="background-color: ${status_color}"></span></td>`;
         html += "</tr>";
-        // TODO: Add status
-        //      Adjust search below to not search status
     }
 
     html += "</tbody></table>";
@@ -89,11 +113,17 @@ function search() {
             }
         }
 
+        if (selected_location != 0) {
+            let location = row.children[0].getElementsByTagName("input")[0].value;
+            if (location != selected_location)
+                filtered = true;
+        }
+
         // Check search term
         let search_include = false;
         if (!filtered)
-            for (let child of row.children)
-                search_include |= child.innerText.toUpperCase().indexOf(term) > -1;
+            for (let i = 0; i < row.children.length - 1; i++)
+                search_include |= row.children[i].innerText.toUpperCase().indexOf(term) > -1;
 
         if (search_include && !filtered)
             row.style.display = "";
@@ -151,4 +181,9 @@ function adjust_filter(order_type_id, selected) {
             break;
         }
     }
+}
+
+function update_location_filter() {
+    selected_location = document.getElementById("location-filter").value;
+    search();
 }

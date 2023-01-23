@@ -1,5 +1,6 @@
 let order_types;
 let type_filter_active = false;
+let selected_location = 0;
 
 function on_load() {
     get(`/data/orders?customer=${ID}`, (responseText) => {
@@ -13,10 +14,23 @@ function on_load() {
             display_orders(orders, order_types);
         })
     }, error);
+
+    // Get the locations
+    get(`/data/locations`, (responseText) => {
+        update_locations(JSON.parse(responseText))
+    }, error)
 }
 
 function error() {
     alert("Error while loading orders")
+}
+
+function update_locations(locations) {
+    let html = "<option value='0' selected>Any</option>";
+    for (let location of locations)
+        html += `<option value='${location.id}'>${location.name}</option>`;
+
+    document.getElementById("location-filter").innerHTML = html;
 }
 
 function display_orders(orders, order_types) {
@@ -49,7 +63,7 @@ function display_orders(orders, order_types) {
         }
 
         html += `<tr class="clickable" onclick="window.location.href = '/order?id=${order.id}&back=/orders?id=${ID}';">`;
-        html += `<td>${order.formatted_id}</td>`;
+        html += `<td>${order.formatted_id}<input type="hidden" class="location-id" value="${order.source_location}"/></td>`;
         html += `<td>${order.date_received}</td>`;
         html += `<td>${order_type}<input type='hidden' value='${order.type}' /></td>`;
         html += `<td>${order.date_due}</td>`;
@@ -84,6 +98,12 @@ function search() {
 
                 break;
             }
+        }
+
+        if (selected_location != 0) {
+            let location = row.children[0].getElementsByTagName("input")[0].value;
+            if (location != selected_location)
+                filtered = true;
         }
 
         // Check search term
@@ -148,4 +168,9 @@ function adjust_filter(order_type_id, selected) {
             break;
         }
     }
+}
+
+function update_location_filter() {
+    selected_location = document.getElementById("location-filter").value;
+    search();
 }

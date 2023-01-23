@@ -13,7 +13,13 @@
 <button onclick='window.location.href = "/orders/create?customer={{ id }}";'>Create Order</button>
 <button onclick="window.location.href = '/customer?id={{ id }}'">Back</button>
 
-<input type="text" class="search" id="search" onkeyup="search();" placeholder="Search . . ." />
+<div style="overflow: auto;">
+    <div class="location-filter">
+        Source Location:
+        <select id="location-filter" onchange="update_location_filter()"></select>
+    </div>
+    <input type="text" class="search" id="search" onkeyup="search();" placeholder="Search . . ." />
+</div>
 <div id="orders"></div>
 
 {% endblock content %}

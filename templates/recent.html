@@ -10,6 +10,10 @@
 <button onclick="window.location.href = '/'">Back</button>
 
 <div style="overflow: auto;">
+    <div class="location-filter">
+        Source Location:
+        <select id="location-filter" onchange="update_location_filter()"></select>
+    </div>
     <input type="text" class="search" id="search" onkeyup="search();" placeholder="Search . . ." />
 </div>
 <div id="recent-orders">

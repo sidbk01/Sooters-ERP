@@ -298,3 +298,15 @@ input[type=text].search {
 
     padding-left: 1.5rem;
 }
+
+.location-filter {
+    float: left;
+    white-space: nowrap;
+
+    width: fit-content;
+}
+
+.location-filter input,
+.location-filter select {
+    display: inline;
+}
