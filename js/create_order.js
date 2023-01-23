@@ -125,7 +125,10 @@ function form_submit() {
             return;
     }
 
-    post(`/data/orders/create?customer=${CUSTOMER}`, () => window.location.href = `/orders?id=${CUSTOMER}`, submit_error, order);
+    post(`/data/orders/create?customer=${CUSTOMER}`, (responseText) => {
+        let id = JSON.parse(responseText);
+        window.location.href = `/order?id=${id}&back=/customer?id=${CUSTOMER}`;
+    }, submit_error, order);
 }
 
 function submit_error() {

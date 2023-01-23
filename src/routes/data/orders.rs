@@ -260,9 +260,9 @@ pub(crate) async fn create(
     ];
 
     // Perform query
-    state.database().execute_transaction(queries).await?;
+    let id = state.database().execute_transaction_id(queries).await?;
 
-    Ok(String::new())
+    Ok(format!("{}", id))
 }
 
 impl<'de> Deserialize<'de> for CreateInfo {

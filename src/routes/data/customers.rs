@@ -100,19 +100,19 @@ pub(crate) async fn create(
     validate_empty(&mut info.email);
 
     // Perform query
-    state
+    let new_id = state
         .database()
-        .execute_query_parameters::<_, Empty, _>(
+        .execute_query_id(
             CREATE_QUERY,
             params! {
                 "name" => &info.name,
                 "email" => &info.email,
-                "phone_number" => &info.phone_number
+                "phone_number" => &info.phone_number,
             },
         )
         .await?;
 
-    Ok(String::new())
+    Ok(format!("{}", new_id))
 }
 
 #[get("/customers/notes?<id>")]

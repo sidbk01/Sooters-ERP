@@ -19,8 +19,9 @@ function form_submit() {
         phone_number = undefined;
 
     // Send the request
-    post("/data/customers/create", () => {
-        window.location.href = "/customers";
+    post("/data/customers/create", (responseText) => {
+        let id = JSON.parse(responseText);
+        window.location.href = `/customer?id=${id}`;
     }, error, {
         name: name,
         email: email,

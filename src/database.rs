@@ -16,6 +16,8 @@ pub struct Database {
     connection: Pool,
 }
 
+struct ID(usize);
+
 impl Database {
     pub fn connect(info: &DatabaseInfo) -> Result<Self, DatabaseError> {
         // Connect to the database
@@ -75,13 +77,47 @@ impl Database {
         .unwrap()
     }
 
-    pub async fn execute_transaction<
+    pub async fn execute_query_id<
+        Q: AsRef<str> + Send + 'static,
+        P: Into<Params> + Send + 'static,
+    >(
+        &self,
+        query: Q,
+        params: P,
+    ) -> Result<usize, DatabaseError> {
+        let pool = self.connection.clone();
+        rocket::tokio::task::spawn_blocking(move || {
+            let mut conn = pool.get_conn().map_err(|_| DatabaseError::PoolError)?;
+            let mut transaction = conn
+                .start_transaction(mysql::TxOpts::default())
+                .map_err(|error| DatabaseError::QueryError(error))?;
+
+            transaction
+                .exec::<Empty, _, _>(query, params)
+                .map_err(|error| DatabaseError::QueryError(error))?;
+
+            let id = transaction
+                .exec::<ID, _, _>("SELECT LAST_INSERT_ID()", Params::Empty)
+                .map_err(|error| DatabaseError::QueryError(error))?
+                .pop()
+                .unwrap();
+
+            transaction
+                .commit()
+                .map_err(|error| DatabaseError::QueryError(error))
+                .map(|_| id.0)
+        })
+        .await
+        .unwrap()
+    }
+
+    pub async fn execute_transaction_id<
         Q: AsRef<str> + Send + 'static,
         P: Into<Params> + Send + 'static,
     >(
         &self,
         queries: Vec<(Q, P)>,
-    ) -> Result<(), DatabaseError> {
+    ) -> Result<usize, DatabaseError> {
         let pool = self.connection.clone();
         rocket::tokio::task::spawn_blocking(move || {
             let mut conn = pool.get_conn().map_err(|_| DatabaseError::PoolError)?;
@@ -95,9 +131,16 @@ impl Database {
                     .map_err(|error| DatabaseError::QueryError(error))?;
             }
 
+            let id = transaction
+                .exec::<ID, _, _>("SELECT LAST_INSERT_ID()", Params::Empty)
+                .map_err(|error| DatabaseError::QueryError(error))?
+                .pop()
+                .unwrap();
+
             transaction
                 .commit()
                 .map_err(|error| DatabaseError::QueryError(error))
+                .map(|_| id.0)
         })
         .await
         .unwrap()
@@ -110,6 +153,17 @@ impl FromRow for Empty {
         Self: Sized,
     {
         Ok(Empty)
+    }
+}
+
+impl FromRow for ID {
+    fn from_row_opt(mut row: mysql::Row) -> Result<Self, mysql::FromRowError>
+    where
+        Self: Sized,
+    {
+        row.take("LAST_INSERT_ID()")
+            .map(|id| ID(id))
+            .ok_or(mysql::FromRowError(row))
     }
 }
 
