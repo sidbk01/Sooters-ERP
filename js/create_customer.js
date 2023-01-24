@@ -1,13 +1,23 @@
 function form_submit() {
     // Collect & validate the information
-    let name = document.getElementById("name").value;
-    if (name == "") {
-        document.getElementById("name-error").style.display = "block";
-        document.getElementById("name-error-label").style.display = "block";
+    let first_name = document.getElementById("first-name").value;
+    if (first_name == "") {
+        document.getElementById("first-name-error").style.display = "block";
+        document.getElementById("first-name-error-label").style.display = "block";
         return;
     } else {
-        document.getElementById("name-error").style.display = "none";
-        document.getElementById("name-error-label").style.display = "none";
+        document.getElementById("first-name-error").style.display = "none";
+        document.getElementById("first-name-error-label").style.display = "none";
+    }
+
+    let last_name = document.getElementById("last-name").value;
+    if (last_name == "") {
+        document.getElementById("last-name-error").style.display = "block";
+        document.getElementById("last-name-error-label").style.display = "block";
+        return;
+    } else {
+        document.getElementById("last-name-error").style.display = "none";
+        document.getElementById("last-name-error-label").style.display = "none";
     }
 
     let email = document.getElementById("email").value;
@@ -23,7 +33,8 @@ function form_submit() {
         let id = JSON.parse(responseText);
         window.location.href = `/customer?id=${id}`;
     }, error, {
-        name: name,
+        first_name: first_name,
+        last_name: last_name,
         email: email,
         phone_number: phone_number,
     });

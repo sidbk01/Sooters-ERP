@@ -44,8 +44,12 @@ impl FromRow for Customer {
             Some(id) => id,
             None => return Err(mysql::FromRowError(row)),
         };
-        let name = match row.take("Name") {
-            Some(name) => name,
+        let first_name: String = match row.take("FirstName") {
+            Some(first_name) => first_name,
+            None => return Err(mysql::FromRowError(row)),
+        };
+        let last_name: String = match row.take("LastName") {
+            Some(last_name) => last_name,
             None => return Err(mysql::FromRowError(row)),
         };
         let phone_number = match row.take("PhoneNumber") {
@@ -59,7 +63,7 @@ impl FromRow for Customer {
 
         Ok(Customer {
             id,
-            name,
+            name: format!("{} {}", first_name, last_name),
             phone_number,
             email,
         })

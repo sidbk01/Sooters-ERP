@@ -5,16 +5,16 @@ use serde::Deserialize;
 
 use super::validate_empty;
 
-const CUSTOMERS_QUERY: &'static str = "SELECT * FROM Customers ORDER BY Name ASC";
+const CUSTOMERS_QUERY: &'static str = "SELECT * FROM Customers ORDER BY LastName ASC";
 const CUSTOMER_QUERY: &'static str = "SELECT * FROM Customers WHERE ID = :id";
 const NOTES_QUERY: &'static str =
     "SELECT * FROM Customer_Notes WHERE Customer = :id ORDER BY DateTime DESC";
 
 const UPDATE_QUERY: &'static str =
-    "UPDATE Customers SET Name = :name, Email = :email, PhoneNumber = :phone_number WHERE ID = :id";
+    "UPDATE Customers SET FirstName = :first_name, LastName = :last_name, Email = :email, PhoneNumber = :phone_number WHERE ID = :id";
 
 const CREATE_QUERY: &'static str =
-    "INSERT INTO Customers (Name, Email, PhoneNumber) VALUES (:name, :email, :phone_number)";
+    "INSERT INTO Customers (FirstName, LastName, Email, PhoneNumber) VALUES (:first_name, :last_name, :email, :phone_number)";
 const CREATE_NOTE_QUERY: &'static str =
     "INSERT INTO Customer_Notes (Customer, Creator, Note) VALUES (:customer, :creator, :note)";
 
@@ -48,7 +48,8 @@ pub(crate) async fn one(
 
 #[derive(rocket::serde::Deserialize)]
 pub struct UpdateInfo {
-    name: String,
+    first_name: String,
+    last_name: String,
     phone_number: Option<String>,
     email: Option<String>,
 }
@@ -59,7 +60,7 @@ pub(crate) async fn update(
     mut info: Json<UpdateInfo>,
     state: &rocket::State<State>,
 ) -> Result<String, RouteError> {
-    if &info.name == "" {
+    if &info.first_name == "" || &info.last_name == "" {
         return Err(RouteError::InputError(
             "Cannot set a customer's name to nothing",
         ));
@@ -74,7 +75,8 @@ pub(crate) async fn update(
             UPDATE_QUERY,
             params! {
                 "id" => id,
-                "name" => &info.name,
+                "first_name" => &info.first_name,
+                "last_name" => &info.last_name,
                 "email" => info.email.as_ref(),
                 "phone_number" => info.phone_number.as_ref(),
             },
@@ -90,7 +92,7 @@ pub(crate) async fn create(
     state: &rocket::State<State>,
 ) -> Result<String, RouteError> {
     // Validate input
-    if &info.name == "" {
+    if &info.first_name == "" || &info.last_name == "" {
         return Err(RouteError::InputError(
             "Cannot create a customer without a name",
         ));
@@ -105,7 +107,8 @@ pub(crate) async fn create(
         .execute_query_id(
             CREATE_QUERY,
             params! {
-                "name" => &info.name,
+                "first_name" => &info.first_name,
+                "last_name" => &info.last_name,
                 "email" => &info.email,
                 "phone_number" => &info.phone_number,
             },

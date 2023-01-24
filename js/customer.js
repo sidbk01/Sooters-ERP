@@ -74,7 +74,16 @@ function confirm_edit() {
     let new_customer_info = customer;
 
     new_customer_info.name = document.getElementById("name-input").value;
-    if (new_customer_info.name == "") {
+    let name = new_customer_info.name.split(' ');
+    new_customer_info.first_name = name[0];
+    new_customer_info.last_name = "";
+    for (let i = 1; i < name.length; i++) {
+        new_customer_info.last_name += name[i];
+        if (i != name.length - 1)
+            new_customer_info.last_name += ' ';
+    }
+
+    if (new_customer_info.first_name == "" || new_customer_info.last_name == "") {
         document.getElementById("name-error").style.display = "block";
         return;
     } else
@@ -96,7 +105,8 @@ function confirm_edit() {
     post(`/data/customers/update/${ID}`, () => {
         finalize_edit(new_customer_info);
     }, update_error, {
-        name: new_customer_info.name,
+        first_name: new_customer_info.first_name,
+        last_name: new_customer_info.last_name,
         phone_number: new_customer_info.phone_number,
         email: new_customer_info.email,
     });
