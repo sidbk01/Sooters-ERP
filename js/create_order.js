@@ -86,6 +86,7 @@ function form_submit() {
     }
 
     let rush = document.getElementById("rush").checked;
+    let paid = document.getElementById("paid").checked;
     let employee = Number(document.getElementById("employee").value);
     let location = Number(document.getElementById("location").value);
 
@@ -94,7 +95,8 @@ function form_submit() {
         due_date: due_date,
         rush: rush,
         employee: employee,
-        location: location
+        location: location,
+        paid: paid,
     };
 
     switch (document.getElementById("type").value) {

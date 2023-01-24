@@ -23,7 +23,7 @@ const PICKED_UP_QUERY: &'static str = "UPDATE Orders SET PickedUp = '1' WHERE ID
 const CHANGE_LOCATION_QUERY: &'static str =
     "UPDATE Orders SET CurrentLocation = :location WHERE ID = :id";
 
-const CREATE_QUERY: &'static str = "INSERT INTO Orders (EnvelopeID, CurrentLocation, SourceLocation, Receiver, OrderType, Customer, DateDue, Rush) VALUES (:envelope_id, :location, :location, :employee, :order_type, :customer, :due_date, :rush);";
+const CREATE_QUERY: &'static str = "INSERT INTO Orders (EnvelopeID, CurrentLocation, SourceLocation, Receiver, OrderType, Customer, DateDue, Paid, Rush) VALUES (:envelope_id, :location, :location, :employee, :order_type, :customer, :due_date, :paid, :rush);";
 const CREATE_FILM_QUERY: &'static str = "INSERT INTO Film_Orders (ID, Prints, Digital, NumberOfRolls, Color) VALUES (LAST_INSERT_ID(), :prints, :digital, :num_rolls, :color);";
 const CREATE_NOTE_QUERY: &'static str =
     "INSERT INTO Order_Notes (OrderID, Creator, Note) VALUES (:order, :creator, :note)";
@@ -111,6 +111,7 @@ pub struct CreateInfo {
     rush: bool,
     employee: usize,
     location: usize,
+    paid: bool,
     order_type: usize,
     type_info: OrderTypeInfo,
 }
@@ -253,6 +254,7 @@ pub(crate) async fn create(
                 "order_type" => &info.order_type,
                 "customer" => &customer,
                 "due_date" => &info.due_date,
+                "paid" => &info.paid,
                 "rush" => &info.rush,
             },
         ),
@@ -292,6 +294,7 @@ impl<'de> Visitor<'de> for CreateVisitor {
         let mut location = None;
         let mut order_type = None;
         let mut type_info = None;
+        let mut paid = None;
 
         while let Some((key, value)) = map.next_entry::<&'de str, serde_json::Value>()? {
             match key {
@@ -314,6 +317,10 @@ impl<'de> Visitor<'de> for CreateVisitor {
                 "location" => match value.as_u64() {
                     Some(value) => location = Some(value as usize),
                     None => return Err(A::Error::custom("Expected a number for location")),
+                },
+                "paid" => match value.as_bool() {
+                    Some(value) => paid = Some(value),
+                    None => return Err(A::Error::custom("Expected a boolean for paid")),
                 },
                 "order_type" => match value.as_array() {
                     Some(value) => {
@@ -355,6 +362,7 @@ impl<'de> Visitor<'de> for CreateVisitor {
             rush: rush.ok_or(A::Error::missing_field("rush"))?,
             employee: employee.ok_or(A::Error::missing_field("employee"))?,
             location: location.ok_or(A::Error::missing_field("location"))?,
+            paid: paid.ok_or(A::Error::missing_field("paid"))?,
             order_type: order_type.ok_or(A::Error::missing_field("order_type"))?,
             type_info: type_info.ok_or(A::Error::missing_field("order_type"))?,
         })
