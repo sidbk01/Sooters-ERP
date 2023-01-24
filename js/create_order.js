@@ -24,19 +24,16 @@ function error() {
 function display_form_data(employees, locations, order_types) {
     let employee_html = "";
     for (let employee of employees) {
-        employee_html += `<option value="${employee.id}">${employee.name}</option>`;
+        employee_html += `<option value="${employee.id}"${preferences.employee == employee.id ? " selected" : ""}>${employee.name}</option>`;
         employee_locations[employee.id] = employee.primary_location;
     }
     let employee = document.getElementById("employee");
     employee.innerHTML = employee_html;
-    employee.onchange = update_location;
 
     let location_html = "";
-    for (let location of locations) {
-        location_html += `<option value="${location.id}">${location.name}</option>`;
-    }
+    for (let location of locations)
+        location_html += `<option value="${location.id}"${preferences.location == location.id ? " selected" : ""}>${location.name}</option>`;
     document.getElementById("location").innerHTML = location_html;
-    update_location();
 
     let order_types_html = "<option selected>Select an order type</option>"
     for (let order_type of order_types) {
@@ -46,17 +43,6 @@ function display_form_data(employees, locations, order_types) {
     type.innerHTML = order_types_html;
     type.onchange = update_type;
     removed_first = false;
-}
-
-function update_location() {
-    let selected_location = employee_locations[document.getElementById("employee").value];
-    let location = document.getElementById("location");
-    for (let child_idx in location.children) {
-        if (location.children[child_idx].value == selected_location) {
-            location.selectedIndex = child_idx;
-            return;
-        }
-    }
 }
 
 function update_type() {

@@ -53,22 +53,6 @@ function error() {
 }
 
 function display_info(order, customer, employee) {
-    // Update mark button (mark complete/mark picked up/hide)
-    if (order.date_complete != null) {
-        let button = document.getElementById("mark-complete");
-
-        if (order.picked_up) {
-            button.style.display = "none";
-        } else {
-            button.onclick = mark_picked_up;
-            button.innerText = "Mark Picked Up";
-        }
-    }
-
-    // Update paid button
-    if (order.paid)
-        document.getElementById("mark-paid").remove();
-
     // Update basic information
     document.getElementById("order-id").innerText = `${order.formatted_id}`;
     if (order.envelope_id == null) {
@@ -81,9 +65,9 @@ function display_info(order, customer, employee) {
     document.getElementById("date-received").innerText = order.date_received;
     document.getElementById("date-due").innerText = order.date_due;
     document.getElementById("rush").innerText = order.rush ? "Yes" : "No";
-    document.getElementById("date-completed").innerText = order.date_complete == null ? "Not complete" : order.date_complete;
+    document.getElementById("date-completed").innerHTML = order.date_complete == null ? `Not complete&emsp;<button id="mark-complete" class='inline-button' onclick="mark_complete()">Mark Complete</button>` : order.date_complete;
     document.getElementById("receiver").innerText = employee.name;
-    document.getElementById("paid").innerText = order.paid ? "Yes" : "No";
+    document.getElementById("paid").innerHTML = order.paid ? "Yes" : `No&emsp;<button id="mark-paid" onclick="mark_paid()" class='inline-button'>Mark Paid</button>`;
 
     for (let location of locations) {
         if (location.id == order.source_location) {
@@ -107,7 +91,7 @@ function display_info(order, customer, employee) {
             }
         }
 
-        html += `&emsp;<button style="display: inline; width: min(150px, 25%); margin: 0" onclick='begin_edit_location()'>Edit</button>`;
+        html += `&emsp;<button class='inline-button' onclick='begin_edit_location()'>Edit</button><button id="mark-picked-up" class='inline-button' onclick="mark_picked_up()">Mark Picked Up</button>`;
         current_location_obj.innerHTML = html;
     }
 

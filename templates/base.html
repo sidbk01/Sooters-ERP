@@ -18,14 +18,29 @@
     <link rel="stylesheet" href="/css/reset" />
     <link rel="stylesheet" href="/css/main" />
     <script src="/js/ajax" type="text/javascript"></script>
+    <script src="/js/preferences" type="text/javascript"></script>
 
     {% block head %}
     {% endblock %}
 </head>
 
-<body onload='if (typeof on_load === "function") { on_load() }'>
-    <div id="header" onclick="window.location.href = '/'">
-        <img src="/images/logo" alt="Sooter's" style="height: 5rem;" />
+<body onload='update_preferences(); if (typeof on_load === "function") { on_load() }'>
+    <div id="header">
+        <img src="/images/logo" alt="Sooter's" onclick="window.location.href = '/'" />
+        <div class="preferences" id="preferences">
+            <img src="/images/preferences" alt="Preferences" id="preferences-button" />
+            <div id="preferences-menu" class="preferences-menu">
+                <h4>Preferences</h4>
+                <div>
+                    Employee: <div id="employee-preference-container" style="display: inline;"></div><br />
+                </div>
+                <div>
+                    Location: <div id="location-preference-container" style="display: inline"></div><br />
+                </div>
+                <div id="preferences-menu-buttons">
+                </div>
+            </div>
+        </div>
     </div>
 
     <div id="content">

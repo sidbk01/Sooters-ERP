@@ -132,10 +132,10 @@ function search() {
     }
 }
 
-window.onclick = (event) => {
+window.addEventListener('click', (event) => {
     if (type_filter_active && !event.target.matches('#type'))
         hide_type_filter();
-}
+});
 
 function hide_type_filter() {
     document.getElementById('type-filter-dropdown').remove();
