@@ -14,6 +14,7 @@ pub struct FilmOrder {
     digital: bool,
     number_of_rolls: usize,
     color: bool,
+    exposures: usize,
 }
 
 impl FilmOrder {
@@ -35,6 +36,10 @@ impl FilmOrder {
 
     pub fn color(&self) -> bool {
         self.color
+    }
+
+    pub fn exposures(&self) -> usize {
+        self.exposures
     }
 }
 
@@ -68,6 +73,10 @@ impl FromRow for FilmOrder {
             Some(color) => color,
             None => return Err(mysql::FromRowError(row)),
         };
+        let exposures = match row.take("Exposures") {
+            Some(exposures) => exposures,
+            None => return Err(mysql::FromRowError(row)),
+        };
 
         Ok(FilmOrder {
             id,
@@ -75,6 +84,7 @@ impl FromRow for FilmOrder {
             digital,
             number_of_rolls,
             color,
+            exposures
         })
     }
 }
@@ -98,6 +108,7 @@ impl Serialize for FilmOrder {
         map.serialize_entry("digital", &self.digital)?;
         map.serialize_entry("num_rolls", &self.number_of_rolls)?;
         map.serialize_entry("color", &self.color)?;
+        map.serialize_entry("exposures", &self.exposures)?;
 
         map.end()
     }

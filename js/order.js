@@ -134,12 +134,14 @@ function display_film_info(type_info) {
     label_html += `<div>Digital:</div>`;
     label_html += `<div>Color:</div>`;
     label_html += `<div>Number of Rolls:</div>`;
+    label_html += `<div>Exposures:</div>`;
 
     input_html += `<div>Film</div>`;
     input_html += `<div>${print_type}</div>`;
     input_html += `<div>${type_info.digital ? "Yes" : "No"}</div>`;
     input_html += `<div>${type_info.color ? "Yes" : "No (Black & White)"}</div>`;
     input_html += `<div>${type_info.num_rolls}</div>`;
+    input_html += `<div>${type_info.exposures}</div>`;
 
     document.getElementById("order-labels").innerHTML = label_html;
     document.getElementById("order-inputs").innerHTML = input_html;

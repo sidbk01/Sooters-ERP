@@ -1,7 +1,7 @@
 let employee_locations = [];
 let removed_first;
 
-const FILM_HTML = "<div class='info-labels'><label for='prints'>Prints: </label><label for='digital'>Digital: </label><label for='color'>Color: </label><label for='black-white'>Black & White: </label><label for='num-rolls'>Number of Rolls: </label><div style='display: none;' id='num-rolls-error-label'></div></div><div class='info-inputs'><select id='prints' name='prints'><option value='0'>None</option><option value='1'>Matte</option><option value='2'>Glossy</option></select><input type='checkbox' id='digital' name='digital' /><input type='radio' id='color' name='color' /><input type='radio' id='black-white' name='color' /><input type='number' id='num-rolls' name='num-rolls' value='1'onchange='document.getElementById(`num-rolls-error`).style.display = `none`;' /><div id='num-rolls-error' style='display: none; color: red;'>Number of rolls must be at least 1</div></div>";
+const FILM_HTML = "<div class='info-labels'><label for='prints'>Prints: </label><label for='digital'>Digital: </label><label for='color'>Color: </label><label for='black-white'>Black & White: </label><label for='num-rolls'>Number of Rolls: </label><label for='exposures'>Exposures: </label><div style='display: none;' id='num-rolls-error-label'></div></div><div class='info-inputs'><select id='prints' name='prints'><option value='0'>None</option><option value='1'>Matte</option><option value='2'>Glossy</option></select><input type='checkbox' id='digital' name='digital' /><input type='radio' id='color' name='color' /><input type='radio' id='black-white' name='color' /><input type='number' id='num-rolls' name='num-rolls' value='1'onchange='document.getElementById(`num-rolls-error`).style.display = `none`;' /><input type='number' id='exposures' name='exposures' value='24' /><div id='num-rolls-error' style='display: none; color: red;'>Number of rolls must be at least 1</div></div>";
 
 function on_load() {
     get("/data/employees", (responseText) => {
@@ -128,6 +128,7 @@ function film_submit() {
     let digital = document.getElementById("digital").checked;
     let color = document.getElementById("color").checked;
     let num_rolls = Number(document.getElementById("num-rolls").value);
+    let exposures = Number(document.getElementById("exposures").value);
 
     if (num_rolls < 1) {
         document.getElementById("num-rolls-error").style.display = "block";
@@ -143,5 +144,6 @@ function film_submit() {
         digital: digital,
         color: color,
         num_rolls: num_rolls,
+        exposures: exposures,
     }
 }

@@ -24,7 +24,7 @@ const CHANGE_LOCATION_QUERY: &'static str =
     "UPDATE Orders SET CurrentLocation = :location WHERE ID = :id";
 
 const CREATE_QUERY: &'static str = "INSERT INTO Orders (EnvelopeID, CurrentLocation, SourceLocation, Receiver, OrderType, Customer, DateDue, Paid, Rush) VALUES (:envelope_id, :location, :location, :employee, :order_type, :customer, :due_date, :paid, :rush);";
-const CREATE_FILM_QUERY: &'static str = "INSERT INTO Film_Orders (ID, Prints, Digital, NumberOfRolls, Color) VALUES (LAST_INSERT_ID(), :prints, :digital, :num_rolls, :color);";
+const CREATE_FILM_QUERY: &'static str = "INSERT INTO Film_Orders (ID, Prints, Digital, NumberOfRolls, Color, Exposures) VALUES (LAST_INSERT_ID(), :prints, :digital, :num_rolls, :color, :exposures);";
 const CREATE_NOTE_QUERY: &'static str =
     "INSERT INTO Order_Notes (OrderID, Creator, Note) VALUES (:order, :creator, :note)";
 
@@ -128,6 +128,7 @@ struct FilmInfo {
     digital: bool,
     color: bool,
     num_rolls: usize,
+    exposures: usize,
 }
 
 #[get("/order?<id>")]
@@ -392,6 +393,7 @@ impl FilmInfo {
                 "digital" => &self.digital,
                 "color"=> &self.color,
                 "num_rolls" => &self.num_rolls,
+                "exposures" => &self.exposures,
             },
         )
     }
@@ -437,6 +439,13 @@ impl FilmInfo {
             },
             None => return Err(E::missing_field("num_rolls")),
         };
+        let exposures = match map.get("exposures") {
+            Some(exposures) => match exposures.as_u64() {
+                Some(exposures) => exposures as usize,
+                None => return Err(E::custom("Expected a boolean for exposures")),
+            },
+            None => return Err(E::missing_field("exposures")),
+        };
 
         if num_rolls < 1 {
             return Err(E::custom("Number of rolls must be at least 1"));
@@ -447,6 +456,7 @@ impl FilmInfo {
             digital,
             color,
             num_rolls,
+            exposures,
         })
     }
 }
