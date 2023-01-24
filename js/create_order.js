@@ -2,6 +2,8 @@ let employee_locations = [];
 let removed_first;
 
 const FILM_HTML = "<div class='info-labels'><label for='prints'>Prints: </label><label for='digital'>Digital: </label><label for='color'>Color: </label><label for='black-white'>Black & White: </label><label for='num-rolls'>Number of Rolls: </label><label for='exposures'>Exposures: </label><div style='display: none;' id='num-rolls-error-label'></div></div><div class='info-inputs'><select id='prints' name='prints'><option value='0'>None</option><option value='1'>Matte</option><option value='2'>Glossy</option></select><input type='checkbox' id='digital' name='digital' /><input type='radio' id='color' name='color' /><input type='radio' id='black-white' name='color' /><input type='number' id='num-rolls' name='num-rolls' value='1'onchange='document.getElementById(`num-rolls-error`).style.display = `none`;' /><input type='number' id='exposures' name='exposures' value='24' /><div id='num-rolls-error' style='display: none; color: red;'>Number of rolls must be at least 1</div></div>";
+const FRAMING_HTML = "<div class='info-labels'><label for='category'>Category:</label><div id='category-error-label' style='display: none;'></div><label for='width'>Width:</label><div id='width-error-label' style='display: none;'></div><label for='category'>Height:</label><div id='height-error-label' style='display: none;'></div></div><div class='info-inputs'><input type='text' id='category' name='category' /><div id='category-error' style='display: none; color: red;'>A category is required</div><input type='number' id='width' name='width' /><div id='width-error' style='display: none; color: red;'>Width must be at least 1</div><input type='number' id='height' name='height' /><div id='height-error' style='display: none; color: red;'>Height must be at least 1</div></div>";
+const PHOTOSHOOT_HTML = "<div class='info-labels'><label for='photoshoot-type'>Photoshoot Type:</label><label for='photoshoot-datetime'>Scheduled Date & Time:</label><div id='photoshoot-datetime-error-label' style='display: none;'></div></div><div class='info-inputs'><select id='photoshoot-type' name='photoshoot-type'><option value='1'>Family Session</option><option value='2'>Classic Collection</option><option value='3'>Location Session</option><option value='4'>Business Headshot</option><option value='5'>Standard Graduation Photo</option><option value='6'>Lifestyle Graduation</option></select><input type='datetime-local' id='photoshoot-datetime' name='photoshoot-datetime' /><div id='photoshoot-datetime-error' style='display: none; color: red;'>A date and time is required</div></div>";
 
 function on_load() {
     get("/data/employees", (responseText) => {
@@ -58,6 +60,14 @@ function update_type() {
             document.getElementById("order-type-inputs").innerHTML = FILM_HTML;
             break;
 
+        case "2": // Framing
+            document.getElementById("order-type-inputs").innerHTML = FRAMING_HTML;
+            break;
+
+        case "3": // Photoshoot
+            document.getElementById("order-type-inputs").innerHTML = PHOTOSHOOT_HTML;
+            break;
+
         default:
             document.getElementById("order-type-inputs").innerHTML = "";
             alert(`Unknown order type ${document.getElementById("type").value}`);
@@ -107,6 +117,20 @@ function form_submit() {
             ];
             break;
 
+        case "2":
+            order.order_type = [
+                2,
+                framing_submit()
+            ];
+            break;
+
+        case "3":
+            order.order_type = [
+                3,
+                photoshoot_submit()
+            ];
+            break;
+
         default:
             document.getElementById("type-error").style.display = "block";
             document.getElementById("type-error-label").style.display = "block";
@@ -145,5 +169,54 @@ function film_submit() {
         color: color,
         num_rolls: num_rolls,
         exposures: exposures,
+    };
+}
+
+function framing_submit() {
+    let category = document.getElementById("category").value;
+    let width = Number(document.getElementById("width").value);
+    let height = Number(document.getElementById("height").value);
+
+    if (category == "") {
+        document.getElementById("category-error").style.display = "block";
+        document.getElementById("category-error-label").style.display = "block";
+        return;
+    } else {
+        document.getElementById("category-error").style.display = "none";
+        document.getElementById("category-error-label").style.display = "none";
     }
+
+    if (width < 1) {
+        document.getElementById("width-error").style.display = "block";
+        document.getElementById("width-error-label").style.display = "block";
+        return;
+    } else {
+        document.getElementById("width-error").style.display = "none";
+        document.getElementById("width-error-label").style.display = "none";
+    }
+
+    if (height < 1) {
+        document.getElementById("height-error").style.display = "block";
+        document.getElementById("height-error-label").style.display = "block";
+        return;
+    } else {
+        document.getElementById("height-error").style.display = "none";
+        document.getElementById("height-error-label").style.display = "none";
+    }
+
+    return {
+        category: category,
+        width: width,
+        height: height,
+    };
+}
+
+function photoshoot_submit() {
+    let photoshoot_type = Number(document.getElementById("photoshoot-type").value);
+    let date_time = document.getElementById("photoshoot-datetime").value;
+
+    return {
+        type: photoshoot_type,
+        date_time: date_time,
+    };
 }

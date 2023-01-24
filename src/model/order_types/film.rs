@@ -84,7 +84,7 @@ impl FromRow for FilmOrder {
             digital,
             number_of_rolls,
             color,
-            exposures
+            exposures,
         })
     }
 }

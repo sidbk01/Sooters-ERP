@@ -1,3 +1,4 @@
+use super::{render_date, render_date_time};
 use mysql::prelude::FromRow;
 use rocket::time::{Date, PrimitiveDateTime};
 use serde::{ser::SerializeMap, Serialize};
@@ -30,10 +31,6 @@ pub struct OrderNote {
 pub struct OrderType {
     id: usize,
     name: String,
-}
-
-fn render_date(date: Date) -> String {
-    format!("{} {}, {}", date.month(), date.day(), date.year())
 }
 
 impl Order {
@@ -303,17 +300,7 @@ impl Serialize for OrderNote {
         map.serialize_entry("id", &self.id)?;
         map.serialize_entry("order", &self.order)?;
         map.serialize_entry("creator", &self.creator)?;
-        map.serialize_entry(
-            "date_time",
-            &format!(
-                "{} {}, {} at {}:{}",
-                self.date_time.month(),
-                self.date_time.day(),
-                self.date_time.year(),
-                self.date_time.hour(),
-                self.date_time.minute()
-            ),
-        )?;
+        map.serialize_entry("date_time", &render_date_time(self.date_time))?;
         map.serialize_entry("note", &self.note)?;
         map.end()
     }

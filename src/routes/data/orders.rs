@@ -8,14 +8,53 @@ use serde::{
     Deserialize,
 };
 
+enum OrderTypeInfo {
+    Film(FilmInfo),
+    Framing(FramingInfo),
+    Photoshoot(PhotoshootInfo),
+}
+
+pub struct CreateInfo {
+    envelope_id: Option<usize>,
+    due_date: String,
+    rush: bool,
+    employee: usize,
+    location: usize,
+    paid: bool,
+    order_type: usize,
+    type_info: OrderTypeInfo,
+}
+
+struct CreateVisitor;
+struct CustomExpected(&'static str);
+
+struct FilmInfo {
+    prints: usize,
+    digital: bool,
+    color: bool,
+    num_rolls: usize,
+    exposures: usize,
+}
+
+struct FramingInfo {
+    category: String,
+    width: usize,
+    height: usize,
+}
+
+struct PhotoshootInfo {
+    date_time: String,
+    photoshoot_type: usize,
+}
+
 const ORDERS_QUERY: &'static str =
-    "SELECT * FROM Orders WHERE Customer = :id ORDER BY DateReceived DESC";
+    "SELECT * FROM Orders WHERE Customer = :id ORDER BY DateReceived DESC, FormattedID DESC";
 const ORDER_TYPES_QUERY: &'static str = "SELECT * FROM Order_Types ORDER BY Name ASC";
 const ORDER_QUERY: &'static str = "SELECT * FROM Orders WHERE ID = :id";
 const NOTES_QUERY: &'static str =
     "SELECT * FROM Order_Notes WHERE OrderID = :id ORDER BY DateTime DESC";
-const UPCOMING_ORDERS_QUERY: &'static str = "SELECT * FROM Orders WHERE DateComplete IS NULL AND DateDue BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 7 DAY) ORDER BY DateDue ASC";
-const RECENT_ORDERS_QUERY: &'static str = "SELECT * FROM Orders WHERE DateReceived BETWEEN DATE_SUB(NOW(), INTERVAL 2 DAY) AND NOW() ORDER BY DateReceived DESC";
+const UPCOMING_ORDERS_QUERY: &'static str = "SELECT * FROM Orders WHERE DateComplete IS NULL AND DateDue BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 7 DAY) ORDER BY DateDue ASC, FormattedID DESC";
+const RECENT_ORDERS_QUERY: &'static str = "SELECT * FROM Orders WHERE DateReceived BETWEEN DATE_SUB(NOW(), INTERVAL 2 DAY) AND NOW() ORDER BY DateReceived DESC, FormattedID DESC";
 
 const PAID_QUERY: &'static str = "UPDATE Orders SET Paid = '1' WHERE ID = :id";
 const COMPLETED_QUERY: &'static str = "UPDATE Orders SET DateComplete = CURDATE() WHERE ID = :id";
@@ -25,6 +64,9 @@ const CHANGE_LOCATION_QUERY: &'static str =
 
 const CREATE_QUERY: &'static str = "INSERT INTO Orders (EnvelopeID, CurrentLocation, SourceLocation, Receiver, OrderType, Customer, DateDue, Paid, Rush) VALUES (:envelope_id, :location, :location, :employee, :order_type, :customer, :due_date, :paid, :rush);";
 const CREATE_FILM_QUERY: &'static str = "INSERT INTO Film_Orders (ID, Prints, Digital, NumberOfRolls, Color, Exposures) VALUES (LAST_INSERT_ID(), :prints, :digital, :num_rolls, :color, :exposures);";
+const CREATE_FRAMING_QUERY: &'static str = "INSERT INTO Framing_Orders (ID, Category, Width, Height) VALUES (LAST_INSERT_ID(), :category, :width, :height)";
+const CREATE_PHOTOSHOOT_QUERY: &'static str =
+    "INSERT INTO Photoshoots (ID, DateTime, Type) VALUES (LAST_INSERT_ID(), :date_time, :type)";
 const CREATE_NOTE_QUERY: &'static str =
     "INSERT INTO Order_Notes (OrderID, Creator, Note) VALUES (:order, :creator, :note)";
 
@@ -103,32 +145,6 @@ pub(crate) async fn create_note(
         .await?;
 
     Ok(String::new())
-}
-
-pub struct CreateInfo {
-    envelope_id: Option<usize>,
-    due_date: String,
-    rush: bool,
-    employee: usize,
-    location: usize,
-    paid: bool,
-    order_type: usize,
-    type_info: OrderTypeInfo,
-}
-
-struct CreateVisitor;
-struct CustomExpected(&'static str);
-
-enum OrderTypeInfo {
-    Film(FilmInfo),
-}
-
-struct FilmInfo {
-    prints: usize,
-    digital: bool,
-    color: bool,
-    num_rolls: usize,
-    exposures: usize,
 }
 
 #[get("/order?<id>")]
@@ -344,6 +360,18 @@ impl<'de> Visitor<'de> for CreateVisitor {
                                     type_info =
                                         Some(OrderTypeInfo::Film(FilmInfo::parse(order_info)?));
                                 }
+                                2 => {
+                                    order_type = Some(2);
+                                    type_info = Some(OrderTypeInfo::Framing(FramingInfo::parse(
+                                        order_info,
+                                    )?));
+                                }
+                                3 => {
+                                    order_type = Some(3);
+                                    type_info = Some(OrderTypeInfo::Photoshoot(
+                                        PhotoshootInfo::parse(order_info)?,
+                                    ));
+                                }
                                 _ => return Err(A::Error::custom("Unknown order type")),
                             },
                             None => {
@@ -380,6 +408,8 @@ impl OrderTypeInfo {
     pub fn create_query(&self) -> (&'static str, mysql::Params) {
         match self {
             OrderTypeInfo::Film(film) => film.create_query(),
+            OrderTypeInfo::Framing(framing) => framing.create_query(),
+            OrderTypeInfo::Photoshoot(photoshoot) => photoshoot.create_query(),
         }
     }
 }
@@ -457,6 +487,99 @@ impl FilmInfo {
             color,
             num_rolls,
             exposures,
+        })
+    }
+}
+
+impl FramingInfo {
+    pub fn create_query(&self) -> (&'static str, mysql::Params) {
+        (
+            CREATE_FRAMING_QUERY,
+            params! {
+                "category" => &self.category,
+                "width" => &self.width,
+                "height" => &self.height,
+            },
+        )
+    }
+
+    pub fn parse<E: serde::de::Error>(
+        map: &serde_json::Map<String, serde_json::Value>,
+    ) -> Result<Self, E> {
+        let category = match map.get("category") {
+            Some(category) => match category.as_str() {
+                Some(category) => category.to_owned(),
+                None => return Err(E::custom("Expected a string for category")),
+            },
+            None => return Err(E::missing_field("category")),
+        };
+        let width = match map.get("width") {
+            Some(width) => match width.as_u64() {
+                Some(width) => width as usize,
+                None => return Err(E::custom("Expected an unsigned integer for width")),
+            },
+            None => return Err(E::missing_field("width")),
+        };
+        let height = match map.get("height") {
+            Some(height) => match height.as_u64() {
+                Some(height) => height as usize,
+                None => return Err(E::custom("Expected an unsigned integer for height")),
+            },
+            None => return Err(E::missing_field("num_rolls")),
+        };
+
+        if &category == "" {
+            return Err(E::custom("Category must not be blank"));
+        }
+
+        if width < 1 {
+            return Err(E::custom("Width must be at least 1"));
+        }
+
+        if height < 1 {
+            return Err(E::custom("Height must be at least 1"));
+        }
+
+        Ok(FramingInfo {
+            category,
+            width,
+            height,
+        })
+    }
+}
+
+impl PhotoshootInfo {
+    pub fn create_query(&self) -> (&'static str, mysql::Params) {
+        (
+            CREATE_PHOTOSHOOT_QUERY,
+            params! {
+                "date_time" => &self.date_time,
+                "type" => &self.photoshoot_type,
+            },
+        )
+    }
+
+    pub fn parse<E: serde::de::Error>(
+        map: &serde_json::Map<String, serde_json::Value>,
+    ) -> Result<Self, E> {
+        let date_time = match map.get("date_time") {
+            Some(date_time) => match date_time.as_str() {
+                Some(date_time) => date_time.to_owned(),
+                None => return Err(E::custom("Expected a string for date time")),
+            },
+            None => return Err(E::missing_field("date_time")),
+        };
+        let photoshoot_type = match map.get("type") {
+            Some(photoshoot_type) => match photoshoot_type.as_u64() {
+                Some(photoshoot_type) => photoshoot_type as usize,
+                None => return Err(E::custom("Expected an unsigned integer for type")),
+            },
+            None => return Err(E::missing_field("type")),
+        };
+
+        Ok(PhotoshootInfo {
+            date_time,
+            photoshoot_type,
         })
     }
 }

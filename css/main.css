@@ -132,6 +132,8 @@ input[type=text],
 input[type=email],
 input[type=number],
 input[type=date],
+input[type=datetime-local],
+input[type=tel],
 select {
     border: 1px solid gray;
     border-radius: 0.25rem;
@@ -336,7 +338,9 @@ tr.clickable:active {
     border: 1px solid black;
     border-top: none;
     border-radius: 0 0 0.25rem 0.25rem;
-    width: 100%;
+    width: fit-content;
+    white-space: nowrap;
+    padding: 0.5rem;
 }
 
 input[type=text].search {

@@ -22,6 +22,14 @@ function on_load() {
                 route = `/data/order/film?id=${ID}`;
                 break;
 
+            case 2:
+                route = `/data/order/framing?id=${ID}`;
+                break;
+
+            case 3:
+                route = `/data/order/photoshoot?id=${ID}`;
+                break;
+
             default:
                 return error();
         }
@@ -101,6 +109,14 @@ function display_info(order, customer, employee) {
             display_film_info(order.type_info);
             break;
 
+        case 2:
+            display_framing_info(order.type_info);
+            break;
+
+        case 3:
+            display_photoshoot_info(order.type_info);
+            break;
+
         default:
             alert("Unknown order type");
     }
@@ -129,7 +145,7 @@ function display_film_info(type_info) {
     let label_html = document.getElementById("order-labels").innerHTML;
     let input_html = document.getElementById("order-inputs").innerHTML;
 
-    label_html += `<div>Type: </div>`;
+    label_html += `<div>Type:</div>`;
     label_html += `<div>Prints:</div>`;
     label_html += `<div>Digital:</div>`;
     label_html += `<div>Color:</div>`;
@@ -142,6 +158,71 @@ function display_film_info(type_info) {
     input_html += `<div>${type_info.color ? "Yes" : "No (Black & White)"}</div>`;
     input_html += `<div>${type_info.num_rolls}</div>`;
     input_html += `<div>${type_info.exposures}</div>`;
+
+    document.getElementById("order-labels").innerHTML = label_html;
+    document.getElementById("order-inputs").innerHTML = input_html;
+}
+
+function display_framing_info(type_info) {
+    let label_html = document.getElementById("order-labels").innerHTML;
+    let input_html = document.getElementById("order-inputs").innerHTML;
+
+    label_html += `<div>Type:</div>`;
+    label_html += `<div>Category:</div>`;
+    label_html += `<div>Size:</div>`;
+
+    input_html += `<div>Framing</div>`;
+    input_html += `<div>${type_info.category}</div>`;
+    input_html += `<div>${type_info.width}x${type_info.height}</div>`;
+
+    document.getElementById("order-labels").innerHTML = label_html;
+    document.getElementById("order-inputs").innerHTML = input_html;
+}
+
+function display_photoshoot_info(type_info) {
+    console.log(type_info);
+
+    let photoshoot_type;
+    switch (type_info.type) {
+        case 1:
+            photoshoot_type = "Family Session";
+            break;
+
+        case 2:
+            photoshoot_type = "Classic Collection";
+            break;
+
+        case 3:
+            photoshoot_type = "Location Session";
+            break;
+
+        case 4:
+            photoshoot_type = "Business Headshot";
+            break;
+
+        case 5:
+            photoshoot_type = "Standard Graduation Photo";
+            break;
+
+        case 6:
+            photoshoot_type = "Lifestyle Graduation";
+            break;
+
+        default:
+            error();
+            return;
+    }
+
+    let label_html = document.getElementById("order-labels").innerHTML;
+    let input_html = document.getElementById("order-inputs").innerHTML;
+
+    label_html += `<div>Type:</div>`;
+    label_html += `<div>Photoshoot Type:</div>`;
+    label_html += `<div>Scheduled Date and Time:</div>`;
+
+    input_html += `<div>Photoshoot</div>`;
+    input_html += `<div>${photoshoot_type}</div>`;
+    input_html += `<div>${type_info.date_time}</div>`;
 
     document.getElementById("order-labels").innerHTML = label_html;
     document.getElementById("order-inputs").innerHTML = input_html;
