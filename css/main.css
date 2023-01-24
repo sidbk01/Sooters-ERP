@@ -141,7 +141,8 @@ select {
     background-color: white;
 }
 
-input[type=checkbox] {
+input[type=checkbox],
+input[type=radio] {
     border: 1px solid gray;
     border-radius: 0.25rem;
     height: 1.0rem;

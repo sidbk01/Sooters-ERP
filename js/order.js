@@ -138,7 +138,7 @@ function display_film_info(type_info) {
     input_html += `<div>Film</div>`;
     input_html += `<div>${print_type}</div>`;
     input_html += `<div>${type_info.digital ? "Yes" : "No"}</div>`;
-    input_html += `<div>${type_info.color ? "Yes" : "No"}</div>`;
+    input_html += `<div>${type_info.color ? "Yes" : "No (Black & White)"}</div>`;
     input_html += `<div>${type_info.num_rolls}</div>`;
 
     document.getElementById("order-labels").innerHTML = label_html;
