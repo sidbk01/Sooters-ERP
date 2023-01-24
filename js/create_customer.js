@@ -1,3 +1,7 @@
+function on_load() {
+    init_phone_input('phone-number');
+}
+
 function form_submit() {
     // Collect & validate the information
     let first_name = document.getElementById("first-name").value;
