@@ -40,6 +40,7 @@ export class Table<T extends TableValue, B extends TableBuilder<T>> {
         let table = new Table();
 
         table.columns = builder.get_columns();
+        let column_width = 100 / table.columns.length;
 
         // Create the table element
         table.element = document.createElement("table");
@@ -50,6 +51,7 @@ export class Table<T extends TableValue, B extends TableBuilder<T>> {
         for (let column of table.columns) {
             let column_header = document.createElement("th");
             column_header.innerText = column.get_display();
+            column_header.style.width = `${column_width}%`;
             table_header_row.appendChild(column_header);
         }
         table_header.appendChild(table_header_row);
