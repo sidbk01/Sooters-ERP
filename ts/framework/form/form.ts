@@ -1,4 +1,4 @@
-import { ajax } from "../ajax";
+import { NumberParser, ajax } from "../ajax";
 import { FormBuilder } from "./builder";
 
 export class Form<T extends FormBuilder> {
@@ -34,15 +34,17 @@ export class Form<T extends FormBuilder> {
         try {
             value = this.builder.collect_and_validate();
         } catch (e) {
-            console.log(`Validation Error: ${e}`);
+            console.log(`An error occurred while validating the form`);
+            console.log(e);
             return;
         }
 
         try {
-            let result = await ajax<number>("POST", this.builder.get_post_url(), value);
-            console.log(result);
+            let result = await ajax<number, NumberParser>("POST", this.builder.get_post_url(), new NumberParser(), value);
+            window.location.href = this.builder.get_redirect_url(result);
         } catch (e) {
-            console.log(`Network Error: ${e}`);
+            console.log(`A networking error has occurred`);
+            console.log(e);
             alert("An error has occurred, please report this to Lance Hart");
         }
     }

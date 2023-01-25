@@ -1,8 +1,10 @@
-use crate::state::{database::Database, error::StateCreationError};
-use rocket::Data;
+use crate::{
+    routes::Location,
+    state::{database::Database, error::StateCreationError},
+};
 
 pub struct DatabaseCache {
-    locations: Vec<String>,
+    locations: Vec<Location>,
 }
 
 impl DatabaseCache {
@@ -10,5 +12,9 @@ impl DatabaseCache {
         let locations = database.execute_query("SELECT * FROM Locations").await?;
 
         Ok(DatabaseCache { locations })
+    }
+
+    pub fn locations(&self) -> &[Location] {
+        &self.locations
     }
 }

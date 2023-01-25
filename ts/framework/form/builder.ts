@@ -6,4 +6,6 @@ export interface FormBuilder {
     get_post_url(): string;
 
     collect_and_validate(): any;
+
+    get_redirect_url(id: number): string;
 }

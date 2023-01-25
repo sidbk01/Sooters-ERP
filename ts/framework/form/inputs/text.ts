@@ -6,11 +6,7 @@ export class TextInput implements FormInput {
     private input: HTMLInputElement;
     private error?: Error;
 
-    validation_function: (text: string) => boolean;
-
-    public constructor(placeholder: string, max_length: number, required_error_message?: string, validation_function = (_: string) => { return true; }) {
-        this.validation_function = validation_function;
-
+    public constructor(placeholder: string, max_length: number, required_error_message?: string) {
         this.container = document.createElement("div");
 
         if (required_error_message) {
@@ -38,8 +34,6 @@ export class TextInput implements FormInput {
             this.input.onkeydown = () => { this.clear_error(); };
             throw this.error.get_message();
         }
-
-        console.log(`Text value: ${value}`);
 
         return value;
     }

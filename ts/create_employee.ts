@@ -1,8 +1,9 @@
-import { Form, FormBuilder, FormInput, TextInput } from "./framework/index";
-import { Location } from "./model/location";
+import { Form, FormBuilder, FormInput, SelectInput, TextInput } from "./framework/index";
+import { Location } from "./model/index";
 
 class CreateEmployeeBuilder implements FormBuilder {
     private name: TextInput;
+    private primary_location: SelectInput<Location>;
 
     private constructor() { }
 
@@ -10,32 +11,38 @@ class CreateEmployeeBuilder implements FormBuilder {
         let builder = new CreateEmployeeBuilder();
 
         builder.name = new TextInput("Name", 64, "A name is required");
-
-        console.log(await Location.get_locations());
+        builder.primary_location = new SelectInput("Primary Location", "A location is required", await Location.get_locations());
 
         return builder;
     }
 
-    public get_submit_text(): string {
-        return "Create";
-    }
-
     public get_inputs(): FormInput[] {
         return [
-            this.name
+            this.name,
+            this.primary_location,
         ];
+    }
+
+    public collect_and_validate(): any {
+        let name = this.name.validate_and_get();
+        let primary_location = this.primary_location.validate_and_get();
+
+        return {
+            name: name,
+            primary_location: primary_location,
+        };
     }
 
     public get_post_url(): string {
         return "/employees/create";
     }
 
-    public collect_and_validate(): any {
-        let name = this.name.validate_and_get();
+    public get_redirect_url(id: number): string {
+        return `/employee?id=${id}`;
+    }
 
-        return {
-            name: name,
-        };
+    public get_submit_text(): string {
+        return "Create";
     }
 }
 

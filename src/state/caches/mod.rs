@@ -67,4 +67,8 @@ impl Caches {
     pub(super) fn images(&self) -> &ImageCache {
         &self.image_cache
     }
+
+    pub(super) fn database_cache(&self) -> &DatabaseCache {
+        &self.database_cache
+    }
 }

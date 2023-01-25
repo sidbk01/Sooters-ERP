@@ -6,6 +6,7 @@ extern crate serde;
 mod config;
 mod routes;
 mod state;
+mod util;
 
 const DEFAULT_CONFIG_PATH: &'static str = "./config.json";
 

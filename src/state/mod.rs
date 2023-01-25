@@ -1,5 +1,6 @@
 use crate::{config::Config, routes::RouteError};
 use caches::Caches;
+use caches::DatabaseCache;
 use database::Database;
 use error::StateCreationError;
 use rocket::{
@@ -88,6 +89,10 @@ impl State {
 
     pub fn images(&self) -> &ImageCache {
         self.caches.images()
+    }
+
+    pub fn database_cache(&self) -> &DatabaseCache {
+        self.caches.database_cache()
     }
 
     pub async fn log_error<E: std::error::Error>(&self, error: E) {
