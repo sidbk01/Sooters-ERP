@@ -366,3 +366,8 @@ input[type=text].search {
 .location-filter select {
     display: inline;
 }
+
+.error {
+    color: darkred;
+    margin-bottom: -0.125rem;
+}

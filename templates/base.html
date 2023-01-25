@@ -17,14 +17,12 @@
 
     <link rel="stylesheet" href="/css/reset" />
     <link rel="stylesheet" href="/css/main" />
-    <script src="/js/ajax" type="text/javascript"></script>
-    <script src="/js/preferences" type="text/javascript"></script>
 
     {% block head %}
     {% endblock %}
 </head>
 
-<body onload='update_preferences(); if (typeof on_load === "function") { on_load() }'>
+<body>
     <div id="header">
         <img src="/images/logo" alt="Sooter's" onclick="window.location.href = '/'" />
         <div class="preferences" id="preferences">

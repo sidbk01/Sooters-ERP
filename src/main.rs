@@ -3,15 +3,9 @@ extern crate rocket;
 extern crate mysql;
 extern crate serde;
 
-mod cache;
 mod config;
-mod database;
-mod image_cache;
-mod model;
 mod routes;
 mod state;
-
-pub use model::*;
 
 const DEFAULT_CONFIG_PATH: &'static str = "./config.json";
 

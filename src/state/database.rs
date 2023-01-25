@@ -1,14 +1,9 @@
+use super::error::DatabaseError;
 use crate::config::DatabaseInfo;
 use mysql::{
     prelude::{FromRow, Queryable},
     Params, Pool,
 };
-
-pub enum DatabaseError {
-    ConnectionError(mysql::Error),
-    QueryError(mysql::Error),
-    PoolError,
-}
 
 pub struct Empty;
 
@@ -164,29 +159,5 @@ impl FromRow for ID {
         row.take("LAST_INSERT_ID()")
             .map(|id| ID(id))
             .ok_or(mysql::FromRowError(row))
-    }
-}
-
-//===========================
-// || ERROR IMPLEMENTATIONS
-//===========================
-
-impl std::error::Error for DatabaseError {}
-
-impl std::fmt::Debug for DatabaseError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        std::fmt::Display::fmt(self, f)
-    }
-}
-
-impl std::fmt::Display for DatabaseError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            DatabaseError::ConnectionError(error) => {
-                write!(f, "Unable to connect to the database - {}", error)
-            }
-            DatabaseError::QueryError(error) => write!(f, "Unable to perform query - {}", error),
-            DatabaseError::PoolError => write!(f, "Unable to get connection from pool"),
-        }
     }
 }

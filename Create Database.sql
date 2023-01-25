@@ -15,6 +15,8 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 DROP SCHEMA IF EXISTS `sooters_dev` ;
 
+SET GLOBAL log_bin_trust_function_creators = 1;
+
 -- -----------------------------------------------------
 -- Schema sooters_dev
 -- -----------------------------------------------------
@@ -173,7 +175,7 @@ CREATE TABLE IF NOT EXISTS `sooters_dev`.`orders` (
   `Receiver` INT UNSIGNED NOT NULL,
   `OrderType` INT UNSIGNED NOT NULL,
   `Customer` INT UNSIGNED NOT NULL,
-  `DateReceived` DATE NOT NULL DEFAULT curdate(),
+  `DateReceived` DATE NOT NULL DEFAULT (curdate()),
   `DateDue` DATE NOT NULL,
   `DateComplete` DATE NULL DEFAULT NULL,
   `Paid` TINYINT UNSIGNED NOT NULL DEFAULT '0',

@@ -8,6 +8,6 @@ pub(crate) async fn images(
 ) -> Result<(ContentType, &[u8]), RouteError> {
     match state.images().get(&filename) {
         Some((image_type, image)) => Ok((image_type, image)),
-        None => Err(RouteError::CSSError(filename)),
+        None => Err(RouteError::ImageError(filename)),
     }
 }

@@ -2,28 +2,13 @@
 {% block title %}Create Employee{% endblock title %}
 
 {% block head %}
-<script src="/js/create_employee" type="text/javascript"></script>
+<script src="/js/create_employee" type="module"></script>
 {% endblock %}
 
 {% block content %}
 <h2>Create Employee</h2>
 
-<form id="create-form" onsubmit="return false;">
-    <div class="info-block">
-        <div class="info-labels">
-            <label for="name">Name:</label>
-            <div style="display: none;" id="name-error-label"></div>
-            <label for="primary-location">Primary Location:</label>
-        </div>
-        <div class="info-inputs">
-            <input type="text" id="name" name="name" required />
-            <div style="display: none; color: red;" id="name-error">A name is required</div>
-            <select id="primary-location" name="primary-location">
-            </select>
-        </div>
-    </div>
-    <input type="submit" value="Create" onclick="form_submit()" />
-</form>
+<div id="create-employee"></div>
 
 <button onclick="window.location.href = '/employees'">Back</button>
 
