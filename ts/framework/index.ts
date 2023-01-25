@@ -1,3 +1,4 @@
+export * from "./ajax";
 export * from "./error";
 export * from "./form/index";
-export * from "./ajax";
+export * from "./table/index";

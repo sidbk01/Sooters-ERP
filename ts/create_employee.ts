@@ -46,11 +46,14 @@ class CreateEmployeeBuilder implements FormBuilder {
     }
 }
 
-CreateEmployeeBuilder.create().then((builder) => {
+async function create_form() {
+    let builder = await CreateEmployeeBuilder.create();
+
     new Form("create-employee", builder);
-}).catch((error) => {
+}
+
+create_form().catch((error) => {
     console.log("Error while creating the builder");
     console.log(error);
     alert("There was an error initializing the page");
-})
-
+});

@@ -31,6 +31,21 @@ export class Location implements SelectOption {
         return Location.locations;
     }
 
+    public static async get_location(id: number): Promise<Location> {
+        let locations = await Location.get_locations();
+
+        for (let location of locations) {
+            if (location.id == id)
+                return location;
+        }
+
+        throw `Invalid location ID (${id})`;
+    }
+
+    public get_name(): string {
+        return this.name;
+    }
+
     public get_select_text(): string {
         return this.name;
     }
