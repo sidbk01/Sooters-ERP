@@ -1,10 +1,19 @@
 import { Form, FormBuilder, FormInput, TextInput } from "./framework/index";
+import { Location } from "./model/location";
 
 class CreateEmployeeBuilder implements FormBuilder {
     private name: TextInput;
 
-    public constructor() {
-        this.name = new TextInput("Name", 64, "A name is required");
+    private constructor() { }
+
+    public static async create(): Promise<CreateEmployeeBuilder> {
+        let builder = new CreateEmployeeBuilder();
+
+        builder.name = new TextInput("Name", 64, "A name is required");
+
+        console.log(await Location.get_locations());
+
+        return builder;
     }
 
     public get_submit_text(): string {
@@ -30,4 +39,11 @@ class CreateEmployeeBuilder implements FormBuilder {
     }
 }
 
-new Form("create-employee", new CreateEmployeeBuilder());
+CreateEmployeeBuilder.create().then((builder) => {
+    new Form("create-employee", builder);
+}).catch((error) => {
+    console.log("Error while creating the builder");
+    console.log(error);
+    alert("There was an error initializing the page");
+})
+
