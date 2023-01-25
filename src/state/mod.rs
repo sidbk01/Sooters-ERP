@@ -32,7 +32,7 @@ impl State {
         let configuration = Config::load(path).await?;
 
         // Connect to the database
-        let database = Database::connect(configuration.database_info())?;
+        let mut database = Database::connect(configuration.database_info())?;
 
         // Load the templates
         let templates = match Tera::new("templates/**/*.html") {
@@ -41,7 +41,7 @@ impl State {
         };
 
         // Load the caches
-        let caches = Caches::load()?;
+        let caches = Caches::load(&mut database).await?;
 
         // Open the error log
         let error_log = match configuration.error_log() {

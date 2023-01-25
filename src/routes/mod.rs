@@ -2,6 +2,7 @@ use rocket::{Build, Rocket};
 
 mod employee;
 mod error;
+mod locations;
 mod static_assets;
 
 pub use error::RouteError;
