@@ -1,5 +1,6 @@
-import { TableBuilder, TableValue } from "./builder";
+import { TableBuilder } from "./builder";
 import { Table } from "./table";
+import { TableValue } from "./value";
 
 export class Search<T extends TableValue, B extends TableBuilder<T>> {
     private element: HTMLInputElement;

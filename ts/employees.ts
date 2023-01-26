@@ -1,5 +1,5 @@
-import { Table, TableBuilder, TableColumn, ajax } from "./framework/index";
-import { Employee } from "./model/index";
+import { Table, TableBuilder, TableColumn } from "./framework/index";
+import { Employee, Location } from "./model/index";
 
 declare const ACTIVE: boolean;
 
@@ -16,10 +16,10 @@ class EmployeesBuilder implements TableBuilder<Employee> {
         return builder;
     }
 
-    public get_columns(): TableColumn[] {
+    public async get_columns(): Promise<TableColumn[]> {
         return [
             new TableColumn("Name", "name"),
-            new TableColumn("Primary Location", "primary_location"),
+            new TableColumn("Primary Location", "primary_location", undefined, [await Location.get_location_filter_options(), "Select Location"]),
         ];
     }
 

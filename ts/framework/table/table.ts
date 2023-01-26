@@ -1,29 +1,7 @@
-import { TableBuilder, TableValue } from "./builder";
+import { TableBuilder } from "./builder";
+import { TableColumn } from "./column";
 import { Search } from "./search";
-
-export class TableColumn {
-    private display: string;
-    private field: string;
-    private searchable: boolean;
-
-    public constructor(display: string, field: string, searchable = true) {
-        this.display = display;
-        this.field = field;
-        this.searchable = searchable;
-    }
-
-    public get_display(): string {
-        return this.display;
-    }
-
-    public get_field(): string {
-        return this.field;
-    }
-
-    public is_searchable(): boolean {
-        return this.searchable;
-    }
-}
+import { TableValue } from "./value";
 
 export class Table<T extends TableValue, B extends TableBuilder<T>> {
     private element: HTMLTableElement;
@@ -39,7 +17,7 @@ export class Table<T extends TableValue, B extends TableBuilder<T>> {
     public static async create<T extends TableValue, B extends TableBuilder<T>>(id: string, builder: B): Promise<Table<T, B>> {
         let table = new Table();
 
-        table.columns = builder.get_columns();
+        table.columns = await builder.get_columns();
         let column_width = 100 / table.columns.length;
 
         // Create the table element
@@ -50,8 +28,18 @@ export class Table<T extends TableValue, B extends TableBuilder<T>> {
         let table_header_row = document.createElement("tr");
         for (let column of table.columns) {
             let column_header = document.createElement("th");
-            column_header.innerText = column.get_display();
             column_header.style.width = `${column_width}%`;
+
+            column_header.appendChild(document.createTextNode(column.get_display()));
+
+            let filter = column.get_filter();
+            if (typeof filter !== "undefined") {
+                filter.set_target(column_header);
+
+                column_header.appendChild(filter.get_image_element());
+                column_header.appendChild(filter.get_dropdown_element());
+            }
+
             table_header_row.appendChild(column_header);
         }
         table_header.appendChild(table_header_row);

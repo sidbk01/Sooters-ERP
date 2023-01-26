@@ -1,4 +1,4 @@
-import { ajax, AjaxParser, SelectOption } from "../framework/index";
+import { ajax, AjaxParser, FilterOption, SelectOption } from "../framework/index";
 
 class LocationsParser implements AjaxParser<Location[]> {
     parse_object(object: any): Location[] {
@@ -31,6 +31,10 @@ export class Location implements SelectOption {
         return Location.locations;
     }
 
+    public static async get_location_filter_options(): Promise<FilterOption[]> {
+        return (await Location.get_locations()).map((location) => { return location.to_filter_option(); });
+    }
+
     public static async get_location(id: number): Promise<Location> {
         let locations = await Location.get_locations();
 
@@ -40,6 +44,10 @@ export class Location implements SelectOption {
         }
 
         throw `Invalid location ID (${id})`;
+    }
+
+    public to_filter_option(): FilterOption {
+        return new FilterOption(this.name, this.id);
     }
 
     public get_name(): string {
