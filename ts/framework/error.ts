@@ -1,11 +1,10 @@
 export class Error {
     private element: HTMLParagraphElement;
-    private visible: boolean;
 
-    public constructor(message: string) {
+    public constructor() {
         this.element = document.createElement("p");
         this.element.className = "error";
-        this.element.innerText = message;
+        this.element.innerText = "";
     }
 
     public get_element(): HTMLParagraphElement {
@@ -18,14 +17,5 @@ export class Error {
 
     public set_message(message: string) {
         this.element.innerText = message;
-    }
-
-    public is_visible(): boolean {
-        return this.visible;
-    }
-
-    public set_visible(visible: boolean) {
-        this.element.style.display = visible ? "block" : "none";
-        this.visible = visible;
     }
 }

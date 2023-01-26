@@ -10,8 +10,8 @@ class CreateEmployeeBuilder implements FormBuilder {
     public static async create(): Promise<CreateEmployeeBuilder> {
         let builder = new CreateEmployeeBuilder();
 
-        builder.name = new TextInput("Name", 64, "A name is required");
-        builder.primary_location = new SelectInput("Primary Location", "A location is required", await Location.get_locations());
+        builder.name = new TextInput("Name", 64, validate_name);
+        builder.primary_location = new SelectInput("Primary Location", await Location.get_locations());
 
         return builder;
     }
@@ -44,6 +44,13 @@ class CreateEmployeeBuilder implements FormBuilder {
     public get_submit_text(): string {
         return "Create";
     }
+}
+
+function validate_name(text: string) {
+    if (text.length == 0)
+        throw "A name is required";
+    else if (text.length > 64)
+        throw "Name must be less than 64 characters";
 }
 
 async function create_form() {
