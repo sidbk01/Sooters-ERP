@@ -1,3 +1,5 @@
+import { TableValue } from "../value";
+
 export class FilterOption {
     private display: string;
     private value: any;
@@ -13,5 +15,9 @@ export class FilterOption {
 
     public get_value(): any {
         return this.value;
+    }
+
+    public filter_value(value: TableValue, field: string): boolean {
+        return value.filter(field, this.value);
     }
 }

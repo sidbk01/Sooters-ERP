@@ -32,6 +32,22 @@ export class Employee implements TableValue {
         }
     }
 
+    public filter(field: string, value: any): boolean {
+        switch (field) {
+            case "id":
+                return this.id == value;
+
+            case "name":
+                return this.name == value;
+
+            case "primary_location":
+                return this.primary_location == value;
+
+            default:
+                throw `"${field}" is not a valid field for and employee`;
+        }
+    }
+
     public generate_on_click(): string {
         return `/employee?id=${this.id}`;
     }

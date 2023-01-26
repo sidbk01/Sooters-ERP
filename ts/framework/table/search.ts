@@ -7,8 +7,10 @@ export class Search<T extends TableValue, B extends TableBuilder<T>> {
     private table: Table<T, B>;
 
     public constructor(table: Table<T, B>) {
+        // Set the target
         this.table = table;
 
+        // Create the search element
         this.element = document.createElement("input");
         this.element.type = "text";
         this.element.placeholder = "Search";
@@ -21,6 +23,6 @@ export class Search<T extends TableValue, B extends TableBuilder<T>> {
     }
 
     private perform_search() {
-        this.table.set_text_filter(this.element.value.toUpperCase());
+        this.table.search(this.element.value);
     }
 }
