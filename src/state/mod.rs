@@ -15,6 +15,7 @@ mod database;
 mod error;
 
 pub use caches::{FileCache, FilePath, ImageCache};
+pub use database::Empty;
 pub use error::DatabaseError;
 
 pub struct State {

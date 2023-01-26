@@ -2,27 +2,17 @@
 {% block title %}Employee{% endblock title %}
 
 {% block head %}
-<script src="/js/employee" type="text/javascript"></script>
+<script src="/js/employee" type="module"></script>
 <script type="text/javascript">
     const ID = {{ id }};
 </script>
 {% endblock %}
 
 {% block content %}
-<h2 id="name"></h2>
-<div id="name-error" style="display: none; color: red;">A name is required!</div>
-
-<div class="info-block" id="info">
-    <div class="info-labels">
-        <div>Primary Location: </div>
-    </div>
-    <div class="info-inputs">
-        <div id="primary-location"></div>
-    </div>
+<div id="employee">
 </div>
 
-<div id="buttons"></div>
-<button onclick="begin_edit()" id="edit-button">Edit</button>
+<div id="activate-button"></div>
 <button id="back-link" onclick="window.location.href = '/employees'">Back</button>
 
 {% endblock content %}

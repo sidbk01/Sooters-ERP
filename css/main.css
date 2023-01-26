@@ -226,7 +226,7 @@ textarea {
 .info-inputs {
     display: flex;
     flex-direction: column;
-    width: 50%;
+    flex-grow: 1;
 }
 
 .info-inputs div {

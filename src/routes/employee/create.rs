@@ -1,4 +1,7 @@
-use crate::{routes::error::RouteError, state::State};
+use crate::{
+    routes::error::RouteError,
+    state::{Empty, State},
+};
 use mysql::params;
 use rocket::{response::content::RawHtml, serde::json::Json};
 use serde::Deserialize;
@@ -9,9 +12,6 @@ pub struct NewEmployee {
     name: String,
     primary_location: usize,
 }
-
-const CREATE_QUERY: &'static str =
-    "INSERT INTO Employees (Name, PrimaryLocation) VALUES (:name, :primary_location)";
 
 #[get("/employees/create")]
 pub(super) async fn get_create(
@@ -36,7 +36,7 @@ pub(super) async fn post_create(
     let id = state
         .database()
         .execute_query_id::<_, _>(
-            CREATE_QUERY,
+            "INSERT INTO Employees (Name, PrimaryLocation) VALUES (:name, :primary_location)",
             params! {
                 "name" => &info.name,
                 "primary_location" => info.primary_location,
@@ -45,4 +45,31 @@ pub(super) async fn post_create(
         .await?;
 
     Ok(format!("{}", id))
+}
+
+#[post("/employees/update/<id>", data = "<info>")]
+pub(crate) async fn update(
+    id: usize,
+    info: Json<NewEmployee>,
+    state: &rocket::State<State>,
+) -> Result<String, RouteError> {
+    if &info.name == "" {
+        return Err(RouteError::InputError(
+            "Cannot set an employee's name to nothing",
+        ));
+    }
+
+    state
+        .database()
+        .execute_query_parameters::<_, Empty, _>(
+            "UPDATE Employees SET Name = :name, PrimaryLocation = :primary_location WHERE ID = :id",
+            params! {
+                "id" => id,
+                "name" => &info.name,
+                "primary_location" => info.primary_location,
+            },
+        )
+        .await?;
+
+    Ok(String::new())
 }

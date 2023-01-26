@@ -5,6 +5,7 @@ use serde::Serialize;
 
 mod all;
 mod create;
+mod one;
 
 #[derive(Serialize)]
 pub struct Employee {
@@ -20,8 +21,12 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
         routes![
             create::get_create,
             create::post_create,
+            create::update,
             all::view,
-            all::data
+            all::data,
+            one::view,
+            one::data,
+            one::set_active,
         ],
     )
 }
