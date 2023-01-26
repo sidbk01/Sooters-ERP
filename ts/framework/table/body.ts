@@ -38,4 +38,22 @@ export class TableBody {
         for (let row of this.rows)
             row.update_filter(index);
     }
+
+    public sort(index: number, ascending: boolean) {
+        // Remove all rows from the body
+        this.element.innerHTML = "";
+
+        // Sort the rows
+        this.rows.sort((a, b) => {
+            let result = a.compare(b, index);
+            if (!ascending)
+                result = -result;
+
+            return result;
+        });
+
+        // Reinsert the rows in sorted order
+        for (let row of this.rows)
+            this.element.appendChild(row.get_element());
+    }
 }

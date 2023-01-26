@@ -3,8 +3,11 @@ import { TableColumn } from "./column";
 
 export class TableHeader {
     private element: HTMLTableSectionElement;
+    private columns: TableColumn[];
 
     public constructor(columns: TableColumn[], body: TableBody) {
+        this.columns = columns;
+
         // Calculate the column width
         let column_width = 100 / columns.length;
 
@@ -21,6 +24,11 @@ export class TableHeader {
             // Create and style the column
             let column_header = document.createElement("th");
             column_header.style.width = `${column_width}%`;
+
+            // Get the sort icon
+            let sort = column.get_sort();
+            sort.set_table(i, this, body);
+            column_header.appendChild(sort.get_element());
 
             // Add the display name
             column_header.appendChild(document.createTextNode(column.get_display()));
@@ -42,5 +50,14 @@ export class TableHeader {
 
     public get_element(): HTMLTableSectionElement {
         return this.element;
+    }
+
+    public reset_sorts(expection: number) {
+        for (let i = 0; i < this.columns.length; i++) {
+            if (i == expection)
+                continue;
+
+            this.columns[i].get_sort().reset_sort();
+        }
     }
 }

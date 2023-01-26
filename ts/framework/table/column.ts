@@ -1,11 +1,14 @@
 import { TableBody } from "./body";
 import { Filter } from "./filter/filter";
 import { FilterOption } from "./filter/option";
+import { TableSort } from "./sort";
 
 export class TableColumn {
     private display: string;
     private field: string;
     private searchable: boolean;
+
+    private sort: TableSort;
 
     private filter_options?: [FilterOption[], string];
 
@@ -16,6 +19,7 @@ export class TableColumn {
         this.field = field;
         this.searchable = searchable;
         this.filter_options = filter_options;
+        this.sort = new TableSort();
     }
 
     public create_filter(index: number, body: TableBody, target: HTMLTableCellElement): Filter | undefined {
@@ -37,6 +41,10 @@ export class TableColumn {
 
     public get_filter(): Filter | undefined {
         return this.filter;
+    }
+
+    public get_sort(): TableSort {
+        return this.sort;
     }
 
     public is_searchable(): boolean {

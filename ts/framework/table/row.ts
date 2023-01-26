@@ -97,6 +97,19 @@ export class TableRow {
         this.update_display();
     }
 
+    public compare(other: TableRow, index: number): number {
+        let a = (this.element.children[index] as HTMLElement).innerText;
+        let b = (other.element.children[index] as HTMLElement).innerText;
+
+        if (a < b)
+            return -1;
+
+        if (a > b)
+            return 1;
+
+        return 0;
+    }
+
     private update_display() {
         let display = this.search_status;
 
