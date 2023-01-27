@@ -9,10 +9,15 @@ export interface AjaxParser<T> {
 }
 
 export function ajax<T = undefined, P extends AjaxParser<T> = NoParse>(method: string, url: string, parser?: P, data?: any): Promise<T> {
+    console.debug(`Ajax ${method} ${url} ${data ? "with" : "without"} data and ${parser ? "with" : "without"} parser`);
+    if (data)
+        console.debug(data);
+
     return new Promise(function (resolve, reject) {
         let xhttp = new XMLHttpRequest();
         xhttp.onload = function () {
             if (this.readyState == 4 && this.status >= 200 && this.status < 300) {
+                console.debug(`Ajax response for ${method} ${url}: ${this.responseText}`);
                 if (parser) {
                     let object = JSON.parse(this.responseText);
                     try {

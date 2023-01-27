@@ -1,12 +1,10 @@
-import { TableBuilder } from "./builder";
 import { Table } from "./table";
-import { TableValue } from "./value";
 
-export class Search<T extends TableValue, B extends TableBuilder<T>> {
+export class Search {
     private element: HTMLInputElement;
-    private table: Table<T, B>;
+    private table: Table;
 
-    public constructor(table: Table<T, B>) {
+    public constructor(table: Table) {
         // Set the target
         this.table = table;
 

@@ -5,6 +5,8 @@ export class InputContainer {
     private error: Error;
 
     public constructor(label: string, input: HTMLInputElement | HTMLSelectElement) {
+        console.debug(`Creating InputContainer for "${label}"`)
+
         this.container = document.createElement("div");
         this.container.style.textAlign = "left";
 

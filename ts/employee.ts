@@ -57,8 +57,8 @@ class EmployeeBuilder implements DisplayBuilder {
         ajax("POST", path).then((_) => {
             window.location.reload();
         }).catch((error) => {
-            console.log("Error changing the active status");
-            console.log(error);
+            console.error("Error changing the active status");
+            console.error(error);
             alert(`There was an error while ${this.employee.is_active() ? "deactivating" : "activating"} the employee`);
         });
 
@@ -72,7 +72,7 @@ async function create_display() {
 }
 
 create_display().catch((error) => {
-    console.log("Error while creating the builder");
-    console.log(error);
+    console.error("Error while creating the builder");
+    console.error(error);
     alert("There was an error initializing the page");
 });

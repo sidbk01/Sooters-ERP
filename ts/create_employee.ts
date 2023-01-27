@@ -60,7 +60,7 @@ async function create_form() {
 }
 
 create_form().catch((error) => {
-    console.log("Error while creating the builder");
-    console.log(error);
+    console.error("Error while creating the builder");
+    console.error(error);
     alert("There was an error initializing the page");
 });

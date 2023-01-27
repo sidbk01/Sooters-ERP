@@ -32,14 +32,16 @@ export class TableRow {
     private search_status: boolean;
     private columns: ColumnStatus[];
 
-    private constructor(columns: TableColumn[], value: TableValue) {
+    private constructor(id: string, columns: TableColumn[], value: TableValue) {
+        console.debug(`Creating TableRow on Table "${id}"`);
+
         this.search_status = true;
         this.columns = columns.map((column) => { return new ColumnStatus(column); });
         this.value = value;
     }
 
-    public static async create(value: TableValue, columns: TableColumn[]): Promise<TableRow> {
-        let row = new TableRow(columns, value);
+    public static async create(id: string, value: TableValue, columns: TableColumn[]): Promise<TableRow> {
+        let row = new TableRow(id, columns, value);
 
         // Create the row element
         row.element = document.createElement("tr");

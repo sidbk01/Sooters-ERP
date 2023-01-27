@@ -10,6 +10,8 @@ export class SelectDisplayField implements DisplayFieldInput {
     private options: SelectOption[];
 
     public constructor(options: SelectOption[], initial_value: number) {
+        console.debug(`Creating SelectDisplayField`);
+
         this.value = initial_value;
         this.options = options;
 

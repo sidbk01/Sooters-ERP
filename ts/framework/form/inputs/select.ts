@@ -1,4 +1,3 @@
-import { Error } from "../../error";
 import { FormInput } from "../input";
 import { InputContainer } from "./container";
 
@@ -10,8 +9,12 @@ export interface SelectOption {
 export class SelectInput<T extends SelectOption> implements FormInput {
     private container: InputContainer;
     private select: HTMLSelectElement;
+    private label: string;
 
     public constructor(label: string, options: T[]) {
+        console.debug(`Creating SelectInput "${label}"`);
+        this.label = label;
+
         if (options.length == 0)
             throw "There must be at least one option for a select";
 
@@ -32,7 +35,13 @@ export class SelectInput<T extends SelectOption> implements FormInput {
         return this.container.get_element();
     }
 
+    public get_name(): string {
+        return this.label;
+    }
+
     public validate_and_get(): number {
-        return Number(this.select.value);
+        let value = Number(this.select.value);
+        console.debug(`SelectInput "${this.label}" submitted with value "${value}"`);
+        return value;
     }
 }

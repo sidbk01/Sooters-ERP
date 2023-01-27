@@ -18,6 +18,8 @@
     <link rel="stylesheet" href="/css/reset" />
     <link rel="stylesheet" href="/css/main" />
 
+    <script src="/js/logging" type="module"></script>
+
     {% block head %}
     {% endblock %}
 </head>
@@ -44,6 +46,10 @@
     <div id="content">
         {% block content %}
         {% endblock content %}
+    </div>
+
+    <div id="footer">
+        <div id="report" class="report">Report Bug / Provide Feedback</div>
     </div>
 </body>
 

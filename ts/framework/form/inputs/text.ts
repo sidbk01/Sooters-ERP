@@ -5,10 +5,14 @@ import { InputContainer } from "./container";
 export class TextInput implements FormInput {
     private container: InputContainer;
     private input: HTMLInputElement;
+    private label: string;
 
     private validate?: (text: string) => void;
 
     public constructor(label: string, max_length: number, validate?: (text: string) => void) {
+        console.debug(`Creating TextInput "${label}"`);
+        this.label = label;
+
         this.input = document.createElement("input");
         this.input.type = "text";
         this.input.maxLength = max_length;
@@ -22,8 +26,14 @@ export class TextInput implements FormInput {
         return this.container.get_element();
     }
 
+    public get_name(): string {
+        return this.label;
+    }
+
     public validate_and_get(): string {
         let value = this.input.value.trim();
+
+        console.debug(`TextInput "${this.label}" submitted with value "${value}"`);
 
         if (this.validate) {
             try {

@@ -6,7 +6,9 @@ declare const ACTIVE: boolean;
 class EmployeesBuilder implements TableBuilder<Employee> {
     private employees: Employee[];
 
-    private constructor() { }
+    private constructor() {
+        console.debug("Creating EmployeesBuilder");
+    }
 
     public static async create(): Promise<EmployeesBuilder> {
         let builder = new EmployeesBuilder();
@@ -35,8 +37,8 @@ async function create_table() {
 }
 
 create_table().catch((error) => {
-    console.log("Error while creating the builder");
-    console.log(error);
+    console.error("Error while creating the builder");
+    console.error(error);
     alert("There was an error initializing the page");
 });
 ;

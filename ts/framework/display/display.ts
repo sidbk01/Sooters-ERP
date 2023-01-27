@@ -12,7 +12,9 @@ export class Display<B extends DisplayBuilder> {
 
     private builder: B;
 
-    private constructor(builder: B) {
+    private constructor(id: string, builder: B) {
+        console.debug(`Creating Display "${id}"`);
+
         this.builder = builder;
     }
 
@@ -20,7 +22,7 @@ export class Display<B extends DisplayBuilder> {
         let target = document.getElementById(id);
 
         // Create the display
-        let display = new Display(builder);
+        let display = new Display(id, builder);
 
         // Create the title
         let title_container = document.createElement("h2");

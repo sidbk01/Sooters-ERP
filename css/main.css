@@ -375,3 +375,10 @@ input[type=text].search {
     margin-top: -0.2rem;
     margin-bottom: 0.25rem;
 }
+
+.report {
+    float: right;
+    color: #AAA;
+    margin-right: 1rem;
+    cursor: pointer;
+}
