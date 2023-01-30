@@ -6,7 +6,6 @@ export interface DisplayBuilder {
 
     get_title_max_length(): number;
     get_title_field_name(): string;
-    is_title_editable(): boolean;
 
     post_update(object: any): Promise<undefined>;
 }

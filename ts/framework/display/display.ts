@@ -1,14 +1,12 @@
 import { DisplayBuilder } from "./builder";
+import { DisplayButtons } from "./buttons";
 import { DisplayField } from "./field";
+import { DisplayTitle } from "./title";
 
 export class Display<B extends DisplayBuilder> {
+    private title: DisplayTitle;
     private fields: DisplayField[];
-
-    private edit_button: HTMLButtonElement;
-    private confirm_buttons: HTMLDivElement;
-
-    private title: HTMLDivElement;
-    private title_input: HTMLInputElement;
+    private buttons: DisplayButtons<B>;
 
     private builder: B;
 
@@ -25,19 +23,8 @@ export class Display<B extends DisplayBuilder> {
         let display = new Display(id, builder);
 
         // Create the title
-        let title_container = document.createElement("h2");
-
-        display.title = document.createElement("div");
-        display.title.innerHTML = builder.get_title();
-        title_container.appendChild(display.title);
-
-        display.title_input = document.createElement("input");
-        display.title_input.type = "text";
-        display.title_input.maxLength = builder.get_title_max_length();
-        display.title_input.style.display = "none";
-        title_container.appendChild(display.title_input);
-
-        target.appendChild(title_container);
+        display.title = new DisplayTitle(builder.get_title(), builder.get_title_max_length());
+        target.appendChild(display.title.get_element());
 
         // Create the container
         let container = document.createElement("div");
@@ -67,70 +54,47 @@ export class Display<B extends DisplayBuilder> {
         target.appendChild(container);
 
         // Create buttons
-        display.edit_button = document.createElement("button");
-        display.edit_button.innerText = "Edit";
-        display.edit_button.onclick = () => { display.begin_edit(); };
-        target.appendChild(display.edit_button);
-
-        display.confirm_buttons = document.createElement("div");
-        display.confirm_buttons.style.display = "none";
-
-        let confirm = document.createElement("button");
-        confirm.innerText = "Confirm";
-        confirm.onclick = () => { display.confirm_edit(); };
-        display.confirm_buttons.appendChild(confirm);
-
-        let cancel = document.createElement("button");
-        cancel.innerText = "Cancel";
-        cancel.onclick = () => { display.cancel_edit(); };
-        display.confirm_buttons.appendChild(cancel);
-
-        target.appendChild(display.confirm_buttons);
+        display.buttons = new DisplayButtons(display);
+        target.appendChild(display.buttons.get_element());
 
         return display;
     }
 
-    private begin_edit() {
-        // Update buttons
-        this.edit_button.style.display = "none";
-        this.confirm_buttons.style.display = "";
-
+    public begin_edit() {
         // Update title
-        if (this.builder.is_title_editable()) {
-            this.title.style.display = "none";
-            this.title_input.style.display = "";
-            this.title_input.value = this.title.innerText;
-        }
+        this.title.begin_edit();
 
         // Update fields
         for (let field of this.fields)
             field.get_input().begin_edit();
+
+        // Update buttons
+        this.buttons.begin_edit();
     }
 
-    private confirm_edit() {
+    public confirm_edit() {
         let result = {};
+
+        // Collect result from the title
+        result[this.builder.get_title_field_name()] = this.title.confirm_edit();
+
+        // Collect results from the fields
         for (let field of this.fields)
             result[field.get_name()] = field.get_input().confirm_edit();
 
-        result[this.builder.get_title_field_name()] = this.title_input.value;
-        this.title.innerText = this.title_input.value;
-
+        // Give the results to the builder
         this.builder.post_update(result).then(() => { this.cancel_edit(); }).catch(() => { alert("There was an error while updating"); });
     }
 
-    private cancel_edit() {
-        // Update buttons
-        this.edit_button.style.display = "";
-        this.confirm_buttons.style.display = "none";
-
+    public cancel_edit() {
         // Update title
-        if (this.builder.is_title_editable()) {
-            this.title.style.display = "";
-            this.title_input.style.display = "none";
-        }
+
 
         // Update fields        
         for (let field of this.fields)
             field.get_input().cancel_edit();
+
+        // Update buttons
+        this.buttons.end_edit();
     }
 }
