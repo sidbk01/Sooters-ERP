@@ -23,7 +23,7 @@ export class Display<B extends DisplayBuilder> {
         let display = new Display(id, builder);
 
         // Create the title
-        display.title = new DisplayTitle(builder.get_title(), builder.get_title_max_length());
+        display.title = new DisplayTitle(builder.get_title(), builder.get_title_max_length(), builder.get_title_field_name());
         target.appendChild(display.title.get_element());
 
         // Create the container
@@ -88,7 +88,7 @@ export class Display<B extends DisplayBuilder> {
 
     public cancel_edit() {
         // Update title
-
+        this.title.cancel_edit();
 
         // Update fields        
         for (let field of this.fields)

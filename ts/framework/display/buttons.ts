@@ -26,6 +26,8 @@ export class DisplayButtons<B extends DisplayBuilder> {
         cancel.innerText = "Cancel";
         cancel.onclick = () => { parent.cancel_edit(); };
         this.end_buttons.appendChild(cancel);
+
+        this.container.appendChild(this.end_buttons);
     }
 
     public get_element(): HTMLDivElement {
