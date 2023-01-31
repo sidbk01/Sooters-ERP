@@ -10,7 +10,7 @@ export class Employee implements TableValue {
     private primary_location: number;
 
     public static async get_employees(active: boolean): Promise<Employee[]> {
-        if (!Employee.employees) {
+        if (!this.employees) {
             console.debug("Getting employess");
             this.employees = await ajax("GET", `/employees/data?active=${active}`, new EmployeesParser());
         }

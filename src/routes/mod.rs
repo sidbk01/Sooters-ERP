@@ -1,5 +1,6 @@
 use rocket::{Build, Rocket};
 
+mod customers;
 mod employees;
 mod error;
 mod index;
@@ -14,6 +15,7 @@ pub(super) fn add_routes(mut server: Rocket<Build>) -> Rocket<Build> {
     server = static_assets::add_routes(server);
     server = employees::add_routes(server);
     server = orders::add_routes(server);
+    server = customers::add_routes(server);
 
     server.mount("/", routes![locations::get, index::get])
 }
