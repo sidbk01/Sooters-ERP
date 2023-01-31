@@ -76,7 +76,9 @@ export class Display<B extends DisplayBuilder> {
         let result = {};
 
         // Collect result from the title
-        result[this.builder.get_title_field_name()] = this.title.confirm_edit();
+        let [field_name, title_value] = this.title.confirm_edit();
+        if (field_name)
+            result[field_name] = title_value;
 
         // Collect results from the fields
         for (let field of this.fields)

@@ -24,7 +24,7 @@ export class FilterStatus {
         this.input = document.createElement("input");
         this.input.type = "checkbox";
         this.input.style.marginLeft = "0.25rem";
-        this.input.checked = true;
+        this.input.checked = option.is_initial();
         this.input.onchange = () => { body.update_filter(index); };
         this.container.appendChild(this.input);
     }

@@ -2,14 +2,20 @@ import { AjaxParser, TableValue, ajax } from "../framework/index";
 import { Location } from "./location";
 
 export class Employee implements TableValue {
+    private static employees?: Employee[] = undefined;
+
     private id: number;
     private name: string;
     private active: boolean;
     private primary_location: number;
 
     public static async get_employees(active: boolean): Promise<Employee[]> {
-        console.debug("Getting employess");
-        return ajax("GET", `/employees/data?active=${active}`, new EmployeesParser());
+        if (!Employee.employees) {
+            console.debug("Getting employess");
+            this.employees = await ajax("GET", `/employees/data?active=${active}`, new EmployeesParser());
+        }
+
+        return this.employees;
     }
 
     public static async get_employee(id: number): Promise<Employee> {
@@ -77,7 +83,7 @@ export class Employee implements TableValue {
         }
     }
 
-    public generate_on_click(): string {
+    public on_click_url(): string {
         return `/employee?id=${this.id}`;
     }
 }
@@ -101,12 +107,9 @@ export class NewEmployee {
 
 class EmployeesParser implements AjaxParser<Employee[]> {
     public parse_object(object: any): Employee[] {
-        let output = [];
-
-        for (let employee of object)
-            output.push(new Employee(employee.id, employee.name, employee.active, employee.primary_location));
-
-        return output;
+        return object.map((employee) => {
+            return new Employee(employee.id, employee.name, employee.active, employee.primary_location);
+        });
     }
 }
 

@@ -44,9 +44,9 @@ export class DisplayTitle {
         this.input.value = this.text.innerText;
     }
 
-    public confirm_edit(): [string, string] | undefined {
+    public confirm_edit(): [string | undefined, string] {
         if (!this.input)
-            return undefined;
+            return [undefined, ""];
 
         this.text.innerText = this.input.value;
         return [this.field_name, this.input.value];

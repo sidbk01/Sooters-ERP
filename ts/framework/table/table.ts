@@ -19,7 +19,7 @@ export class Table {
         // Get the columns
         console.debug(`Getting columns from builder for Table "${id}"`);
         let columns = await builder.get_columns();
-        ;
+
         // Create the table element
         table.element = document.createElement("table");
 

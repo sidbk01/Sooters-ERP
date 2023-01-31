@@ -30,6 +30,8 @@ export class FilterDropdown {
             this.element.append(status.get_element());
             this.statuses.push(status);
         }
+
+        body.update_filter(index);
     }
 
     public filter_value(value: TableValue, field: string): boolean {

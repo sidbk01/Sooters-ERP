@@ -47,7 +47,7 @@ export class TableRow {
         row.element = document.createElement("tr");
 
         // Add onclick if needed
-        let onclick_target = value.generate_on_click();
+        let onclick_target = value.on_click_url(window.location.pathname + window.location.search);
         if (onclick_target != "") {
             row.element.classList.add("clickable");
             row.element.onclick = () => { window.location.href = onclick_target };
