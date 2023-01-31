@@ -25,11 +25,20 @@ export class Customer implements TableValue {
         return this.customer_names[id];
     }
 
+
+    public static async get_customer(id: number): Promise<Customer> {
+        return ajax("GET", `/customer/data?id=${id}`, new CustomerParser());
+    }
+
     public constructor(id: number, name: string, phone_number: string, email: string) {
         this.id = id;
         this.name = name;
         this.phone_number = phone_number;
         this.email = email;
+    }
+
+    public get_name(): string {
+        return this.name;
     }
 
     public async render_field(field: string): Promise<string | HTMLElement> {
@@ -91,5 +100,11 @@ class CustomerNamesParser implements AjaxParser<string[]> {
             names[row.id] = row.name;
 
         return names;
+    }
+}
+
+class CustomerParser implements AjaxParser<Customer> {
+    parse_object(object: any): Customer {
+        return new Customer(object.id, object.name, object.phone_number, object.email);
     }
 }

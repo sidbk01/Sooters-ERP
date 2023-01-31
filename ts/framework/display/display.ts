@@ -23,7 +23,7 @@ export class Display<B extends DisplayBuilder> {
         let display = new Display(id, builder);
 
         // Create the title
-        display.title = new DisplayTitle(builder.get_title(), builder.get_title_max_length(), builder.get_title_field_name());
+        display.title = new DisplayTitle(builder);
         target.appendChild(display.title.get_element());
 
         // Create the container
@@ -76,13 +76,19 @@ export class Display<B extends DisplayBuilder> {
         let result = {};
 
         // Collect result from the title
-        let [field_name, title_value] = this.title.confirm_edit();
-        if (field_name)
-            result[field_name] = title_value;
+        try {
+            let [field_name, title_value] = this.title.confirm_edit();
+            if (field_name)
+                result[field_name] = title_value;
 
-        // Collect results from the fields
-        for (let field of this.fields)
-            result[field.get_name()] = field.get_input().confirm_edit();
+            // Collect results from the fields
+            for (let field of this.fields)
+                result[field.get_name()] = field.get_input().confirm_edit();
+        } catch (e) {
+            console.error(`Error while validating input`);
+            console.error(e);
+            return;
+        }
 
         // Give the results to the builder
         this.builder.post_update(result).then(() => { this.cancel_edit(); }).catch(() => { alert("There was an error while updating"); });

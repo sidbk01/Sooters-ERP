@@ -8,7 +8,9 @@ class EmployeeBuilder implements DisplayBuilder {
 
     private fields: DisplayField[];
 
-    private constructor() { }
+    private constructor() {
+        console.debug("Creating EmployeeBuilder");
+    }
 
     public static async create(): Promise<EmployeeBuilder> {
         let builder = new EmployeeBuilder();
@@ -43,8 +45,12 @@ class EmployeeBuilder implements DisplayBuilder {
         return "name";
     }
 
-    public is_title_editable(): boolean {
-        return true;
+    public validate_title(title: string) {
+        if (title.length == 0)
+            throw "A name is required";
+
+        if (title.length > 64)
+            throw "Name cannot be more than 64 characters";
     }
 
     public post_update(object: any): Promise<undefined> {

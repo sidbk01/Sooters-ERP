@@ -2,48 +2,21 @@
 {% block title %}Customer{% endblock title %}
 
 {% block head %}
-<script src="/js/customer" type="text/javascript"></script>
+<script src="/js/customer" type="module"></script>
 <script type="text/javascript">
     const ID = {{ id }};
 </script>
 {% endblock %}
 
 {% block content %}
-<h2 id="name"></h2>
-<div id="name-error" style="display: none; color: red;">A name is required!</div>
 
-<div class="info-block" id="info">
-    <div class="info-labels">
-        <div>Phone Number:</div>
-        <div>E-Mail:</div>
-    </div>
-    <div class="info-inputs">
-        <div id="phone-number"></div>
-        <div id="email"></div>
-    </div>
-</div><br />
-
-<div id="buttons"></div>
+<div id="customer"></div>
 
 <button onclick="window.location.href = '/orders?id={{ id }}'">View Orders</button>
 <button onclick='window.location.href = "/orders/create?customer={{ id }}";'>Create Order</button>
-<button onclick="begin_edit()" id="edit-button">Edit</button>
 <button onclick="window.location.href = '/customers'">Back</button>
 
-<div id="notes-container">
-    <h3>Notes</h3>
-    <div id="new-note-button">
-        <button onclick="begin_create_note()">New Note</button>
-    </div>
-    <form id="create-note" style="display: none" onsubmit="return false;">
-        Creator: <select id="creator"></select><br />
-        <div id="note-error" style="display: none; color: red;">You must enter a note</div>
-        <textarea id="note"></textarea><br />
-        <input type="submit" onclick="create_note()" value="Create" />
-        <button onclick="cancel_create_note()">Cancel</button>
-    </form>
-    <br />
-    <div id="notes"></div>
+<div id="notes">
 </div>
 
 {% endblock content %}

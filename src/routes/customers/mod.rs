@@ -5,6 +5,7 @@ use serde::Serialize;
 
 mod all;
 mod create;
+mod one;
 
 #[derive(Serialize)]
 pub struct Customer {
@@ -21,6 +22,8 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
             all::view,
             all::data,
             all::names,
+            one::view,
+            one::data,
             create::get_create,
             create::post_create
         ],

@@ -25,7 +25,7 @@ pub(crate) async fn data(
     state: &rocket::State<State>,
 ) -> Result<RawJson<String>, RouteError> {
     // Perform the query
-    let employees: Employee = match state
+    let employee: Employee = match state
         .database()
         .execute_query_parameters(
             "SELECT * FROM Employees WHERE ID = :id",
@@ -40,7 +40,7 @@ pub(crate) async fn data(
         None => return Err(RouteError::InputError("Invalid employee ID")),
     };
 
-    Ok(RawJson(serde_json::to_string(&employees).unwrap()))
+    Ok(RawJson(serde_json::to_string(&employee).unwrap()))
 }
 
 #[post("/employees/set_active/<id>/<active>")]
