@@ -1,5 +1,4 @@
 import { FormInput } from "../input";
-import { Error } from "../../error";
 import { InputContainer } from "./container";
 
 export class TextInput implements FormInput {
@@ -9,12 +8,12 @@ export class TextInput implements FormInput {
 
     private validate?: (text: string) => void;
 
-    public constructor(label: string, max_length: number, validate?: (text: string) => void) {
+    public constructor(label: string, max_length: number, validate?: (text: string) => void, type = "text") {
         console.debug(`Creating TextInput "${label}"`);
         this.label = label;
 
         this.input = document.createElement("input");
-        this.input.type = "text";
+        this.input.type = type;
         this.input.maxLength = max_length;
 
         this.container = new InputContainer(label, this.input);

@@ -10,8 +10,8 @@ mod create;
 pub struct Customer {
     id: usize,
     name: String,
-    phone_number: String,
-    email: String,
+    phone_number: Option<String>,
+    email: Option<String>,
 }
 
 pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {

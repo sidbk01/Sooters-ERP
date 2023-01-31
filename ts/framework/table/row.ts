@@ -100,8 +100,8 @@ export class TableRow {
     }
 
     public compare(other: TableRow, index: number): number {
-        let a = (this.element.children[index] as HTMLElement).innerText;
-        let b = (other.element.children[index] as HTMLElement).innerText;
+        let a = (this.element.children[index] as HTMLElement).innerText.toLowerCase();
+        let b = (other.element.children[index] as HTMLElement).innerText.toLowerCase();
 
         if (a < b)
             return -1;

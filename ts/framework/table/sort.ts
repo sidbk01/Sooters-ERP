@@ -39,6 +39,7 @@ export class TableSort {
 
     public reset_sort() {
         this.element.src = "/images/no-sort";
+        this.status = SortStatus.None;
     }
 
     private on_click() {

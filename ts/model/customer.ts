@@ -5,8 +5,8 @@ export class Customer implements TableValue {
 
     private id: number;
     private name: string;
-    private phone_number: string;
-    private email: string;
+    private phone_number?: string;
+    private email?: string;
 
     public static async get_customers(): Promise<Customer[]> {
         if (!this.customers) {
@@ -30,9 +30,15 @@ export class Customer implements TableValue {
                 return this.name;
 
             case "phone_number":
+                if (!this.phone_number)
+                    return "";
+
                 return this.phone_number;
 
             case "email":
+                if (!this.email)
+                    return "";
+
                 return this.email;
 
             default:
