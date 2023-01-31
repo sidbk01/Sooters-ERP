@@ -1,4 +1,5 @@
 import { AjaxParser, FilterOption, TableValue } from "../framework/index";
+import { Customer } from "./customer";
 import { OrderType, OrderTypeInfo, OrderTypes } from "./order_types/index";
 
 export enum OrderStatus {
@@ -58,7 +59,7 @@ export class Order implements TableValue {
                 return this.id.toString();
 
             case "customer":
-                return "TODO";
+                return Customer.get_customer_name(this.customer);
 
             case "date_received":
                 return this.date_received;

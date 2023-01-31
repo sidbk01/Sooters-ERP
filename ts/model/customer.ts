@@ -2,6 +2,7 @@ import { AjaxParser, TableValue, ajax } from "../framework/index";
 
 export class Customer implements TableValue {
     private static customers?: Customer[];
+    private static customer_names?: string[];
 
     private id: number;
     private name: string;
@@ -15,6 +16,13 @@ export class Customer implements TableValue {
         }
 
         return this.customers;
+    }
+
+    public static async get_customer_name(id: number): Promise<string> {
+        if (!this.customer_names)
+            this.customer_names = await ajax("GET", "/customers/names", new CustomerNamesParser());
+
+        return this.customer_names[id];
     }
 
     public constructor(id: number, name: string, phone_number: string, email: string) {
@@ -72,5 +80,16 @@ class CustomersParser implements AjaxParser<Customer[]> {
         return object.map((customer) => {
             return new Customer(customer.id, customer.name, customer.phone_number, customer.email);
         });
+    }
+}
+
+class CustomerNamesParser implements AjaxParser<string[]> {
+    public parse_object(object: any): string[] {
+        let names = [];
+
+        for (let row of object)
+            names[row.id] = row.name;
+
+        return names;
     }
 }

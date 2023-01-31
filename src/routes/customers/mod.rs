@@ -20,6 +20,7 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
         routes![
             all::view,
             all::data,
+            all::names,
             create::get_create,
             create::post_create
         ],
