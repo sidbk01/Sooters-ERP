@@ -2,34 +2,12 @@
 {% block title %}Create Customer{% endblock title %}
 
 {% block head %}
-<script src="/js/phone" type="text/javascript"></script>
-<script src="/js/create_customer" type="text/javascript"></script>
+<script src="/js/create_customer" type="module"></script>
 {% endblock %}
 
 {% block content %}
 <h2>Create Customer</h2>
-<form id="create-form" onsubmit="return false;">
-    <div class="info-block">
-        <div class="info-labels">
-            <label for="first-name">First Name:</label>
-            <div style="display: none;" id="first-name-error-label"></div>
-            <label for="last-name">Last Name:</label>
-            <div style="display: none;" id="last-name-error-label"></div>
-            <label for="email">E-Mail:</label>
-            <label for="phone-number">Phone Number:</label>
-        </div>
-        <div class="info-inputs">
-            <input type="text" id="first-name" name="first-name" required />
-            <div style="display: none; color: red;" id="first-name-error">A first name is required</div>
-            <input type="text" id="last-name" name="last-name" required />
-            <div style="display: none; color: red;" id="last-name-error">A last name is required</div>
-            <input type="email" id="email" name="email" />
-            <input type="text" id="phone-number" name="phone-number" />
-        </div>
-    </div>
-    <input type="submit" value="Create" onclick="form_submit();" />
-</form>
-
+<div id="create-customer"></div>
 <button onclick="window.location.href = '/customers'">Back</button>
 
 

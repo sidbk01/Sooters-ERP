@@ -4,6 +4,7 @@ use rocket::{Build, Rocket};
 use serde::Serialize;
 
 mod all;
+mod create;
 
 #[derive(Serialize)]
 pub struct Customer {
@@ -14,7 +15,15 @@ pub struct Customer {
 }
 
 pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
-    server.mount("/", routes![all::view, all::data,])
+    server.mount(
+        "/",
+        routes![
+            all::view,
+            all::data,
+            create::get_create,
+            create::post_create
+        ],
+    )
 }
 
 impl FromRow for Customer {
@@ -23,13 +32,14 @@ impl FromRow for Customer {
         Self: Sized,
     {
         let (row, id) = take_from_row(row, "ID")?;
-        let (row, name) = take_from_row(row, "Name")?;
+        let (row, first_name) = take_from_row::<String>(row, "FirstName")?;
+        let (row, last_name) = take_from_row::<String>(row, "LastName")?;
         let (row, phone_number) = take_from_row(row, "PhoneNumber")?;
         let (_, email) = take_from_row(row, "Email")?;
 
         Ok(Customer {
             id,
-            name,
+            name: format!("{} {}", first_name, last_name),
             phone_number,
             email,
         })

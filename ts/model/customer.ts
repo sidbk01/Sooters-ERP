@@ -32,7 +32,7 @@ export class Customer implements TableValue {
             case "phone_number":
                 return this.phone_number;
 
-            case "e-mail":
+            case "email":
                 return this.email;
 
             default:
