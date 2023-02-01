@@ -6,7 +6,7 @@ use serde::Serialize;
 use tera::Context;
 
 #[derive(Serialize)]
-struct CustomerName {
+pub struct CustomerName {
     id: usize,
     name: String,
 }
@@ -30,10 +30,16 @@ pub(crate) async fn data(state: &rocket::State<State>) -> Result<RawJson<String>
 pub(crate) async fn names(state: &rocket::State<State>) -> Result<RawJson<String>, RouteError> {
     let customers: Vec<CustomerName> = state
         .database()
-        .execute_query("SELECT ID, Name FROM Customers")
+        .execute_query("SELECT ID, FirstName, LastName FROM Customers")
         .await?;
 
     Ok(RawJson(serde_json::to_string(&customers).unwrap()))
+}
+
+impl CustomerName {
+    pub fn name(&self) -> &str {
+        &self.name
+    }
 }
 
 impl FromRow for CustomerName {
@@ -42,8 +48,12 @@ impl FromRow for CustomerName {
         Self: Sized,
     {
         let (row, id) = take_from_row(row, "ID")?;
-        let (_, name) = take_from_row(row, "Name")?;
+        let (row, first_name) = take_from_row::<String>(row, "FirstName")?;
+        let (_, last_name) = take_from_row::<String>(row, "LastName")?;
 
-        Ok(CustomerName { id, name })
+        Ok(CustomerName {
+            id,
+            name: format!("{} {}", first_name, last_name),
+        })
     }
 }

@@ -209,7 +209,7 @@ textarea {
 }
 
 .info-labels {
-    width: 50%;
+    width: calc(50% - 75px);
     display: flex;
     flex-direction: column;
 }
@@ -233,6 +233,11 @@ textarea {
     text-align: left;
     height: 2.0rem;
     line-height: 2.0rem;
+}
+
+.info-inputs p {
+    display: inline;
+    margin-left: 0.25rem;
 }
 
 .inline-button {

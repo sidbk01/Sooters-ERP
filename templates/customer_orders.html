@@ -2,7 +2,7 @@
 {% block title %}{{ customer_name }}'s Orders{% endblock title %}
 
 {% block head %}
-<script src="/js/customer_orders" type="text/javascript"></script>
+<script src="/js/customer_orders" type="module"></script>
 <script type="text/javascript">
     const ID = {{ id }};
 </script>
@@ -13,13 +13,6 @@
 <button onclick='window.location.href = "/orders/create?customer={{ id }}";'>Create Order</button>
 <button onclick="window.location.href = '/customer?id={{ id }}'">Back</button>
 
-<div style="overflow: auto;">
-    <div class="location-filter">
-        Source Location:
-        <select id="location-filter" onchange="update_location_filter()"></select>
-    </div>
-    <input type="text" class="search" id="search" onkeyup="search();" placeholder="Search . . ." />
-</div>
 <div id="orders"></div>
 
 {% endblock content %}

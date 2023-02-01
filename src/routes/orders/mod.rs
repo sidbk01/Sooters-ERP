@@ -25,7 +25,10 @@ pub struct Order {
 }
 
 pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
-    server.mount("/", routes![many::upcoming,])
+    server.mount(
+        "/",
+        routes![many::upcoming, many::customer_data, many::customer_view],
+    )
 }
 
 impl FromRow for Order {

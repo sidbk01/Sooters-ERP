@@ -7,6 +7,8 @@ mod all;
 mod create;
 mod one;
 
+pub use all::CustomerName;
+
 #[derive(Serialize)]
 pub struct Customer {
     id: usize,
@@ -25,7 +27,8 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
             one::view,
             one::data,
             create::get_create,
-            create::post_create
+            create::post_create,
+            create::update,
         ],
     )
 }

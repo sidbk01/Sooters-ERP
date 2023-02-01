@@ -1,4 +1,4 @@
-import { Display, DisplayBuilder, DisplayField, ajax } from "./framework/index";
+import { Display, DisplayBuilder, DisplayField, ajax, TextDisplayField, PhoneDisplayField } from "./framework/index";
 import { Customer } from "./model/index";
 
 declare const ID: number;
@@ -16,9 +16,18 @@ class CustomerBuilder implements DisplayBuilder {
         let builder = new CustomerBuilder();
 
         builder.customer = await Customer.get_customer(ID);
+
+        let email = builder.customer.get_email();
+        if (!email)
+            email = "";
+
+        let phone_number = builder.customer.get_phone_number();
+        if (!phone_number)
+            phone_number = "";
+
         builder.fields = [
-            // Phone Number
-            // Email
+            new DisplayField("phone_number", "Phone Number", new PhoneDisplayField(phone_number)),
+            new DisplayField("email", "E-Mail", new TextDisplayField(email, 64, Customer.validate_email, "email")),
         ];
 
         return builder;
@@ -67,6 +76,17 @@ class CustomerBuilder implements DisplayBuilder {
     }
 
     public post_update(object: any): Promise<undefined> {
+        let split = object.name.split(' ');
+        object.first_name = split[0];
+        object.last_name = "";
+        for (let i = 1; i < split.length; i++) {
+            object.last_name += split[i];
+            if (i != split.length - 1)
+                object.last_name += ' ';
+        }
+
+        delete object.name;
+
         return ajax("POST", `/customers/update/${ID}`, undefined, object);
     }
 }

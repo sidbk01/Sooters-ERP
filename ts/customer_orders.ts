@@ -1,15 +1,19 @@
 import { Table, TableBuilder, TableColumn, ajax } from "./framework/index";
 import { OrderTypes, Order, OrdersParser } from "./model/index";
 
-class UpcomingOrdersBuilder implements TableBuilder<Order> {
+declare const ID: number;
+
+class CustomerOrdersBuilder implements TableBuilder<Order> {
     private values: Order[];
 
-    private constructor() { }
+    private constructor() {
+        console.debug(`Creating CustomerOrdersBuilder`);
+    }
 
-    public static async create(): Promise<UpcomingOrdersBuilder> {
-        let builder = new UpcomingOrdersBuilder();
+    public static async create(): Promise<CustomerOrdersBuilder> {
+        let builder = new CustomerOrdersBuilder();
 
-        builder.values = await ajax("GET", `/orders/upcoming`, new OrdersParser());
+        builder.values = await ajax("GET", `/orders/customer?id=${ID}`, new OrdersParser());
 
         return builder;
     }
@@ -21,7 +25,7 @@ class UpcomingOrdersBuilder implements TableBuilder<Order> {
             new TableColumn("Date Received", "date_received"),
             new TableColumn("Type", "type", true, [OrderTypes.get_order_types().map((order_type) => { return order_type.to_filter_option(); }), "Select Type"]),
             new TableColumn("Due Date", "date_due"),
-            new TableColumn("Status", "status", true, [Order.get_status_options(false), "Select Status"])
+            new TableColumn("Status", "status", true, [Order.get_status_options(true), "Select Status"])
         ];
     }
 
@@ -31,9 +35,9 @@ class UpcomingOrdersBuilder implements TableBuilder<Order> {
 }
 
 async function create_table() {
-    let builder = await UpcomingOrdersBuilder.create();
+    let builder = await CustomerOrdersBuilder.create();
 
-    await Table.create("upcoming-orders", builder);
+    await Table.create("orders", builder);
 }
 
 create_table().catch((error) => {

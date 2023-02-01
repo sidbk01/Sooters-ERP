@@ -61,13 +61,10 @@ export class PhoneInput implements FormInput {
     }
 
     private format(value: string): string {
-        console.debug(value);
-
         if (value.length == 0)
             return value;
 
         let phone_number = value.replace(/[^\d]/g, '');
-        console.debug(phone_number);
         if (phone_number.length <= 3)
             return phone_number;
 

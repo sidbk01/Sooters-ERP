@@ -77,18 +77,23 @@ export class Display<B extends DisplayBuilder> {
 
         // Collect result from the title
         try {
-            let [field_name, title_value] = this.title.confirm_edit();
+            let [field_name, title_value] = this.title.get_value_and_validate();
             if (field_name)
                 result[field_name] = title_value;
 
             // Collect results from the fields
             for (let field of this.fields)
-                result[field.get_name()] = field.get_input().confirm_edit();
+                result[field.get_name()] = field.get_input().get_value_and_validate();
         } catch (e) {
             console.error(`Error while validating input`);
             console.error(e);
             return;
         }
+
+        // Confirm the edit
+        this.title.confirm_edit();
+        for (let field of this.fields)
+            field.get_input().confirm_edit();
 
         // Give the results to the builder
         this.builder.post_update(result).then(() => { this.cancel_edit(); }).catch(() => { alert("There was an error while updating"); });

@@ -2,7 +2,7 @@ import { SelectOption } from "../../index";
 import { DisplayFieldInput } from "../input";
 
 export class SelectDisplayField implements DisplayFieldInput {
-    private element: HTMLDivElement;
+    private container: HTMLDivElement;
     private input: HTMLSelectElement;
     private value_element: HTMLDivElement;
 
@@ -15,7 +15,7 @@ export class SelectDisplayField implements DisplayFieldInput {
         this.value = initial_value;
         this.options = options;
 
-        this.element = document.createElement("div");
+        this.container = document.createElement("div");
 
         this.input = document.createElement("select");
         this.input.style.display = "none";
@@ -26,15 +26,15 @@ export class SelectDisplayField implements DisplayFieldInput {
 
             this.input.appendChild(option_element);
         }
-        this.element.appendChild(this.input);
+        this.container.appendChild(this.input);
 
         this.value_element = document.createElement("div");
         this.value_element.innerText = this.value_to_string(this.value);
-        this.element.appendChild(this.value_element);
+        this.container.appendChild(this.value_element);
     }
 
     public get_element(): HTMLDivElement {
-        return this.element;
+        return this.container;
     }
 
     public begin_edit() {
@@ -49,10 +49,13 @@ export class SelectDisplayField implements DisplayFieldInput {
         }
     }
 
-    public confirm_edit(): any {
+    public get_value_and_validate(): any {
+        return Number(this.input.value);
+    }
+
+    public confirm_edit() {
         this.value = Number(this.input.value);
         this.value_element.innerText = this.value_to_string(this.value);
-        return this.value;
     }
 
     public cancel_edit() {

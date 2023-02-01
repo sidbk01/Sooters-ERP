@@ -56,7 +56,7 @@ export class DisplayTitle {
         this.input.value = this.text.innerText;
     }
 
-    public confirm_edit(): [string | undefined, string] {
+    public get_value_and_validate(): [string | undefined, string] {
         if (!this.input)
             return [undefined, ""];
 
@@ -68,8 +68,11 @@ export class DisplayTitle {
             throw e;
         }
 
-        this.text.innerText = this.input.value;
         return [this.field_name, this.input.value];
+    }
+
+    public confirm_edit() {
+        this.text.innerText = this.input.value;
     }
 
     public cancel_edit() {

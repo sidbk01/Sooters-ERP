@@ -1,6 +1,7 @@
 export interface DisplayFieldInput {
     get_element(): HTMLDivElement;
     begin_edit();
-    confirm_edit(): any;
+    get_value_and_validate(): any;
+    confirm_edit();
     cancel_edit();
 }
