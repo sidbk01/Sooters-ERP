@@ -1,5 +1,6 @@
 import { TableBody } from "./body";
 import { TableBuilder } from "./builder";
+import { ExtraFilter } from "./filter/extra";
 import { TableHeader } from "./header";
 import { Search } from "./search";
 import { TableValue } from "./value";
@@ -36,9 +37,17 @@ export class Table {
         // Create the search element
         let search = new Search(table);
 
+        // Create the extra filter, if needed
+        let extra_filter_input = await builder.get_extra_filter_input();
+        let extra_filter;
+        if (extra_filter_input)
+            extra_filter = new ExtraFilter(extra_filter_input, table.body);
+
         // Attach to the DOM
         console.debug(`Attaching Table "${id}" to DOM`);
         let target = document.getElementById(id);
+        if (extra_filter)
+            target.appendChild(extra_filter.get_element());
         target.appendChild(search.get_element());
         target.appendChild(table.element);
 

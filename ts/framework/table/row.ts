@@ -30,12 +30,14 @@ export class TableRow {
 
     private value: TableValue;
     private search_status: boolean;
+    private extra_status: boolean;
     private columns: ColumnStatus[];
 
     private constructor(id: string, columns: TableColumn[], value: TableValue) {
         console.debug(`Creating TableRow on Table "${id}"`);
 
         this.search_status = true;
+        this.extra_status = true;
         this.columns = columns.map((column) => { return new ColumnStatus(column); });
         this.value = value;
     }
@@ -99,6 +101,15 @@ export class TableRow {
         this.update_display();
     }
 
+    public extra_filter(field: string, value: any) {
+        if (typeof value === "undefined")
+            this.extra_status = true;
+        else
+            this.extra_status = this.value.filter(field, value);
+
+        this.update_display();
+    }
+
     public compare(other: TableRow, index: number): number {
         let a = (this.element.children[index] as HTMLElement).innerText.toLowerCase();
         let b = (other.element.children[index] as HTMLElement).innerText.toLowerCase();
@@ -113,7 +124,7 @@ export class TableRow {
     }
 
     private update_display() {
-        let display = this.search_status;
+        let display = this.search_status && this.extra_status;
 
         for (let column of this.columns)
             if (!column.filter_status)

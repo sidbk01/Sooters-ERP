@@ -44,6 +44,11 @@ export class TableBody {
             row.update_filter(index);
     }
 
+    public extra_filter(field: string, value: any) {
+        for (let row of this.rows)
+            row.extra_filter(field, value);
+    }
+
     public sort(index: number, ascending: boolean) {
         console.debug(`Sorting column ${index} on Table "${this.id}" ${ascending ? "ascending" : "descending"}`);
 

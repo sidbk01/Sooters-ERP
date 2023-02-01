@@ -1,4 +1,4 @@
-import { Table, TableBuilder, TableColumn } from "./framework/index";
+import { ExtraFilterInput, Table, TableBuilder, TableColumn } from "./framework/index";
 import { Employee, Location } from "./model/index";
 
 declare const ACTIVE: boolean;
@@ -27,6 +27,10 @@ class EmployeesBuilder implements TableBuilder<Employee> {
 
     public get_values(): any[] {
         return this.employees;
+    }
+
+    public async get_extra_filter_input(): Promise<ExtraFilterInput | undefined> {
+        return undefined;
     }
 }
 

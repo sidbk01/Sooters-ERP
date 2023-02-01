@@ -1,5 +1,5 @@
-import { Table, TableBuilder, TableColumn, ajax } from "./framework/index";
-import { OrderTypes, Order, OrdersParser } from "./model/index";
+import { ExtraFilterInput, Table, TableBuilder, TableColumn, ajax } from "./framework/index";
+import { OrderTypes, Order, OrdersParser, Location } from "./model/index";
 
 declare const ID: number;
 
@@ -31,6 +31,10 @@ class CustomerOrdersBuilder implements TableBuilder<Order> {
 
     public get_values(): Order[] {
         return this.values;
+    }
+
+    public async get_extra_filter_input(): Promise<ExtraFilterInput | undefined> {
+        return new ExtraFilterInput("Source Location", "source_location", await Location.get_location_filter_options());
     }
 }
 

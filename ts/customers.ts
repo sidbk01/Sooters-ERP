@@ -1,4 +1,4 @@
-import { Table, TableBuilder, TableColumn, ajax } from "./framework/index";
+import { ExtraFilterInput, Table, TableBuilder, TableColumn, ajax } from "./framework/index";
 import { Customer } from "./model/index";
 
 class CustomersBuilder implements TableBuilder<Customer> {
@@ -26,6 +26,10 @@ class CustomersBuilder implements TableBuilder<Customer> {
 
     public get_values(): Customer[] {
         return this.customers;
+    }
+
+    public async get_extra_filter_input(): Promise<ExtraFilterInput | undefined> {
+        return undefined;
     }
 }
 
