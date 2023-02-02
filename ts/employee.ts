@@ -22,6 +22,7 @@ class EmployeeBuilder implements DisplayBuilder {
 
         let button_div = document.getElementById("activate-button");
         let activate_button = document.createElement("button");
+        activate_button.type = "button";
         activate_button.innerText = builder.employee.is_active() ? "Deactivate" : "Activate";
         activate_button.onclick = () => { builder.change_active(); };
         button_div.appendChild(activate_button);

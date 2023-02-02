@@ -10,6 +10,7 @@ export class DisplayButtons<B extends DisplayBuilder> {
         this.container = document.createElement("div");
 
         this.edit = document.createElement("button");
+        this.edit.type = "button";
         this.edit.innerText = "Edit";
         this.edit.onclick = () => { parent.begin_edit(); };
         this.container.appendChild(this.edit);
@@ -18,11 +19,13 @@ export class DisplayButtons<B extends DisplayBuilder> {
         this.end_buttons.style.display = "none";
 
         let confirm = document.createElement("button");
+        confirm.type = "button";
         confirm.innerText = "Confirm";
         confirm.onclick = () => { parent.confirm_edit(); };
         this.end_buttons.appendChild(confirm);
 
         let cancel = document.createElement("button");
+        cancel.type = "button";
         cancel.innerText = "Cancel";
         cancel.onclick = () => { parent.cancel_edit(); };
         this.end_buttons.appendChild(cancel);

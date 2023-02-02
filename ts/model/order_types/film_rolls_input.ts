@@ -12,6 +12,7 @@ class FilmRollInput {
 
     public constructor(parent?: FilmRollsInput) {
         this.container = document.createElement("div");
+        this.parent = parent;
 
         this.amount = document.createElement("input");
         this.amount.type = "number";
@@ -52,6 +53,7 @@ class FilmRollInput {
         }
 
         let remove_button = document.createElement("button");
+        remove_button.type = "button";
         remove_button.innerText = "Delete";
         remove_button.style.display = "inline-block";
         remove_button.style.width = "4rem";
@@ -67,8 +69,6 @@ class FilmRollInput {
     }
 
     public validate_and_get(): any {
-        console.error("AAAA");
-
         let amount = Number(this.amount.value);
         if (amount < 1) {
             this.error.set_message("All amounts must be more than 1");
@@ -151,6 +151,7 @@ export class FilmRollsInput implements FormInput {
         this.container.appendChild(this.inputs_container);
 
         let add_button = document.createElement("button");
+        add_button.type = "button";
         add_button.innerText = "Add";
         add_button.style.marginBottom = "1.5rem";
         add_button.onclick = () => { this.add_roll(); };
@@ -168,7 +169,6 @@ export class FilmRollsInput implements FormInput {
     }
 
     public validate_and_get(): any {
-        console.error("HELLO!");
         return this.inputs.map((roll) => { return roll.validate_and_get(); });
     }
 

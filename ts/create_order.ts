@@ -41,7 +41,7 @@ class CreateOrderBuilder implements FormBuilder {
     }
 
     public collect_and_validate(): any {
-        let envelope_id = this.envelope_id.validate_and_get();
+        let envelope_id = Number(this.envelope_id.validate_and_get());
         let due_date = this.due_date.validate_and_get();
         let rush = this.rush.validate_and_get();
         let employee = this.employee.validate_and_get();
@@ -49,7 +49,7 @@ class CreateOrderBuilder implements FormBuilder {
         let paid = this.paid.validate_and_get();
         let type = this.type.validate_and_get();
 
-        return {
+        let result = {
             envelope_id: envelope_id,
             due_date: due_date,
             rush: rush,
@@ -59,10 +59,14 @@ class CreateOrderBuilder implements FormBuilder {
             paid: paid,
             type: type,
         };
+
+        console.debug(result);
+
+        return result;
     }
 
     public get_post_url(): string {
-        return "/orders/create";
+        return `/orders/create`;
     }
 
     public get_redirect_url(id: number): string {
