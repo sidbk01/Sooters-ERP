@@ -108,6 +108,7 @@ export class Order implements TableValue {
 
     on_click_url(current_path): string {
         return `/order?id=${this.id}&back=${encodeURI(current_path)}`;
+        // TODO: Implement on click url
     }
 }
 

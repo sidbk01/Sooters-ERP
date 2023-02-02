@@ -1,4 +1,4 @@
-import { FilterOption, SelectOption } from "../../framework/index";
+import { FilterOption, FormInput, GroupOption, SelectOption } from "../../framework/index";
 import { FilmOrder } from "./film";
 import { FramingOrder } from "./framing";
 import { Photoshoot } from "./photoshoot";
@@ -13,7 +13,7 @@ enum OrderTypeInner {
     Photoshoot,
 }
 
-export class OrderType implements SelectOption {
+export class OrderType implements GroupOption {
     private type: OrderTypeInner;
 
     public static get_order_types(): OrderType[] {
@@ -76,5 +76,18 @@ export class OrderType implements SelectOption {
 
     public get_select_value(): number {
         return this.type as number;
+    }
+
+    public get_inputs(): [string, FormInput][] {
+        switch (this.type) {
+            case OrderTypeInner.Film:
+                return FilmOrder.get_group_inputs();
+
+            case OrderTypeInner.Framing:
+                return FramingOrder.get_group_inputs();
+
+            case OrderTypeInner.Photoshoot:
+                return Photoshoot.get_group_inputs();
+        }
     }
 }

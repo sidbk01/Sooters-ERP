@@ -51,6 +51,7 @@ const LOGGER = new Logger();
 function report_bug() {
     window.sessionStorage.setItem("logs", JSON.stringify(LOGGER.get_logs()));
     window.location.href = "/report";
+    // TODO: Implement report page
 }
 
 let report = document.getElementById("report");

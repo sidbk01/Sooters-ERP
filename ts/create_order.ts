@@ -1,4 +1,4 @@
-import { CheckboxInput, DateInput, Form, FormBuilder, FormInput, SelectInput, TextInput } from "./framework/index";
+import { CheckboxInput, DateInput, Form, FormBuilder, FormInput, GroupInput, SelectInput, TextInput } from "./framework/index";
 import { Employee, Location, OrderType } from "./model/index";
 
 declare const CUSTOMER: number;
@@ -10,7 +10,7 @@ class CreateOrderBuilder implements FormBuilder {
     private employee: SelectInput<Employee>;
     private location: SelectInput<Location>;
     private paid: CheckboxInput;
-    private type: SelectInput<OrderType>;
+    private type: GroupInput<OrderType>;
 
     private constructor() { }
 
@@ -18,12 +18,12 @@ class CreateOrderBuilder implements FormBuilder {
         let builder = new CreateOrderBuilder();
 
         builder.envelope_id = new TextInput("Envelope ID", 6, undefined, "number");
-        builder.due_date = new DateInput("Due Date");
+        builder.due_date = new DateInput("Due Date", "A due date is required");
         builder.rush = new CheckboxInput("Rush");
         builder.employee = new SelectInput("Employee", await Employee.get_employees(true));
         builder.location = new SelectInput("Location", await Location.get_locations());
         builder.paid = new CheckboxInput("Paid");
-        builder.type = new SelectInput("Type", OrderType.get_order_types());
+        builder.type = new GroupInput("Type", "Select Type...", "An order type is required", OrderType.get_order_types());
 
         return builder;
     }
