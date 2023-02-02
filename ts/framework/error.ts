@@ -5,6 +5,7 @@ export class Error {
         this.element = document.createElement("p");
         this.element.className = "error";
         this.element.innerText = "";
+        this.element.style.display = "none";
     }
 
     public get_element(): HTMLParagraphElement {
@@ -17,5 +18,10 @@ export class Error {
 
     public set_message(message: string) {
         this.element.innerText = message;
+
+        if (message == "")
+            this.element.style.display = "none";
+        else
+            this.element.style.display = "";
     }
 }

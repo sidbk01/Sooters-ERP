@@ -1,6 +1,6 @@
 import { AjaxParser, FilterOption, TableValue } from "../framework/index";
 import { Customer } from "./customer";
-import { OrderType, OrderTypeInfo, OrderTypes } from "./order_types/index";
+import { OrderType, OrderTypeInfo } from "./order_types/index";
 
 export enum OrderStatus {
     NotComplete,
@@ -116,7 +116,7 @@ export class OrdersParser implements AjaxParser<Order[]> {
 
     parse_object(object: any): Order[] {
         return object.map((order) => {
-            let [order_type, order_type_info] = OrderTypes.parse(order);
+            let [order_type, order_type_info] = OrderType.parse(order);
             return new Order(
                 order.id,
                 order.current_location,

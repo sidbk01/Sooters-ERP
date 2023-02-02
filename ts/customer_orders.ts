@@ -1,5 +1,5 @@
 import { ExtraFilterInput, Table, TableBuilder, TableColumn, ajax } from "./framework/index";
-import { OrderTypes, Order, OrdersParser, Location } from "./model/index";
+import { OrderType, Order, OrdersParser, Location } from "./model/index";
 
 declare const ID: number;
 
@@ -23,7 +23,7 @@ class CustomerOrdersBuilder implements TableBuilder<Order> {
             new TableColumn("ID", "id"),
             new TableColumn("Customer", "customer"),
             new TableColumn("Date Received", "date_received"),
-            new TableColumn("Type", "type", true, [OrderTypes.get_order_types().map((order_type) => { return order_type.to_filter_option(); }), "Select Type"]),
+            new TableColumn("Type", "type", true, [OrderType.get_order_types().map((order_type) => { return order_type.to_filter_option(); }), "Select Type"]),
             new TableColumn("Due Date", "date_due"),
             new TableColumn("Status", "status", true, [Order.get_status_options(true), "Select Status"])
         ];

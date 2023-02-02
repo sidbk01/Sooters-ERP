@@ -1,4 +1,4 @@
-import { FilterOption } from "../../framework/index";
+import { FilterOption, SelectOption } from "../../framework/index";
 import { FilmOrder } from "./film";
 import { FramingOrder } from "./framing";
 import { Photoshoot } from "./photoshoot";
@@ -13,8 +13,32 @@ enum OrderTypeInner {
     Photoshoot,
 }
 
-export class OrderType {
+export class OrderType implements SelectOption {
     private type: OrderTypeInner;
+
+    public static get_order_types(): OrderType[] {
+        return [
+            new OrderType(OrderTypeInner.Film),
+            new OrderType(OrderTypeInner.Framing),
+            new OrderType(OrderTypeInner.Photoshoot),
+        ];
+    }
+
+    public static parse(order: any): [OrderType, OrderTypeInfo] {
+        switch (order.order_type) {
+            case 1:
+                return [new OrderType(OrderTypeInner.Film), FilmOrder.parse(order)];
+
+            case 2:
+                return [new OrderType(OrderTypeInner.Framing), FramingOrder.parse(order)];
+
+            case 3:
+                return [new OrderType(OrderTypeInner.Photoshoot), Photoshoot.parse(order)];
+
+            default:
+                throw `Unknown order type "${order.order_type}"`;
+        }
+    }
 
     public constructor(type: OrderTypeInner) {
         this.type = type;
@@ -45,32 +69,12 @@ export class OrderType {
                 return "Photoshoot";
         }
     }
-}
 
-export class OrderTypes {
-    private constructor() { }
-
-    public static get_order_types(): OrderType[] {
-        return [
-            new OrderType(OrderTypeInner.Film),
-            new OrderType(OrderTypeInner.Framing),
-            new OrderType(OrderTypeInner.Photoshoot),
-        ];
+    public get_select_text(): string {
+        return this.to_string();
     }
 
-    public static parse(order: any): [OrderType, OrderTypeInfo] {
-        switch (order.order_type) {
-            case 1:
-                return [new OrderType(OrderTypeInner.Film), FilmOrder.parse(order)];
-
-            case 2:
-                return [new OrderType(OrderTypeInner.Framing), FramingOrder.parse(order)];
-
-            case 3:
-                return [new OrderType(OrderTypeInner.Photoshoot), Photoshoot.parse(order)];
-
-            default:
-                throw `Unknown order type "${order.order_type}"`;
-        }
+    public get_select_value(): number {
+        return this.type as number;
     }
 }

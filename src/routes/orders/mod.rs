@@ -4,6 +4,7 @@ use serde::Serialize;
 
 use crate::util::take_from_row;
 
+mod create;
 mod many;
 
 #[derive(Serialize)]
@@ -27,7 +28,12 @@ pub struct Order {
 pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
     server.mount(
         "/",
-        routes![many::upcoming, many::customer_data, many::customer_view],
+        routes![
+            many::upcoming,
+            many::customer_data,
+            many::customer_view,
+            create::view,
+        ],
     )
 }
 

@@ -2,7 +2,7 @@
 {% block title %}Create Order for {{ customer_name }}{% endblock title %}
 
 {% block head %}
-<script src="/js/create_order" type="text/javascript"></script>
+<script src="/js/create_order" type="module"></script>
 <script type="text/javascript">
     const CUSTOMER = {{ customer }};
 </script>
@@ -11,37 +11,7 @@
 {% block content %}
 <h2>Create Order for {{ customer_name }}</h2>
 
-<form id=" create-form" onsubmit="return false;">
-    <div class=" info-block">
-        <div class="info-labels">
-            <label for="envelope-id">Envelope ID:</label>
-            <label for="due-date">Due Date:</label>
-            <div style="display: none;" id="date-error-label"></div>
-            <label for="rush">Rush: </label>
-            <label for="employee">Employee: </label>
-            <label for="location">Location: </label>
-            <label for="paid">Paid: </label>
-            <label for="type">Type: </label>
-            <div style="display: none;" id="type-error-label"></div>
-        </div>
-        <div class="info-inputs">
-            <input type="number" id="envelope-id" />
-            <input type="date" id="due-date" name="due-date"
-                onchange="document.getElementById('date-error').style.display = 'none'" />
-            <div style="display: none; color: red;" id="date-error">Must select a due date</div>
-            <input type="checkbox" id="rush" name="rush" />
-            <select id="employee" name="employee"></select>
-            <select id="location" name="location"></select>
-            <input type="checkbox" id="paid" name="paid" />
-            <select id="type" name="type"></select>
-            <div style="display: none; color: red;" id="type-error">Must select an order type</div>
-        </div>
-    </div>
-    <div class="info-block" id="order-type-inputs">
-    </div>
-
-    <input type="submit" value="Create" onclick="form_submit()" />
-</form>
+<div id="create-order"></div>
 <button id="back-link" onclick="window.location.href = '/orders?id={{ customer }}'">Back</button>
 
 {% endblock content %}

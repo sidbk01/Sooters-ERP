@@ -1,7 +1,7 @@
-import { AjaxParser, TableValue, ajax } from "../framework/index";
+import { AjaxParser, SelectOption, TableValue, ajax } from "../framework/index";
 import { Location } from "./location";
 
-export class Employee implements TableValue {
+export class Employee implements TableValue, SelectOption {
     private static employees?: Employee[] = undefined;
 
     private id: number;
@@ -85,6 +85,14 @@ export class Employee implements TableValue {
 
     public on_click_url(): string {
         return `/employee?id=${this.id}`;
+    }
+
+    public get_select_text(): string {
+        return this.name;
+    }
+
+    public get_select_value(): number {
+        return this.id;
     }
 }
 
