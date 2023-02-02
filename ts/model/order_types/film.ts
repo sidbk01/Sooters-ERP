@@ -1,4 +1,5 @@
 import { CheckboxInput, FormInput, SelectInput, SelectOption } from "../../framework/index";
+import { FilmRollsInput } from "./film_rolls_input";
 import { OrderTypeInfo } from "./type";
 
 export enum Prints {
@@ -37,7 +38,7 @@ export class FilmOrder implements OrderTypeInfo {
         return [
             ["prints", new SelectInput("Prints", PrintsOption.get())],
             ["digital", new CheckboxInput("Digital")],
-            // TODO: Add list input for rolls
+            ["rolls", new FilmRollsInput()]
         ];
     }
 

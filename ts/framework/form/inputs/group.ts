@@ -82,7 +82,6 @@ export class GroupInput<T extends GroupOption> implements FormInput {
             Number(this.select.value),
             results,
         ];
-
     }
 
     private remove_placeholder() {

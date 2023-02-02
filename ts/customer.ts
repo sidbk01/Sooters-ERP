@@ -102,3 +102,5 @@ create_display().catch((error) => {
     console.error(error);
     alert("There was an error initializing the page");
 });
+
+// TODO: Add notes
