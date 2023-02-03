@@ -4,6 +4,7 @@ import { SelectOption } from "./select";
 
 export interface GroupOption extends SelectOption {
     get_inputs(): [string, FormInput][];
+    get_enum_name(): string;
 }
 
 export class GroupInput<T extends GroupOption> implements FormInput {
@@ -78,10 +79,15 @@ export class GroupInput<T extends GroupOption> implements FormInput {
         for (let [field, input] of this.inputs)
             results[field] = input.validate_and_get();
 
-        return [
-            Number(this.select.value),
-            results,
-        ];
+        let final_object = {};
+        for (let option of this.options) {
+            if (option.get_select_value() == Number(this.select.value)) {
+                final_object[option.get_enum_name()] = results;
+                break;
+            }
+        }
+
+        return final_object;
     }
 
     private remove_placeholder() {

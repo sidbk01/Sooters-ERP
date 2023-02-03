@@ -7,6 +7,9 @@ export class FramingOrder implements OrderTypeInfo {
     private height: number;
 
     public static parse(order_info: any): FramingOrder {
+        if (typeof order_info === "undefined")
+            return;
+
         return new FramingOrder(order_info.category, order_info.width, order_info.height);
     }
 

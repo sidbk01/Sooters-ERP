@@ -79,8 +79,8 @@ class FilmRollInput {
             throw "All amounts must be more than 1";
         }
 
-        let exposure = Number(this.exposures.value);
-        if (exposure < 1) {
+        let exposures = Number(this.exposures.value);
+        if (exposures < 1) {
             this.error.set_message("All exposures must be more than 1");
             this.exposures.onkeydown = () => {
                 this.error.set_message("");
@@ -89,12 +89,12 @@ class FilmRollInput {
             throw "All exposures must be more than 1";
         }
 
-        let type = this.type.value;
+        let type = Number(this.type.value);
 
         return {
             amount: amount,
             film_type: type,
-            exposure: exposure,
+            exposures: exposures,
         }
     }
 

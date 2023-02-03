@@ -13,6 +13,11 @@ export class FilmOrder implements OrderTypeInfo {
     private digital: boolean;
 
     public static parse(order_info: any): FilmOrder {
+        if (typeof order_info === "undefined")
+            return;
+
+        console.debug(order_info)
+
         let prints;
         switch (order_info.prints) {
             case 0:

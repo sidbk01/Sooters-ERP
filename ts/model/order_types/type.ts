@@ -24,16 +24,16 @@ export class OrderType implements GroupOption {
         ];
     }
 
-    public static parse(order: any): [OrderType, OrderTypeInfo] {
+    public static parse(order: any): OrderType {
         switch (order.order_type) {
             case 1:
-                return [new OrderType(OrderTypeInner.Film), FilmOrder.parse(order)];
+                return new OrderType(OrderTypeInner.Film);
 
             case 2:
-                return [new OrderType(OrderTypeInner.Framing), FramingOrder.parse(order)];
+                return new OrderType(OrderTypeInner.Framing);
 
             case 3:
-                return [new OrderType(OrderTypeInner.Photoshoot), Photoshoot.parse(order)];
+                return new OrderType(OrderTypeInner.Photoshoot);
 
             default:
                 throw `Unknown order type "${order.order_type}"`;
@@ -88,6 +88,19 @@ export class OrderType implements GroupOption {
 
             case OrderTypeInner.Photoshoot:
                 return Photoshoot.get_group_inputs();
+        }
+    }
+
+    public get_enum_name(): string {
+        switch (this.type) {
+            case OrderTypeInner.Film:
+                return "Film";
+
+            case OrderTypeInner.Framing:
+                return "Framing";
+
+            case OrderTypeInner.Photoshoot:
+                return "Photoshoot";
         }
     }
 }

@@ -15,6 +15,9 @@ export class Photoshoot implements OrderTypeInfo {
     private type: PhotoshootType;
 
     public static parse(order_info: any): Photoshoot {
+        if (typeof order_info === "undefined")
+            return;
+
         let type;
         switch (order_info.type) {
             case 1:

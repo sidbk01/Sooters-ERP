@@ -1,8 +1,9 @@
+use super::types::NewOrderType;
 use crate::{
     routes::{customers::CustomerName, RouteError},
     state::State,
 };
-use mysql::params;
+use mysql::{params, Params};
 use rocket::{response::content::RawHtml, serde::json::Json};
 use serde::Deserialize;
 use tera::Context;
@@ -16,6 +17,7 @@ pub struct NewOrder {
     location: usize,
     paid: bool,
     customer: usize,
+    order_type: NewOrderType,
 }
 
 #[get("/orders/create?<customer>")]
@@ -47,10 +49,8 @@ pub(super) async fn post_create(
 ) -> Result<String, RouteError> {
     validate_input(&mut info)?;
 
-    // Perform query
-    let id = state
-        .database()
-        .execute_transaction_id(vec![(
+    // Build query
+    let mut queries = vec![(
             "INSERT INTO Orders (EnvelopeID, CurrentLocation, SourceLocation, Receiver, OrderType, Customer, DateDue, Paid, Rush) VALUES (:envelope_id, :location, :location, :receiver, :order_type, :customer, :date_due, :paid, :rush)", 
             params! {
                 "envelope_id" => &info.envelope_id,
@@ -60,8 +60,13 @@ pub(super) async fn post_create(
                 "date_due" => &info.due_date,
                 "paid" => &info.paid,
                 "rush" => &info.rush,
-            })])
-        .await?;
+                "order_type" => &info.order_type.as_usize(),
+            }),
+            ("SET @order_id = LAST_INSERT_ID()", Params::Empty)];
+    info.order_type.add_queries(&mut queries);
+
+    // Perform query
+    let id = state.database().execute_transaction_id(queries).await?;
 
     Ok(format!("{}", id))
 }

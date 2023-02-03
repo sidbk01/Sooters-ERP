@@ -24,10 +24,10 @@ export class Order implements TableValue {
     private picked_up: boolean;
     private formatted_id: string;
 
-    private order_type_info: OrderTypeInfo;
+    private order_type_info?: OrderTypeInfo;
 
     public constructor(id: number, current_location: number, source_location: number, receiver: number, order_type: OrderType, customer: number, date_received: string, date_due: string, paid: boolean, rush: boolean, picked_up: boolean,
-        formatted_id: string, order_type_info: OrderTypeInfo, envelope_id?: number, date_complete?: string) {
+        formatted_id: string, envelope_id?: number, date_complete?: string) {
         this.id = id;
         this.current_location = current_location;
         this.source_location = source_location;
@@ -40,7 +40,6 @@ export class Order implements TableValue {
         this.rush = rush;
         this.picked_up = picked_up;
         this.formatted_id = formatted_id;
-        this.order_type_info = order_type_info;
         this.envelope_id = envelope_id;
         this.date_complete = date_complete;
     }
@@ -108,7 +107,7 @@ export class Order implements TableValue {
 
     on_click_url(current_path): string {
         return `/order?id=${this.id}&back=${encodeURI(current_path)}`;
-        // TODO: Implement on click url
+        // TODO: Implement order page
     }
 }
 
@@ -117,7 +116,7 @@ export class OrdersParser implements AjaxParser<Order[]> {
 
     parse_object(object: any): Order[] {
         return object.map((order) => {
-            let [order_type, order_type_info] = OrderType.parse(order);
+            let order_type = OrderType.parse(order);
             return new Order(
                 order.id,
                 order.current_location,
@@ -131,7 +130,6 @@ export class OrdersParser implements AjaxParser<Order[]> {
                 order.rush,
                 order.picked_up,
                 order.formatted_id,
-                order_type_info,
                 order.envelope_id,
                 order.date_complete,
             );

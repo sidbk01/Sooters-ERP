@@ -1,11 +1,12 @@
 use mysql::prelude::FromRow;
-use rocket::{Build, Rocket};
+use rocket::{time::Date, Build, Rocket};
 use serde::Serialize;
 
 use crate::util::take_from_row;
 
 mod create;
 mod many;
+mod types;
 
 #[derive(Serialize)]
 pub struct Order {
@@ -38,6 +39,10 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
     )
 }
 
+fn format_date(date: Date) -> String {
+    format!("{} {}, {}", date.month(), date.day(), date.year())
+}
+
 impl FromRow for Order {
     fn from_row_opt(row: mysql::Row) -> Result<Self, mysql::FromRowError>
     where
@@ -50,9 +55,9 @@ impl FromRow for Order {
         let (row, receiver) = take_from_row(row, "Receiver")?;
         let (row, order_type) = take_from_row(row, "OrderType")?;
         let (row, customer) = take_from_row(row, "Customer")?;
-        let (row, date_received) = take_from_row(row, "DateReceived")?;
-        let (row, date_due) = take_from_row(row, "DateDue")?;
-        let (row, date_complete) = take_from_row(row, "DateComplete")?;
+        let (row, date_received) = take_from_row::<Date>(row, "DateReceived")?;
+        let (row, date_due) = take_from_row::<Date>(row, "DateDue")?;
+        let (row, date_complete) = take_from_row::<Option<Date>>(row, "DateComplete")?;
         let (row, paid) = take_from_row(row, "Paid")?;
         let (row, rush) = take_from_row(row, "Rush")?;
         let (row, picked_up) = take_from_row(row, "PickedUp")?;
@@ -66,9 +71,9 @@ impl FromRow for Order {
             receiver,
             order_type,
             customer,
-            date_received,
-            date_due,
-            date_complete,
+            date_received: format_date(date_received),
+            date_due: format_date(date_due),
+            date_complete: date_complete.map(|date| format_date(date)),
             paid,
             rush,
             picked_up,

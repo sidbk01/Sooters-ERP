@@ -57,7 +57,7 @@ class CreateOrderBuilder implements FormBuilder {
             customer: CUSTOMER,
             location: location,
             paid: paid,
-            type: type,
+            order_type: type,
         };
 
         console.debug(result);
