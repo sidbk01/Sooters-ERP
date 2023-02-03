@@ -23,6 +23,7 @@ export class Order implements TableValue {
     private rush: boolean;
     private picked_up: boolean;
     private formatted_id: string;
+    private status: number;
 
     private order_type_info?: OrderTypeInfo;
 
@@ -42,6 +43,15 @@ export class Order implements TableValue {
         this.formatted_id = formatted_id;
         this.envelope_id = envelope_id;
         this.date_complete = date_complete;
+
+        if (!this.date_complete)
+            this.status = 0;
+        else {
+            if (!this.picked_up)
+                this.status = 1;
+            else
+                this.status = 2;
+        }
     }
 
     public static get_status_options(initial_complete = true): FilterOption[] {
@@ -75,17 +85,15 @@ export class Order implements TableValue {
                 let dot = document.createElement("span");
                 dot.classList.add("dot");
 
-                if (!this.date_complete) {
+                if (this.status == 0) {
                     status = "Not Complete";
                     dot.style.backgroundColor = "red";
+                } else if (this.status == 1) {
+                    status = "Complete";
+                    dot.style.backgroundColor = "green";
                 } else {
-                    if (!this.picked_up) {
-                        dot.style.backgroundColor = "green";
-                        status = "Complete";
-                    } else {
-                        dot.style.backgroundColor = "blue";
-                        status = "Picked Up";
-                    }
+                    dot.style.backgroundColor = "blue";
+                    status = "Picked Up";
                 }
 
                 container.appendChild(document.createTextNode(status));
@@ -93,15 +101,20 @@ export class Order implements TableValue {
                 return container;
 
             default:
-                throw `"${field}" is not a valid field for and employee`;
+                throw `"${field}" is not a valid field for an order`;
         }
     }
 
     filter(field: string, value: any): boolean {
         switch (field) {
+            case "type":
+                return this.order_type.get_select_value() == value;
+
+            case "status":
+                return this.status == value;
 
             default:
-                throw `"${field}" is not a valid field for and employee`;
+                throw `"${field}" is not a valid field for an order`;
         }
     }
 

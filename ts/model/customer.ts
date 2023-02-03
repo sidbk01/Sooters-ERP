@@ -89,7 +89,7 @@ export class Customer implements TableValue {
                 return this.email;
 
             default:
-                throw `"${field}" is not a valid field for and customer`;
+                throw `"${field}" is not a valid field for a customer`;
         }
     }
 
@@ -105,7 +105,7 @@ export class Customer implements TableValue {
                 return this.email == value;
 
             default:
-                throw `"${field}" is not a valid field for and customer`;
+                throw `"${field}" is not a valid field for a customer`;
         }
     }
 

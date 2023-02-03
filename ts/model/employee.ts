@@ -60,7 +60,7 @@ export class Employee implements TableValue, SelectOption {
                 return (await Location.get_location(this.primary_location)).get_name();
 
             default:
-                throw `"${field}" is not a valid field for and employee`;
+                throw `"${field}" is not a valid field for an employee`;
         }
     }
 
@@ -79,7 +79,7 @@ export class Employee implements TableValue, SelectOption {
                 return this.primary_location == value;
 
             default:
-                throw `"${field}" is not a valid field for and employee`;
+                throw `"${field}" is not a valid field for an employee`;
         }
     }
 
