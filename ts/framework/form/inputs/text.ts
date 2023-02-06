@@ -29,7 +29,7 @@ export class TextInput implements FormInput {
         return this.label;
     }
 
-    public validate_and_get(): string {
+    public validate_and_get(): string | number {
         let value = this.input.value.trim();
 
         console.debug(`TextInput "${this.label}" submitted with value "${value}"`);
@@ -46,6 +46,9 @@ export class TextInput implements FormInput {
                 throw e;
             }
         }
+
+        if (this.input.type == "number")
+            return Number(value);
 
         return value;
     }

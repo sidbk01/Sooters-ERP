@@ -1,0 +1,48 @@
+import { ExtraFilterInput, Table, TableBuilder, TableColumn, ajax } from "./framework/index";
+import { OrderType, Order, OrdersParser, Location } from "./model/index";
+
+class RecentOrdersBuilder implements TableBuilder<Order> {
+    private values: Order[];
+
+    private constructor() { }
+
+    public static async create(): Promise<RecentOrdersBuilder> {
+        let builder = new RecentOrdersBuilder();
+
+        builder.values = await ajax("GET", `/orders/recent/data`, new OrdersParser());
+
+        return builder;
+    }
+
+    public async get_columns(): Promise<TableColumn[]> {
+        return [
+            new TableColumn("ID", "id"),
+            new TableColumn("Customer", "customer"),
+            new TableColumn("Date Received", "date_received"),
+            new TableColumn("Type", "type", true, [OrderType.get_order_types().map((order_type) => { return order_type.to_filter_option(); }), "Select Type"]),
+            new TableColumn("Due Date", "date_due"),
+            new TableColumn("Status", "status", true, [Order.get_status_options(false), "Select Status"])
+        ];
+    }
+
+    public get_values(): Order[] {
+        return this.values;
+    }
+
+    public async get_extra_filter_input(): Promise<ExtraFilterInput | undefined> {
+        return new ExtraFilterInput("Source Location", "source_location", await Location.get_location_filter_options());
+    }
+}
+
+async function create_table() {
+    let builder = await RecentOrdersBuilder.create();
+
+    await Table.create("recent-orders", builder);
+}
+
+create_table().catch((error) => {
+    console.error("Error while creating the builder");
+    console.error(error);
+    alert("There was an error initializing the page");
+});
+

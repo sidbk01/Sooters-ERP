@@ -7,16 +7,6 @@ use mysql::{params, serde_json};
 use rocket::response::content::{RawHtml, RawJson};
 use tera::Context;
 
-#[get("/orders/upcoming")]
-pub(crate) async fn upcoming(state: &rocket::State<State>) -> Result<RawJson<String>, RouteError> {
-    let orders: Vec<Order> = state
-        .database()
-        .execute_query("SELECT * FROM Orders WHERE DateDue BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 7 DAY) ORDER BY DateDue ASC, FormattedID DESC")
-        .await?;
-
-    Ok(RawJson(serde_json::to_string(&orders).unwrap()))
-}
-
 #[get("/orders?<id>")]
 pub(crate) async fn customer_view(
     id: usize,
@@ -52,6 +42,33 @@ pub(crate) async fn customer_data(
                 "id" => &id,
             },
         )
+        .await?;
+
+    Ok(RawJson(serde_json::to_string(&orders).unwrap()))
+}
+
+#[get("/orders/upcoming")]
+pub(crate) async fn upcoming(state: &rocket::State<State>) -> Result<RawJson<String>, RouteError> {
+    let orders: Vec<Order> = state
+        .database()
+        .execute_query("SELECT * FROM Orders WHERE DateDue BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 7 DAY) ORDER BY DateDue ASC, FormattedID DESC")
+        .await?;
+
+    Ok(RawJson(serde_json::to_string(&orders).unwrap()))
+}
+
+#[get("/orders/recent")]
+pub(super) fn recent_view(state: &rocket::State<State>) -> Result<RawHtml<String>, RouteError> {
+    state.render("recent.html", Context::new())
+}
+
+#[get("/orders/recent/data")]
+pub(crate) async fn recent_data(
+    state: &rocket::State<State>,
+) -> Result<RawJson<String>, RouteError> {
+    let orders: Vec<Order> = state
+        .database()
+        .execute_query("SELECT * FROM Orders WHERE DateReceived BETWEEN DATE_SUB(NOW(), INTERVAL 2 DAY) AND NOW()  ORDER BY DateDue ASC, FormattedID DESC")
         .await?;
 
     Ok(RawJson(serde_json::to_string(&orders).unwrap()))

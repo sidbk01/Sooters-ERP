@@ -33,6 +33,8 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
             many::upcoming,
             many::customer_data,
             many::customer_view,
+            many::recent_data,
+            many::recent_view,
             create::view,
             create::post_create,
         ],

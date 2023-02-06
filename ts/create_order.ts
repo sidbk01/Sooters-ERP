@@ -41,7 +41,7 @@ class CreateOrderBuilder implements FormBuilder {
     }
 
     public collect_and_validate(): any {
-        let envelope_id = Number(this.envelope_id.validate_and_get());
+        let envelope_id = this.envelope_id.validate_and_get();
         let due_date = this.due_date.validate_and_get();
         let rush = this.rush.validate_and_get();
         let employee = this.employee.validate_and_get();
