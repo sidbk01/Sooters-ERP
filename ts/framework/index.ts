@@ -3,3 +3,4 @@ export * from "./error";
 export * from "./form/index";
 export * from "./table/index";
 export * from "./display/index";
+export * from "./notes/index";

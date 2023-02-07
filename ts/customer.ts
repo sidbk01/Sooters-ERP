@@ -1,4 +1,4 @@
-import { Display, DisplayBuilder, DisplayField, ajax, TextDisplayField, PhoneDisplayField } from "./framework/index";
+import { Display, DisplayBuilder, DisplayField, ajax, TextDisplayField, PhoneDisplayField, NotesBuilder, Notes } from "./framework/index";
 import { Customer } from "./model/index";
 
 declare const ID: number;
@@ -91,16 +91,32 @@ class CustomerBuilder implements DisplayBuilder {
     }
 }
 
-async function create_display() {
-    let builder = await CustomerBuilder.create();
+class CustomerNotesBuilder implements NotesBuilder {
+    private id: number;
 
-    await Display.create("customer", builder);
+    public constructor(id: number) {
+        this.id = id;
+    }
+
+    public get_data_url(): string {
+        return `/customer/${this.id}/notes`;
+    }
+
+    public get_post_url(): string {
+        return `/customer/${this.id}/notes/create`;
+    }
 }
 
-create_display().catch((error) => {
+async function create_display_and_notes() {
+    let builder = await CustomerBuilder.create();
+    await Display.create("customer", builder);
+
+    let notes_builder = new CustomerNotesBuilder(ID);
+    await Notes.create("customer-notes", notes_builder);
+}
+
+create_display_and_notes().catch((error) => {
     console.error("Error while creating the builder");
     console.error(error);
     alert("There was an error initializing the page");
 });
-
-// TODO: Add notes

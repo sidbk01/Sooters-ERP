@@ -5,6 +5,7 @@ use serde::Serialize;
 
 mod all;
 mod create;
+mod notes;
 mod one;
 
 pub use all::CustomerName;
@@ -29,6 +30,8 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
             create::get_create,
             create::post_create,
             create::update,
+            notes::post_create,
+            notes::data,
         ],
     )
 }

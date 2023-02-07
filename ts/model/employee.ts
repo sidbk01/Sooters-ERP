@@ -19,7 +19,14 @@ export class Employee implements TableValue, SelectOption {
     }
 
     public static async get_employee(id: number): Promise<Employee> {
-        return ajax("GET", `/employee/data?id=${id}`, new EmployeeParser());
+        if (!this.employees)
+            return ajax("GET", `/employee/data?id=${id}`, new EmployeeParser());
+
+        for (let employee of this.employees)
+            if (employee.id == id)
+                return employee;
+
+        throw "Invalid employee ID";
     }
 
     public constructor(id: number, name: string, active: boolean, primary_location: number) {

@@ -1,4 +1,4 @@
-import { CheckboxDisplayField, DateDisplayField, Display, DisplayBuilder, DisplayField, SelectDisplayField, TextDisplayField, ajax } from "./framework/index";
+import { CheckboxDisplayField, DateDisplayField, Display, DisplayBuilder, DisplayField, Notes, NotesBuilder, SelectDisplayField, TextDisplayField, ajax } from "./framework/index";
 import { Customer } from "./model/customer";
 import { Employee } from "./model/employee";
 import { Location } from "./model/location";
@@ -82,10 +82,28 @@ class OrderBuilder implements DisplayBuilder {
     }
 }
 
+class OrderNotesBuilder implements NotesBuilder {
+    private id: number;
+
+    public constructor(id: number) {
+        this.id = id;
+    }
+
+    public get_data_url(): string {
+        return `/orders/${this.id}/notes`;
+    }
+
+    public get_post_url(): string {
+        return `/orders/${this.id}/notes/create`;
+    }
+}
+
 async function create_display() {
     let builder = await OrderBuilder.create();
-
     await Display.create("order", builder);
+
+    let notes_builder = new OrderNotesBuilder(ID);
+    await Notes.create("order-notes", notes_builder);
 }
 
 create_display().catch((error) => {

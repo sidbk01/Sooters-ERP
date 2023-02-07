@@ -1,11 +1,12 @@
+use super::format_date;
+use crate::util::take_from_row;
 use mysql::prelude::FromRow;
 use rocket::{time::Date, Build, Rocket};
 use serde::Serialize;
 
-use crate::util::take_from_row;
-
 mod create;
 mod many;
+mod notes;
 mod one;
 mod types;
 
@@ -40,12 +41,10 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
             create::post_create,
             one::data,
             one::view,
+            notes::post_create,
+            notes::data,
         ],
     )
-}
-
-fn format_date(date: Date) -> String {
-    format!("{} {}, {}", date.month(), date.day(), date.year())
 }
 
 impl FromRow for Order {
