@@ -114,7 +114,7 @@ export class NewEmployee {
 }
 
 class EmployeesParser implements AjaxParser<Employee[]> {
-    public parse_object(object: any): Employee[] {
+    public async parse_object(object: any): Promise<Employee[]> {
         return object.map((employee) => {
             return new Employee(employee.id, employee.name, employee.active, employee.primary_location);
         });
@@ -122,7 +122,7 @@ class EmployeesParser implements AjaxParser<Employee[]> {
 }
 
 class EmployeeParser implements AjaxParser<Employee> {
-    public parse_object(employee: any): Employee {
+    public async parse_object(employee: any): Promise<Employee> {
         return new Employee(employee.id, employee.name, employee.active, employee.primary_location);
     }
 }

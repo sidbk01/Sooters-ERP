@@ -2,7 +2,7 @@
 {% block title %}Order{% endblock title %}
 
 {% block head %}
-<script src="/js/order" type="text/javascript"></script>
+<script src="/js/order" type="module"></script>
 <script type="text/javascript">
     const ID = {{ id }};
 </script>
@@ -11,55 +11,10 @@
 {% block content %}
 <h2>Order</h2>
 
-<div class="info-block" id="order-info">
-    <div class="info-labels" id="order-labels">
-        <div>Order ID:</div>
-        <div id="envelope-id-label">Envelope ID:</div>
-        <div>Customer:</div>
-        <div>Date Received: </div>
-        <div>Date Due: </div>
-        <div>Rush: </div>
-        <div>Date Completed: </div>
-        <div>Current Location: </div>
-        <div>Source Location: </div>
-        <div>Receiving Employee: </div>
-        <div>Paid: </div>
-        <div></div>
-    </div>
-    <div class="info-inputs" id="order-inputs">
-        <div id="order-id" style="display: inline;"></div>
-        <div id="envelope-id" style="display: inline;"></div>
-        <div id="customer" style="display: inline;"></div>
-        <div id="date-received" style="display: inline;"></div>
-        <div id="date-due" style="display: inline;"></div>
-        <div id="rush" style="display: inline;"></div>
-        <div id="date-completed" style="display: inline;"></div>
-        <div id="current-location" style="display: inline;"></div>
-        <div id="source-location" style="display: inline;"></div>
-        <div id="receiver" style="display: inline;"></div>
-        <div id="paid" style="display: inline;"></div>
-        <div></div>
-    </div>
-</div>
-
-<div id="buttons"></div>
+<div id="order"></div>
 
 <button onclick="window.location.href = '{{back}}'">Back</button>
 
-<div id="notes-container">
-    <h3>Notes</h3>
-    <div id="new-note-button">
-        <button onclick="begin_create_note()">New Note</button>
-    </div>
-    <form id="create-note" style="display: none" onsubmit="return false;">
-        Creator: <select id="creator"></select><br />
-        <div id="note-error" style="display: none; color: red;">You must enter a note</div>
-        <textarea id="note"></textarea><br />
-        <input type="submit" onclick="create_note()" value="Create" />
-        <button onclick="cancel_create_note()">Cancel</button>
-    </form>
-    <br />
-    <div id="notes"></div>
-</div>
+<div id="notes"></div>
 
 {% endblock content %}

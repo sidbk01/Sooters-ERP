@@ -1,4 +1,4 @@
-import { DateInput, FormInput, SelectInput, SelectOption } from "../../framework/index";
+import { AjaxParser, DateInput, FormInput, SelectInput, SelectOption, ajax } from "../../framework/index";
 import { OrderTypeInfo } from "./type";
 
 export enum PhotoshootType {
@@ -58,7 +58,11 @@ export class Photoshoot implements OrderTypeInfo {
         ];
     }
 
-    private constructor(date_time: string, type: PhotoshootType) {
+    public static async get_info(id: number): Promise<OrderTypeInfo> {
+        return ajax("GET", `/orders/photoshoot?id=${id}`, new PhotoshootParser());
+    }
+
+    public constructor(date_time: string, type: PhotoshootType) {
         this.date_time = date_time;
         this.type = type;
     }
@@ -106,5 +110,13 @@ class PhotoshootTypeOption implements SelectOption {
 
     public get_select_value(): number {
         return this.type as number;
+    }
+}
+
+class PhotoshootParser implements AjaxParser<Photoshoot> {
+    public constructor() { }
+
+    public async parse_object(object: any): Promise<Photoshoot> {
+        return new Photoshoot(object.date_time, object.photoshoot_type);
     }
 }

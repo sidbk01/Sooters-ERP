@@ -40,6 +40,13 @@ export class OrderType implements GroupOption {
         }
     }
 
+    public static async parse_full(order: any): Promise<[OrderType, OrderTypeInfo]> {
+        let order_type = this.parse(order);
+        let order_type_info = await order_type.get_info(order.id);
+
+        return [order_type, order_type_info];
+    }
+
     public constructor(type: OrderTypeInner) {
         this.type = type;
     }
@@ -101,6 +108,19 @@ export class OrderType implements GroupOption {
 
             case OrderTypeInner.Photoshoot:
                 return "Photoshoot";
+        }
+    }
+
+    public async get_info(id: number): Promise<OrderTypeInfo> {
+        switch (this.type) {
+            case OrderTypeInner.Film:
+                return FilmOrder.get_info(id);
+
+            case OrderTypeInner.Framing:
+                return FramingOrder.get_info(id);
+
+            case OrderTypeInner.Photoshoot:
+                return Photoshoot.get_info(id);
         }
     }
 }

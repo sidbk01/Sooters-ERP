@@ -1,7 +1,7 @@
 import { ajax, AjaxParser, FilterOption, SelectOption } from "../framework/index";
 
 class LocationsParser implements AjaxParser<Location[]> {
-    parse_object(object: any): Location[] {
+    public async parse_object(object: any): Promise<Location[]> {
         let output = [];
 
         for (let inner of object)

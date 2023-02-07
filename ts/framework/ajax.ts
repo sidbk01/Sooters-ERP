@@ -5,7 +5,7 @@ class NoParse implements AjaxParser<undefined> {
 }
 
 export interface AjaxParser<T> {
-    parse_object(object: any): T;
+    parse_object(object: any): Promise<T>;
 }
 
 export function ajax<T = undefined, P extends AjaxParser<T> = NoParse>(method: string, url: string, parser?: P, data?: any): Promise<T> {
@@ -49,7 +49,7 @@ export function ajax<T = undefined, P extends AjaxParser<T> = NoParse>(method: s
 }
 
 export class NumberParser implements AjaxParser<number> {
-    parse_object(object: any): number {
+    public async parse_object(object: any): Promise<number> {
         return Number(object);
     }
 }

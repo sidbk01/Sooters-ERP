@@ -25,7 +25,6 @@ export class Customer implements TableValue {
         return this.customer_names[id];
     }
 
-
     public static async get_customer(id: number): Promise<Customer> {
         return ajax("GET", `/customer/data?id=${id}`, new CustomerParser());
     }
@@ -115,7 +114,7 @@ export class Customer implements TableValue {
 }
 
 class CustomersParser implements AjaxParser<Customer[]> {
-    public parse_object(object: any): Customer[] {
+    public async parse_object(object: any): Promise<Customer[]> {
         return object.map((customer) => {
             return new Customer(customer.id, customer.name, customer.phone_number, customer.email);
         });
@@ -123,7 +122,7 @@ class CustomersParser implements AjaxParser<Customer[]> {
 }
 
 class CustomerNamesParser implements AjaxParser<string[]> {
-    public parse_object(object: any): string[] {
+    public async parse_object(object: any): Promise<string[]> {
         let names = [];
 
         for (let row of object)
@@ -134,7 +133,7 @@ class CustomerNamesParser implements AjaxParser<string[]> {
 }
 
 class CustomerParser implements AjaxParser<Customer> {
-    parse_object(object: any): Customer {
+    public async parse_object(object: any): Promise<Customer> {
         return new Customer(object.id, object.name, object.phone_number, object.email);
     }
 }

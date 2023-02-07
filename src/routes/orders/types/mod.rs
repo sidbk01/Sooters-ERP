@@ -1,4 +1,5 @@
 use mysql::Params;
+use rocket::{Build, Rocket};
 use serde::Deserialize;
 
 mod film;
@@ -10,6 +11,18 @@ pub enum NewOrderType {
     Film(film::NewFilmOrder),
     Framing(framing::FramingOrder),
     Photoshoot(photoshoot::Photoshoot),
+}
+
+pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
+    server.mount(
+        "/",
+        routes![
+            framing::get,
+            photoshoot::get,
+            film::get_film,
+            film::get_rolls,
+        ],
+    )
 }
 
 impl NewOrderType {

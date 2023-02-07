@@ -42,7 +42,6 @@ export class Display<B extends DisplayBuilder> {
         display.fields = builder.get_fields();
         for (let field of display.fields) {
             labels.appendChild(field.get_label().get_element());
-
             inputs.appendChild(field.get_input().get_element());
         }
 
@@ -65,8 +64,12 @@ export class Display<B extends DisplayBuilder> {
         this.title.begin_edit();
 
         // Update fields
-        for (let field of this.fields)
+        for (let field of this.fields) {
+            if (field.get_name() == "")
+                continue;
+
             field.get_input().begin_edit();
+        }
 
         // Update buttons
         this.buttons.begin_edit();
@@ -82,8 +85,13 @@ export class Display<B extends DisplayBuilder> {
                 result[field_name] = title_value;
 
             // Collect results from the fields
-            for (let field of this.fields)
-                result[field.get_name()] = field.get_input().get_value_and_validate();
+            for (let field of this.fields) {
+                let name = field.get_name();
+                if (name == "")
+                    continue;
+
+                result[name] = field.get_input().get_value_and_validate();
+            }
         } catch (e) {
             console.error(`Error while validating input`);
             console.error(e);
@@ -92,8 +100,12 @@ export class Display<B extends DisplayBuilder> {
 
         // Confirm the edit
         this.title.confirm_edit();
-        for (let field of this.fields)
+        for (let field of this.fields) {
+            if (field.get_name() == "")
+                continue;
+
             field.get_input().confirm_edit();
+        }
 
         // Give the results to the builder
         this.builder.post_update(result).then(() => { this.cancel_edit(); }).catch(() => { alert("There was an error while updating"); });
@@ -104,8 +116,12 @@ export class Display<B extends DisplayBuilder> {
         this.title.cancel_edit();
 
         // Update fields        
-        for (let field of this.fields)
+        for (let field of this.fields) {
+            if (field.get_name() == "")
+                continue;
+
             field.get_input().cancel_edit();
+        }
 
         // Update buttons
         this.buttons.end_edit();

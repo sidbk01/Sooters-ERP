@@ -6,6 +6,7 @@ use crate::util::take_from_row;
 
 mod create;
 mod many;
+mod one;
 mod types;
 
 #[derive(Serialize)]
@@ -27,7 +28,7 @@ pub struct Order {
 }
 
 pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
-    server.mount(
+    types::add_routes(server).mount(
         "/",
         routes![
             many::upcoming,
@@ -37,6 +38,8 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
             many::recent_view,
             create::view,
             create::post_create,
+            one::data,
+            one::view,
         ],
     )
 }

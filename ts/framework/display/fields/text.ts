@@ -3,9 +3,9 @@ import { DisplayFieldInput } from "../input";
 
 export class TextDisplayField implements DisplayFieldInput {
     private container: HTMLDivElement;
-    private input_container: HTMLDivElement;
-    private input: HTMLInputElement;
-    private error: Error;
+    private input_container?: HTMLDivElement;
+    private input?: HTMLInputElement;
+    private error?: Error;
     private value_element: HTMLDivElement;
 
     private value: string;
@@ -19,18 +19,20 @@ export class TextDisplayField implements DisplayFieldInput {
 
         this.container = document.createElement("div");
 
-        this.input_container = document.createElement("div");
-        this.input_container.style.display = "none";
+        if (max_length > 0) {
+            this.input_container = document.createElement("div");
+            this.input_container.style.display = "none";
 
-        this.input = document.createElement("input");
-        this.input.type = type;
-        this.input.maxLength = max_length;
-        this.input_container.appendChild(this.input);
+            this.input = document.createElement("input");
+            this.input.type = type;
+            this.input.maxLength = max_length;
+            this.input_container.appendChild(this.input);
 
-        this.error = new Error();
-        this.input_container.appendChild(this.error.get_element());
+            this.error = new Error();
+            this.input_container.appendChild(this.error.get_element());
 
-        this.container.appendChild(this.input_container);
+            this.container.appendChild(this.input_container);
+        }
 
         this.value_element = document.createElement("div");
         this.value_element.innerText = initial_value;
@@ -42,6 +44,9 @@ export class TextDisplayField implements DisplayFieldInput {
     }
 
     public begin_edit() {
+        if (!this.input_container)
+            return;
+
         this.value_element.style.display = "none";
         this.input_container.style.display = "";
         this.input.value = this.value;
@@ -49,6 +54,9 @@ export class TextDisplayField implements DisplayFieldInput {
     }
 
     public get_value_and_validate(): any {
+        if (!this.input_container)
+            return undefined;
+
         if (this.validate) {
             try {
                 this.validate(this.input.value);
@@ -67,11 +75,17 @@ export class TextDisplayField implements DisplayFieldInput {
     }
 
     public confirm_edit() {
+        if (!this.input_container)
+            return;
+
         this.value = this.input.value;
         this.value_element.innerText = this.value;
     }
 
     public cancel_edit() {
+        if (!this.input_container)
+            return;
+
         this.value_element.style.display = "";
         this.input_container.style.display = "none";
     }

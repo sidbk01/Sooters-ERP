@@ -75,7 +75,7 @@ class CustomerBuilder implements DisplayBuilder {
             throw "Last name must not be more than 32 characters";
     }
 
-    public post_update(object: any): Promise<undefined> {
+    public async post_update(object: any): Promise<undefined> {
         let split = object.name.split(' ');
         object.first_name = split[0];
         object.last_name = "";

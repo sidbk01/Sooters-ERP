@@ -1,4 +1,4 @@
-import { FormInput, TextInput } from "../../framework/index";
+import { AjaxParser, FormInput, TextInput, ajax } from "../../framework/index";
 import { OrderTypeInfo } from "./type";
 
 export class FramingOrder implements OrderTypeInfo {
@@ -21,7 +21,11 @@ export class FramingOrder implements OrderTypeInfo {
         ];
     }
 
-    private constructor(category: string, width: number, height: number) {
+    public static async get_info(id: number): Promise<OrderTypeInfo> {
+        return ajax("GET", `/orders/framing?id=${id}`, new FramingOrderParser());
+    }
+
+    public constructor(category: string, width: number, height: number) {
         this.category = category;
         this.width = width;
         this.height = height;
@@ -31,4 +35,12 @@ export class FramingOrder implements OrderTypeInfo {
 function verify_exists(value: string, error_message: string) {
     if (value == "")
         throw error_message;
+}
+
+class FramingOrderParser implements AjaxParser<FramingOrder> {
+    public constructor() { }
+
+    public async parse_object(object: any): Promise<FramingOrder> {
+        return new FramingOrder(object.category, object.width, object.height);
+    }
 }
