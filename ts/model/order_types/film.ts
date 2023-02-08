@@ -1,4 +1,4 @@
-import { AjaxParser, CheckboxInput, FormInput, SelectInput, SelectOption, ajax } from "../../framework/index";
+import { AjaxParser, CheckboxDisplayField, CheckboxInput, DisplayField, FormInput, SelectDisplayField, SelectInput, SelectOption, TextDisplayField, ajax } from "../../framework/index";
 import { FilmRoll } from "./film_roll";
 import { FilmRollsInput } from "./film_rolls_input";
 import { OrderTypeInfo } from "./type";
@@ -58,6 +58,18 @@ export class FilmOrder implements OrderTypeInfo {
         this.prints = prints;
         this.digital = digital;
         this.rolls = rolls;
+    }
+
+    public get_display_fields(): DisplayField[] {
+        let fields = [
+            new DisplayField("order_info_prints", "Prints", new SelectDisplayField(PrintsOption.get(), this.prints as number)),
+            new DisplayField("order_info_digital", "Digital", new CheckboxDisplayField(this.digital)),
+        ];
+
+        for (let i = 0; i < this.rolls.length; i++)
+            fields.push(new DisplayField("", `Roll Set ${i}`, new TextDisplayField(this.rolls[i].to_string(), 0)))
+
+        return fields;
     }
 }
 

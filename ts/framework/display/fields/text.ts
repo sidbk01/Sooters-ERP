@@ -71,6 +71,13 @@ export class TextDisplayField implements DisplayFieldInput {
             }
         }
 
+        if (this.input.type == "number") {
+            if (this.input.value)
+                return Number(this.input.value);
+        
+            return undefined;
+        }
+            
         return this.input.value;
     }
 

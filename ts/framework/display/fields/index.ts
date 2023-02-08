@@ -3,3 +3,4 @@ export * from "./phone";
 export * from "./text";
 export * from "./date";
 export * from "./checkbox";
+export * from "./blank";

@@ -1,10 +1,10 @@
-import { FilterOption, FormInput, GroupOption, SelectOption } from "../../framework/index";
+import { DisplayField, FilterOption, FormInput, GroupOption, SelectOption, TextDisplayField } from "../../framework/index";
 import { FilmOrder } from "./film";
 import { FramingOrder } from "./framing";
 import { Photoshoot } from "./photoshoot";
 
 export interface OrderTypeInfo {
-
+    get_display_fields(): DisplayField[];
 }
 
 enum OrderTypeInner {
@@ -15,6 +15,7 @@ enum OrderTypeInner {
 
 export class OrderType implements GroupOption {
     private type: OrderTypeInner;
+    private info?: OrderTypeInfo;
 
     public static get_order_types(): OrderType[] {
         return [
@@ -40,11 +41,11 @@ export class OrderType implements GroupOption {
         }
     }
 
-    public static async parse_full(order: any): Promise<[OrderType, OrderTypeInfo]> {
+    public static async parse_full(order: any): Promise<OrderType> {
         let order_type = this.parse(order);
-        let order_type_info = await order_type.get_info(order.id);
+        order_type.info = await order_type.get_info(order.id);
 
-        return [order_type, order_type_info];
+        return order_type;
     }
 
     public constructor(type: OrderTypeInner) {
@@ -122,5 +123,11 @@ export class OrderType implements GroupOption {
             case OrderTypeInner.Photoshoot:
                 return Photoshoot.get_info(id);
         }
+    }
+
+    public get_display_fields(): DisplayField[] {
+        return [
+            new DisplayField("", "Type", new TextDisplayField(this.to_string(), 0))
+        ].concat(this.info.get_display_fields());
     }
 }

@@ -47,8 +47,12 @@ export class TextInput implements FormInput {
             }
         }
 
-        if (this.input.type == "number")
-            return Number(value);
+        if (this.input.type == "number") {
+            if (value)
+                return Number(value);
+
+            return undefined;
+        }
 
         return value;
     }

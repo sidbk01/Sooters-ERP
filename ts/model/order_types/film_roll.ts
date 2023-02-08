@@ -10,7 +10,7 @@ export class FilmRoll {
     private id: number;
     private amount: number;
     private exposures: number;
-    private type: FilmType;
+    private type: FilmTypeOption;
 
     public static async get_rolls(id: number): Promise<FilmRoll[]> {
         return ajax("GET", `/orders/film_rolls?id=${id}`, new FilmRollsParser());
@@ -20,7 +20,11 @@ export class FilmRoll {
         this.id = id;
         this.amount = amount;
         this.exposures = exposures;
-        this.type = type;
+        this.type = new FilmTypeOption(type);
+    }
+
+    public to_string(): string {
+        return `${this.amount} ${this.type.get_select_text()} ${this.amount == 1 ? "roll" : "rolls"} with ${this.exposures} exposures`;
     }
 }
 
@@ -35,7 +39,7 @@ export class FilmTypeOption implements SelectOption {
         ];
     }
 
-    private constructor(type: FilmType) {
+    public constructor(type: FilmType) {
         this.type = type;
     }
 

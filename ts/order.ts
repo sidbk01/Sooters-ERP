@@ -1,4 +1,4 @@
-import { CheckboxDisplayField, DateDisplayField, Display, DisplayBuilder, DisplayField, Notes, NotesBuilder, SelectDisplayField, TextDisplayField, ajax } from "./framework/index";
+import { BlankDisplayField, CheckboxDisplayField, DateDisplayField, Display, DisplayBuilder, DisplayField, Notes, NotesBuilder, SelectDisplayField, TextDisplayField, ajax } from "./framework/index";
 import { Customer } from "./model/customer";
 import { Employee } from "./model/employee";
 import { Location } from "./model/location";
@@ -21,9 +21,9 @@ class OrderBuilder implements DisplayBuilder {
 
         let customer_name = await Customer.get_customer_name(builder.order.get_customer());
 
-        let envelope_id = builder.order.get_envelope_id();
-        if (typeof envelope_id === "undefined")
-            envelope_id = 0;
+        let envelope_id: number | string = builder.order.get_envelope_id();
+        if (!envelope_id)
+            envelope_id = "";
 
         let date_complete = builder.order.get_date_complete();
         let date_complete_field;
@@ -45,12 +45,16 @@ class OrderBuilder implements DisplayBuilder {
             new DisplayField("", "Date Received", new TextDisplayField(builder.order.get_date_received(), 0)),
             new DisplayField("date_due", "Date Due", new DateDisplayField(builder.order.get_date_due(), "A due date is required")),
             new DisplayField("rush", "Rush", new CheckboxDisplayField(builder.order.is_rush())),
+            // TODO: Add "mark complete" button
             new DisplayField("", "Date Complete", date_complete_field),
+            // TODO: Add "mark picked up" button
             new DisplayField("current_location", "Current Location", current_location_field),
             new DisplayField("source_location", "Source Location", new SelectDisplayField(await Location.get_locations(), builder.order.get_source_location())),
             new DisplayField("receiver", "Receiving Employee", new SelectDisplayField(await Employee.get_employees(true), builder.order.get_receiver())),
+            // TODO: Add "mark paid" button
             new DisplayField("paid", "Paid", new CheckboxDisplayField(builder.order.is_paid())),
-        ];
+            new DisplayField("", "", new BlankDisplayField()),
+        ].concat(builder.order.get_order_type_display_fields());
 
         return builder;
     }
@@ -76,9 +80,19 @@ class OrderBuilder implements DisplayBuilder {
     }
 
     public async post_update(object: any): Promise<undefined> {
-        console.info(object);
+        object.order_type = {};
+        let order_type_name = this.order.get_order_type().get_enum_name();
+        object.order_type[order_type_name] = {};
 
-        return ajax("POST", `/orders/update/${ID}`);
+        for (let key in object) {
+            if (!key.startsWith("order_info_"))
+                continue;
+
+            object.order_type[order_type_name][key.slice(11)] = object[key];
+            delete object[key];
+        }
+
+        return ajax("POST", `/orders/update/${ID}`, undefined, object);
     }
 }
 

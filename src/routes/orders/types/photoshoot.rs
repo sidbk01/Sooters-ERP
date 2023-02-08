@@ -1,4 +1,8 @@
-use crate::{routes::RouteError, state::State, util::take_from_row};
+use crate::{
+    routes::{format_date_time, RouteError},
+    state::State,
+    util::take_from_row,
+};
 use mysql::{params, prelude::FromRow, serde_json, Params};
 use rocket::response::content::RawJson;
 use serde::{Deserialize, Serialize};
@@ -36,8 +40,29 @@ pub(super) async fn get(
 impl Photoshoot {
     pub fn add_queries(&self, queries: &mut Vec<(&'static str, Params)>) {
         queries.push((
-            "INSERT INTO Photoshoots (ID, DateTime, Type) VALUES (@order_id, :date_time, :type)",
+            "INSERT INTO Photoshoots (ID, DateTime, Type) VALUES (@order_id, :date_time, :photoshoot_type)",
             params! {
+                "date_time" => &self.date_time,
+                "photoshoot_type" => &self.photoshoot_type,
+            },
+        ))
+    }
+
+    pub fn validate(&self) -> Result<(), RouteError> {
+        if self.date_time.len() == 0 {
+            return Err(RouteError::InputError(
+                "A scheduled date & time is required",
+            ));
+        }
+
+        Ok(())
+    }
+
+    pub fn add_update_queries(&self, queries: &mut Vec<(&'static str, Params)>, id: usize) {
+        queries.push((
+            "UPDATE Photoshoots SET DateTime = :date_time, Type = :photoshoot_type WHERE ID = :id",
+            params! {
+                "id" => &id,
                 "date_time" => &self.date_time,
                 "photoshoot_type" => &self.photoshoot_type,
             },
@@ -54,7 +79,7 @@ impl FromRow for Photoshoot {
         let (_, photoshoot_type) = take_from_row(row, "Type")?;
 
         Ok(Self {
-            date_time,
+            date_time: format_date_time(date_time),
             photoshoot_type,
         })
     }

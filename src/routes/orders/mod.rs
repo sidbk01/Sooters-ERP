@@ -9,6 +9,7 @@ mod many;
 mod notes;
 mod one;
 mod types;
+mod update;
 
 #[derive(Serialize)]
 pub struct Order {
@@ -43,6 +44,7 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
             one::view,
             notes::post_create,
             notes::data,
+            update::update,
         ],
     )
 }

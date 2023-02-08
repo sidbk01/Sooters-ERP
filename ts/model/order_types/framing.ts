@@ -1,4 +1,4 @@
-import { AjaxParser, FormInput, TextInput, ajax } from "../../framework/index";
+import { AjaxParser, DisplayField, FormInput, TextDisplayField, TextInput, ajax } from "../../framework/index";
 import { OrderTypeInfo } from "./type";
 
 export class FramingOrder implements OrderTypeInfo {
@@ -29,6 +29,15 @@ export class FramingOrder implements OrderTypeInfo {
         this.category = category;
         this.width = width;
         this.height = height;
+    }
+
+    public get_display_fields(): DisplayField[] {
+        return [
+            new DisplayField("order_info_category", "Category", new TextDisplayField(this.category, 10, (text) => { verify_exists(text, "A category is required") })),
+            new DisplayField("order_info_width", "Width", new TextDisplayField(this.width.toString(), 3, (text) => { verify_exists(text, "A width is required") }, "number")),
+            new DisplayField("order_info_height", "Height", new TextDisplayField(this.height.toString(), 3, (text) => { verify_exists(text, "A height is required") }, "number")),
+
+        ];
     }
 }
 

@@ -76,5 +76,5 @@ fn validate_input(order: &mut NewOrder) -> Result<(), RouteError> {
         return Err(RouteError::InputError("An order requires a due date"));
     }
 
-    Ok(())
+    order.order_type.validate()
 }

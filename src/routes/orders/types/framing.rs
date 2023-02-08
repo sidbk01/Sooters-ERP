@@ -45,6 +45,26 @@ impl FramingOrder {
             }
         ))
     }
+
+    pub fn add_update_queries(&self, queries: &mut Vec<(&'static str, Params)>, id: usize) {
+        queries.push((
+            "UPDATE Framing_Orders SET Category = :category, Width = :width, Height = :height WHERE ID = :id",
+            params! {
+                "id" => &id,
+                "category" => &self.category,
+                "width" => &self.width,
+                "height" => &self.height,
+            },
+        ))
+    }
+
+    pub fn validate(&self) -> Result<(), RouteError> {
+        if self.category.len() == 0 {
+            return Err(RouteError::InputError("A category is required"));
+        }
+
+        Ok(())
+    }
 }
 
 impl FromRow for FramingOrder {

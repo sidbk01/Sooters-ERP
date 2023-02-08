@@ -72,6 +72,9 @@ export class DisplayTitle {
     }
 
     public confirm_edit() {
+        if (!this.input)
+            return;
+
         this.text.innerText = this.input.value;
     }
 

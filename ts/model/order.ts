@@ -1,4 +1,4 @@
-import { AjaxParser, FilterOption, TableValue, ajax } from "../framework/index";
+import { AjaxParser, DisplayField, FilterOption, TableValue, ajax } from "../framework/index";
 import { Customer } from "./customer";
 import { OrderType, OrderTypeInfo } from "./order_types/index";
 
@@ -25,8 +25,6 @@ export class Order implements TableValue {
     private formatted_id: string;
     private status: number;
 
-    private order_type_info?: OrderTypeInfo;
-
     public static async get_order(id: number): Promise<Order> {
         return ajax("GET", `/order/data?id=${id}`, new OrderParser());
     }
@@ -40,7 +38,7 @@ export class Order implements TableValue {
     }
 
     public constructor(id: number, current_location: number, source_location: number, receiver: number, order_type: OrderType, customer: number, date_received: string, date_due: string, paid: boolean, rush: boolean, picked_up: boolean,
-        formatted_id: string, envelope_id?: number, date_complete?: string, order_type_info?: OrderTypeInfo) {
+        formatted_id: string, envelope_id?: number, date_complete?: string) {
         this.id = id;
         this.current_location = current_location;
         this.source_location = source_location;
@@ -55,7 +53,6 @@ export class Order implements TableValue {
         this.formatted_id = formatted_id;
         this.envelope_id = envelope_id;
         this.date_complete = date_complete;
-        this.order_type_info = order_type_info;
 
         if (!this.date_complete)
             this.status = 0;
@@ -115,6 +112,10 @@ export class Order implements TableValue {
         return this.formatted_id;
     }
 
+    public get_order_type(): OrderType {
+        return this.order_type;
+    }
+
     public async render_field(field: string): Promise<string | HTMLElement> {
         switch (field) {
             case "id":
@@ -158,7 +159,7 @@ export class Order implements TableValue {
         }
     }
 
-    filter(field: string, value: any): boolean {
+    public filter(field: string, value: any): boolean {
         switch (field) {
             case "type":
                 return this.order_type.get_select_value() == value;
@@ -171,8 +172,12 @@ export class Order implements TableValue {
         }
     }
 
-    on_click_url(current_path): string {
+    public on_click_url(current_path): string {
         return `/order?id=${this.id}&back=${encodeURI(current_path)}`;
+    }
+
+    public get_order_type_display_fields(): DisplayField[] {
+        return this.order_type.get_display_fields();
     }
 }
 
@@ -209,7 +214,7 @@ export class OrderParser implements AjaxParser<Order> {
     public constructor() { }
 
     public async parse_object(order: any): Promise<Order> {
-        let [order_type, order_type_info] = await OrderType.parse_full(order);
+        let order_type = await OrderType.parse_full(order);
         return new Order(
             order.id,
             order.current_location,
@@ -225,7 +230,6 @@ export class OrderParser implements AjaxParser<Order> {
             order.formatted_id,
             order.envelope_id,
             order.date_complete,
-            order_type_info,
         );
     }
 }

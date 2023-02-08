@@ -98,17 +98,19 @@ export class Display<B extends DisplayBuilder> {
             return;
         }
 
-        // Confirm the edit
-        this.title.confirm_edit();
-        for (let field of this.fields) {
-            if (field.get_name() == "")
-                continue;
-
-            field.get_input().confirm_edit();
-        }
-
         // Give the results to the builder
-        this.builder.post_update(result).then(() => { this.cancel_edit(); }).catch(() => { alert("There was an error while updating"); });
+        this.builder.post_update(result).then(() => {
+            // Confirm the edit
+            this.title.confirm_edit();
+            for (let field of this.fields) {
+                if (field.get_name() == "")
+                    continue;
+
+                field.get_input().confirm_edit();
+            }
+
+            this.cancel_edit();
+        }).catch((e) => { alert("There was an error while updating"); throw e; });
     }
 
     public cancel_edit() {

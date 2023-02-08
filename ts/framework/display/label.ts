@@ -3,7 +3,8 @@ export class Label {
 
     public constructor(label: string) {
         this.element = document.createElement("label");
-        this.element.innerText = `${label}:`;
+        if (label)
+            this.element.innerText = `${label}:`;
     }
 
     public get_element(): HTMLLabelElement {

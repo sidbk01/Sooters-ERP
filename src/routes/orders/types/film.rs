@@ -10,7 +10,7 @@ pub struct NewFilmOrder {
     rolls: Vec<NewFilmRoll>,
 }
 
-#[derive(Serialize)]
+#[derive(Deserialize, Serialize)]
 pub struct FilmOrder {
     prints: usize,
     digital: bool,
@@ -64,7 +64,7 @@ pub(super) async fn get_rolls(
     let orders: Vec<FilmRoll> = state
         .database()
         .execute_query_parameters(
-            "SELECT * FROM Film_Orders WHERE OrderID = :id",
+            "SELECT * FROM Film_Rolls WHERE OrderID = :id",
             params! {
                 "id" => id,
             },
@@ -87,6 +87,27 @@ impl NewFilmOrder {
         for roll in &self.rolls {
             roll.add_queries(queries);
         }
+    }
+
+    pub fn validate(&self) -> Result<(), RouteError> {
+        Ok(())
+    }
+}
+
+impl FilmOrder {
+    pub fn add_update_queries(&self, queries: &mut Vec<(&'static str, Params)>, id: usize) {
+        queries.push((
+            "UPDATE Film_Orders SET Prints = :prints, Digital = :digital WHERE ID = :id",
+            params! {
+                "id" => &id,
+                "prints" => &self.prints,
+                "digital" => &self.digital,
+            },
+        ))
+    }
+
+    pub fn validate(&self) -> Result<(), RouteError> {
+        Ok(())
     }
 }
 
