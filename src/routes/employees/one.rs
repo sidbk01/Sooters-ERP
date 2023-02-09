@@ -43,6 +43,22 @@ pub(crate) async fn data(
     Ok(RawJson(serde_json::to_string(&employee).unwrap()))
 }
 
+#[get("/employee/first")]
+pub(crate) async fn first(state: &rocket::State<State>) -> Result<RawJson<String>, RouteError> {
+    // Perform the query
+    let employee: Employee = match state
+        .database()
+        .execute_query("SELECT * FROM Employees WHERE Active = '1' LIMIT 1")
+        .await?
+        .pop()
+    {
+        Some(employee) => employee,
+        None => return Err(RouteError::InputError("No employees")),
+    };
+
+    Ok(RawJson(serde_json::to_string(&employee).unwrap()))
+}
+
 #[post("/employees/set_active/<id>/<active>")]
 pub(crate) async fn set_active(
     id: usize,

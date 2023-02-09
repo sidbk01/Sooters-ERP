@@ -167,6 +167,9 @@ export class Order implements TableValue {
             case "status":
                 return this.status == value;
 
+            case "source_location":
+                return this.source_location == value;
+
             default:
                 throw `"${field}" is not a valid field for an order`;
         }

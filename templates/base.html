@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="/css/main" />
 
     <script src="/js/logging" type="module"></script>
-    <!-- TODO: Add preferences -->
+    <script src="/js/preferences" type="module"></script>
 
     {% block head %}
     {% endblock %}
@@ -31,15 +31,6 @@
         <div class="preferences" id="preferences">
             <img src="/images/preferences" alt="Preferences" id="preferences-button" />
             <div id="preferences-menu" class="preferences-menu">
-                <h4>Preferences</h4>
-                <div>
-                    Employee: <div id="employee-preference-container" style="display: inline;"></div><br />
-                </div>
-                <div>
-                    Location: <div id="location-preference-container" style="display: inline"></div><br />
-                </div>
-                <div id="preferences-menu-buttons">
-                </div>
             </div>
         </div>
     </div>

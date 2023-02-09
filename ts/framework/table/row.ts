@@ -102,7 +102,7 @@ export class TableRow {
     }
 
     public extra_filter(field: string, value: any) {
-        if (typeof value === "undefined")
+        if (value == "undefined")
             this.extra_status = true;
         else
             this.extra_status = this.value.filter(field, value);

@@ -39,6 +39,17 @@ export class SelectInput<T extends SelectOption> implements FormInput {
         return this.label;
     }
 
+    public set_value(value: number) {
+        for (let i = 0; i < this.select.children.length; i++) {
+            let option = this.select.children[i] as HTMLOptionElement;
+
+            if (Number(option.value) == value) {
+                this.select.selectedIndex = i;
+                return;
+            }
+        }
+    }
+
     public validate_and_get(): number {
         let value = Number(this.select.value);
         console.debug(`SelectInput "${this.label}" submitted with value "${value}"`);

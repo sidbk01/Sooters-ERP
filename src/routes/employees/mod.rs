@@ -27,6 +27,7 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
             one::view,
             one::data,
             one::set_active,
+            one::first,
         ],
     )
 }

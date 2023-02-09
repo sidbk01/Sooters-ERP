@@ -1,5 +1,6 @@
 import { CheckboxInput, DateInput, Form, FormBuilder, FormInput, GroupInput, SelectInput, TextInput } from "./framework/index";
 import { Employee, Location, OrderType } from "./model/index";
+import { Preferences } from "./preferences";
 
 declare const CUSTOMER: number;
 
@@ -24,6 +25,9 @@ class CreateOrderBuilder implements FormBuilder {
         builder.location = new SelectInput("Location", await Location.get_locations());
         builder.paid = new CheckboxInput("Paid");
         builder.type = new GroupInput("Type", "Select Type...", "An order type is required", OrderType.get_order_types());
+
+        builder.employee.set_value(Preferences.get().get_employee());
+        builder.location.set_value(Preferences.get().get_location());
 
         return builder;
     }
