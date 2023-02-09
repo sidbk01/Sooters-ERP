@@ -45,6 +45,8 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
             notes::post_create,
             notes::data,
             update::update,
+            update::completed,
+            update::picked_up,
         ],
     )
 }

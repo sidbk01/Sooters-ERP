@@ -25,18 +25,44 @@ class OrderBuilder implements DisplayBuilder {
         if (!envelope_id)
             envelope_id = "";
 
+        let mark_complete = document.createElement("button");
+        mark_complete.classList.add("inline-button");
+        mark_complete.innerText = "Complete Order";
+        mark_complete.onclick = () => {
+            builder.mark_complete().then(() => {
+                window.location.reload();
+            }).catch((error) => {
+                console.error("There was an error marking complete");
+                console.error(error);
+                alert("There was an error while completing the order");
+            });
+        }
+
         let date_complete = builder.order.get_date_complete();
         let date_complete_field;
         if (!date_complete)
-            date_complete_field = new TextDisplayField("Not Complete", 0);
+            date_complete_field = new DisplayField("", "Date Complete", new TextDisplayField("Not Complete", 0), mark_complete);
         else
-            date_complete_field = new DateDisplayField(date_complete);
+            date_complete_field = new DisplayField("", "Date Complete", new DateDisplayField(date_complete));
+
+        let mark_picked_up = document.createElement("button");
+        mark_picked_up.classList.add("inline-button");
+        mark_picked_up.innerText = "Set Picked Up";
+        mark_picked_up.onclick = () => {
+            builder.mark_picked_up().then(() => {
+                window.location.reload();
+            }).catch((error) => {
+                console.error("There was an error marking picked up");
+                console.error(error);
+                alert("There was an error while setting picked up");
+            });
+        }
 
         let current_location_field;
         if (builder.order.is_picked_up())
-            current_location_field = new TextDisplayField("Picked Up", 0);
+            current_location_field = new DisplayField("", "Current Location", new TextDisplayField("Picked Up", 0));
         else
-            current_location_field = new SelectDisplayField(await Location.get_locations(), builder.order.get_current_location());
+            current_location_field = new DisplayField("current_location", "Current Location", new SelectDisplayField(await Location.get_locations(), builder.order.get_current_location()), mark_picked_up);
 
         builder.fields = [
             new DisplayField("", "Order ID", new TextDisplayField(builder.order.get_formatted_id(), 0)),
@@ -45,13 +71,10 @@ class OrderBuilder implements DisplayBuilder {
             new DisplayField("", "Date Received", new TextDisplayField(builder.order.get_date_received(), 0)),
             new DisplayField("date_due", "Date Due", new DateDisplayField(builder.order.get_date_due(), "A due date is required")),
             new DisplayField("rush", "Rush", new CheckboxDisplayField(builder.order.is_rush())),
-            // TODO: Add "mark complete" button
-            new DisplayField("", "Date Complete", date_complete_field),
-            // TODO: Add "mark picked up" button
-            new DisplayField("current_location", "Current Location", current_location_field),
+            date_complete_field,
+            current_location_field,
             new DisplayField("source_location", "Source Location", new SelectDisplayField(await Location.get_locations(), builder.order.get_source_location())),
             new DisplayField("receiver", "Receiving Employee", new SelectDisplayField(await Employee.get_employees(true), builder.order.get_receiver())),
-            // TODO: Add "mark paid" button
             new DisplayField("paid", "Paid", new CheckboxDisplayField(builder.order.is_paid())),
             new DisplayField("", "", new BlankDisplayField()),
         ].concat(builder.order.get_order_type_display_fields());
@@ -84,6 +107,9 @@ class OrderBuilder implements DisplayBuilder {
         let order_type_name = this.order.get_order_type().get_enum_name();
         object.order_type[order_type_name] = {};
 
+        if (this.order.is_picked_up())
+            object.current_location = this.order.get_current_location();
+
         for (let key in object) {
             if (!key.startsWith("order_info_"))
                 continue;
@@ -93,6 +119,14 @@ class OrderBuilder implements DisplayBuilder {
         }
 
         return ajax("POST", `/orders/update/${ID}`, undefined, object);
+    }
+
+    private async mark_complete() {
+        return ajax("POST", `/order/completed?id=${ID}`);
+    }
+
+    private async mark_picked_up() {
+        return ajax("POST", `/order/picked_up?id=${ID}`);
     }
 }
 

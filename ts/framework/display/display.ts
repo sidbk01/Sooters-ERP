@@ -42,7 +42,7 @@ export class Display<B extends DisplayBuilder> {
         display.fields = builder.get_fields();
         for (let field of display.fields) {
             labels.appendChild(field.get_label().get_element());
-            inputs.appendChild(field.get_input().get_element());
+            inputs.appendChild(field.get_input_container());
         }
 
         // Append labels and inputs to container

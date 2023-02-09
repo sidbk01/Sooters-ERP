@@ -1,5 +1,8 @@
 use super::types::UpdatedOrderType;
-use crate::{routes::RouteError, state::State};
+use crate::{
+    routes::RouteError,
+    state::{Empty, State},
+};
 use mysql::params;
 use rocket::serde::json::Json;
 use serde::Deserialize;
@@ -43,6 +46,42 @@ pub(crate) async fn update(
     info.order_type.add_update_queries(&mut queries, id);
 
     state.database().execute_transaction_id(queries).await?;
+
+    Ok(String::new())
+}
+
+#[post("/order/completed?<id>")]
+pub(crate) async fn completed(
+    id: usize,
+    state: &rocket::State<State>,
+) -> Result<String, RouteError> {
+    state
+        .database()
+        .execute_query_parameters::<_, Empty, _>(
+            "UPDATE Orders SET DateComplete = CURDATE() WHERE ID = :id",
+            params! {
+                "id" => id,
+            },
+        )
+        .await?;
+
+    Ok(String::new())
+}
+
+#[post("/order/picked_up?<id>")]
+pub(crate) async fn picked_up(
+    id: usize,
+    state: &rocket::State<State>,
+) -> Result<String, RouteError> {
+    state
+        .database()
+        .execute_query_parameters::<_, Empty, _>(
+            "UPDATE Orders SET PickedUp = '1' WHERE ID = :id",
+            params! {
+                "id" => id,
+            },
+        )
+        .await?;
 
     Ok(String::new())
 }
