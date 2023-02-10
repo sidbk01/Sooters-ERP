@@ -213,6 +213,9 @@ export class Preferences {
         let location_name = localStorage.getItem("preferred_location_name");
         let location_id = Number(localStorage.getItem("preferred_location_id"));
 
+        if (employee_id == 0 || location_id == 0)
+            this.load_default_preferences();
+
         this.employee = [employee_id, employee_name];
         this.location = [location_id, location_name];
     }
@@ -244,7 +247,7 @@ export class Preferences {
                 location_id = Number(content.trim());
         }
 
-        if (typeof employee_id == "undefined" || typeof location_id == "undefined")
+        if (typeof employee_id == "undefined" || typeof location_id == "undefined" || employee_id == 0 || location_id == 0)
             return this.load_default_preferences();
 
         let employee_name = (await Employee.get_employee(employee_id)).get_name();
