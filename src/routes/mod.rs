@@ -9,6 +9,7 @@ mod error;
 mod index;
 mod locations;
 mod orders;
+mod report;
 mod static_assets;
 
 pub use error::RouteError;
@@ -20,7 +21,10 @@ pub(super) fn add_routes(mut server: Rocket<Build>) -> Rocket<Build> {
     server = orders::add_routes(server);
     server = customers::add_routes(server);
 
-    server.mount("/", routes![locations::get, index::get])
+    server.mount(
+        "/",
+        routes![locations::get, index::get, report::get, report::post],
+    )
 }
 
 fn format_date(date: Date) -> String {

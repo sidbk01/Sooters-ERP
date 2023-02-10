@@ -385,5 +385,14 @@ input[type=text].search {
     float: right;
     color: #AAA;
     margin-right: 1rem;
+    margin-bottom: 1rem;
     cursor: pointer;
+}
+
+.report:hover {
+    color: #999;
+}
+
+.report:active {
+    color: #888;
 }

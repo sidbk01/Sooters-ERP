@@ -19,6 +19,18 @@ class Logger {
         console.debug = (...args) => {
             this.debug(...args);
         };
+        console.info = (...args) => {
+            this.info(...args);
+        };
+        console.log = (...args) => {
+            this.info(...args);
+        };
+        console.warn = (...args) => {
+            this.warn(...args);
+        };
+        console.error = (...args) => {
+            this.error(...args);
+        };
     }
 
     public get_logs(): [any[], Level, EpochTimeStamp][] {
@@ -50,8 +62,7 @@ const LOGGER = new Logger();
 
 function report_bug() {
     window.sessionStorage.setItem("logs", JSON.stringify(LOGGER.get_logs()));
-    window.location.href = "/report";
-    // TODO: Implement report page
+    window.location.href = `/report?back=${encodeURI(window.location.pathname + window.location.search)}`;
 }
 
 let report = document.getElementById("report");

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Report{% endblock title %}
+
+{% block head %}
+<script src="/js/report" type="module"></script>
+{% endblock %}
+
+{% block content %}
+<h2>Report</h2>
+<div id="report-form"></div>
+<button onclick="window.location.href ='{{ back }}'">Back</button>
+
+<div id="back" style="display: none;">{{back}}</div>
+
+{% endblock content %}
