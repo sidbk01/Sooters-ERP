@@ -1,3 +1,5 @@
+import { initialize_preferences } from "./preferences";
+
 enum Level {
     Debug,
     Info,
@@ -58,13 +60,17 @@ class Logger {
     }
 }
 
-const LOGGER = new Logger();
+export function initialize_logger() {
+    const LOGGER = new Logger();
 
-function report_bug() {
-    window.sessionStorage.setItem("logs", JSON.stringify(LOGGER.get_logs()));
-    window.location.href = `/report?back=${encodeURI(window.location.pathname + window.location.search)}`;
+    function report_bug() {
+        window.sessionStorage.setItem("logs", JSON.stringify(LOGGER.get_logs()));
+        window.location.href = `/report?back=${encodeURI(window.location.pathname + window.location.search)}`;
+    }
+
+    let report = document.getElementById("report");
+    if (report)
+        report.onclick = () => { report_bug() };
+
+    initialize_preferences();
 }
-
-let report = document.getElementById("report");
-if (report)
-    report.onclick = () => { report_bug() };

@@ -1,4 +1,5 @@
 import { ExtraFilterInput, Table, TableBuilder, TableColumn } from "./framework/index";
+import { initialize_logger } from "./logging";
 import { Employee, Location } from "./model/index";
 
 declare const ACTIVE: boolean;
@@ -35,6 +36,8 @@ class EmployeesBuilder implements TableBuilder<Employee> {
 }
 
 async function create_table() {
+    initialize_logger();
+
     let builder = await EmployeesBuilder.create();
 
     await Table.create("employees", builder);

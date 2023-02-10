@@ -1,4 +1,5 @@
 import { Display, DisplayBuilder, DisplayField, ajax, TextDisplayField, PhoneDisplayField, NotesBuilder, Notes } from "./framework/index";
+import { initialize_logger } from "./logging";
 import { Customer } from "./model/index";
 
 declare const ID: number;
@@ -108,6 +109,8 @@ class CustomerNotesBuilder implements NotesBuilder {
 }
 
 async function create_display_and_notes() {
+    initialize_logger();
+
     let builder = await CustomerBuilder.create();
     await Display.create("customer", builder);
 

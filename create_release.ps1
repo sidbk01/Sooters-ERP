@@ -1,5 +1,6 @@
 Write-Output "Building . . ."
 cargo build --release
+npm run build
 
 Write-Output "Copying required files"
 Copy-Item -Path .\css -Destination .\release\css -Recurse -Force

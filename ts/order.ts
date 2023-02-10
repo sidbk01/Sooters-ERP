@@ -1,4 +1,5 @@
 import { BlankDisplayField, CheckboxDisplayField, DateDisplayField, Display, DisplayBuilder, DisplayField, Notes, NotesBuilder, SelectDisplayField, TextDisplayField, ajax } from "./framework/index";
+import { initialize_logger } from "./logging";
 import { Customer } from "./model/customer";
 import { Employee } from "./model/employee";
 import { Location } from "./model/location";
@@ -147,6 +148,8 @@ class OrderNotesBuilder implements NotesBuilder {
 }
 
 async function create_display() {
+    initialize_logger();
+
     let builder = await OrderBuilder.create();
     await Display.create("order", builder);
 

@@ -1,5 +1,6 @@
 import { PhoneInput } from "./framework/form/inputs/phone";
 import { Form, FormBuilder, FormInput, TextInput } from "./framework/index";
+import { initialize_logger } from "./logging";
 import { Customer } from "./model/index";
 
 class CreateCustomerBuilder implements FormBuilder {
@@ -58,6 +59,8 @@ class CreateCustomerBuilder implements FormBuilder {
 }
 
 async function create_form() {
+    initialize_logger();
+
     let builder = await CreateCustomerBuilder.create();
 
     new Form("create-customer", builder);

@@ -1,4 +1,5 @@
 import { Error, SelectInput, SelectOption, ajax } from "./framework/index";
+import { initialize_logger } from "./logging";
 
 enum ReportTypeInner {
     Feedback = 1,
@@ -113,4 +114,5 @@ class ReportForm {
     }
 }
 
+initialize_logger();
 new ReportForm("report-form");

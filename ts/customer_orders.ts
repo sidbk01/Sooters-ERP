@@ -1,4 +1,5 @@
 import { ExtraFilterInput, Table, TableBuilder, TableColumn, ajax } from "./framework/index";
+import { initialize_logger } from "./logging";
 import { OrderType, Order, OrdersParser, Location } from "./model/index";
 import { Preferences } from "./preferences";
 
@@ -40,6 +41,8 @@ class CustomerOrdersBuilder implements TableBuilder<Order> {
 }
 
 async function create_table() {
+    initialize_logger();
+
     let builder = await CustomerOrdersBuilder.create();
 
     await Table.create("orders", builder);

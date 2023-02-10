@@ -277,14 +277,16 @@ export class Preferences {
     }
 }
 
-window.addEventListener('click', (event) => {
-    if (event.target instanceof Element && Preferences.get().is_menu_active() && !Preferences.get().get_container().contains(event.target))
-        Preferences.get().hide_menu();
-});
+export function initialize_preferences() {
+    window.addEventListener('click', (event) => {
+        if (event.target instanceof Element && Preferences.get().is_menu_active() && !Preferences.get().get_container().contains(event.target))
+            Preferences.get().hide_menu();
+    });
 
-Preferences.create().catch((error) => {
-    console.error("Error while creating preferences");
-    console.error(error);
+    Preferences.create().catch((error) => {
+        console.error("Error while creating preferences");
+        console.error(error);
 
-    alert("There was an error while initializing preferences");
-})
+        alert("There was an error while initializing preferences");
+    })
+}

@@ -1,4 +1,5 @@
 import { Display, DisplayBuilder, DisplayField, SelectDisplayField, ajax } from "./framework/index";
+import { initialize_logger } from "./logging";
 import { Employee, Location } from "./model/index";
 
 declare const ID: number;
@@ -73,6 +74,8 @@ class EmployeeBuilder implements DisplayBuilder {
 }
 
 async function create_display() {
+    initialize_logger();
+
     let builder = await EmployeeBuilder.create();
 
     await Display.create("employee", builder);

@@ -1,4 +1,5 @@
 import { Form, FormBuilder, FormInput, SelectInput, TextInput } from "./framework/index";
+import { initialize_logger } from "./logging";
 import { Location } from "./model/index";
 
 class CreateEmployeeBuilder implements FormBuilder {
@@ -54,6 +55,8 @@ function validate_name(text: string) {
 }
 
 async function create_form() {
+    initialize_logger();
+
     let builder = await CreateEmployeeBuilder.create();
 
     new Form("create-employee", builder);

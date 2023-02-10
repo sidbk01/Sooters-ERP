@@ -1,4 +1,5 @@
 import { CheckboxInput, DateInput, Form, FormBuilder, FormInput, GroupInput, SelectInput, TextInput } from "./framework/index";
+import { initialize_logger } from "./logging";
 import { Employee, Location, OrderType } from "./model/index";
 import { Preferences } from "./preferences";
 
@@ -83,6 +84,8 @@ class CreateOrderBuilder implements FormBuilder {
 }
 
 async function create_form() {
+    initialize_logger();
+
     let builder = await CreateOrderBuilder.create();
 
     new Form("create-order", builder);

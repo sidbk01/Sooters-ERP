@@ -2,12 +2,12 @@
 authors = ["Lance Hart (shipsimfan@hotmail.com)"]
 edition = "2021"
 name = "sooters_erp"
-version = "1.2.1"
+version = "1.2.2"
 
 [dependencies]
-json = {git = "https://github.com/shipsimfan/lib-json"}
+json = { git = "https://github.com/shipsimfan/lib-json" }
 mysql = "*"
-rocket = {version = "0.5.0-rc.2", features = ["json"]}
+rocket = { version = "0.5.0-rc.2", features = ["json"] }
 rustc-hash = "1.1.0"
-serde = {version = "1.0", features = ["derive"]}
+serde = { version = "1.0", features = ["derive"] }
 tera = "1"

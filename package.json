@@ -1,0 +1,20 @@
+{
+  "name": "sooters-erp",
+  "version": "1.2.2",
+    "scripts": {
+      "build": "rimraf dist && tsc && rollup -c rollup.config.js"
+    },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shipsimfan/Sooters-ERP"
+  },
+  "keywords": [],
+  "author": "Lance Hart [shipsimfan@hotmail.com]",
+  "devDependencies": {
+    "@open-wc/building-rollup": "^2.2.1",
+    "deepmerge": "^4.3.0",
+    "rimraf": "^4.1.2",
+    "rollup": "^2.11.0",
+    "typescript": "^4.9.5"
+  }
+}

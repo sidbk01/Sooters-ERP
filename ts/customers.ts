@@ -1,4 +1,5 @@
 import { ExtraFilterInput, Table, TableBuilder, TableColumn, ajax } from "./framework/index";
+import { initialize_logger } from "./logging";
 import { Customer } from "./model/index";
 
 class CustomersBuilder implements TableBuilder<Customer> {
@@ -34,6 +35,8 @@ class CustomersBuilder implements TableBuilder<Customer> {
 }
 
 async function create_table() {
+    initialize_logger();
+
     let builder = await CustomersBuilder.create();
 
     await Table.create("customers", builder);
