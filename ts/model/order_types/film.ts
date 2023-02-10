@@ -67,7 +67,7 @@ export class FilmOrder implements OrderTypeInfo {
         ];
 
         for (let i = 0; i < this.rolls.length; i++)
-            fields.push(new DisplayField("", `Roll Set ${i}`, new TextDisplayField(this.rolls[i].to_string(), 0)))
+            fields.push(new DisplayField("", `Roll Set ${i + 1}`, new TextDisplayField(this.rolls[i].to_string(), 0)))
 
         return fields;
     }
