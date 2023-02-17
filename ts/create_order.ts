@@ -75,7 +75,7 @@ class CreateOrderBuilder implements FormBuilder {
     }
 
     public get_redirect_url(id: number): string {
-        return `/order?id=${id}&back=${encodeURI(`/customer?id=${CUSTOMER}`)}`;
+        return `/order?id=${id}&back=${encodeURIComponent(`/customer?id=${CUSTOMER}`)}`;
     }
 
     public get_submit_text(): string {

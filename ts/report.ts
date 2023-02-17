@@ -80,7 +80,7 @@ class ReportForm {
 
     private submit() {
         let report = {
-            page: decodeURI(document.getElementById("back").innerText)
+            page: decodeURIComponent(document.getElementById("back").innerText)
         };
 
         // Collect form results
@@ -105,7 +105,7 @@ class ReportForm {
 
         // Submit
         ajax("POST", `/report`, undefined, report).then(() => {
-            window.location.href = decodeURI(report.page);
+            window.location.href = decodeURIComponent(report.page);
         }).catch((error) => {
             console.error("There was an error submitting the bug report");
             console.error(error);

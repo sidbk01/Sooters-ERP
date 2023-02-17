@@ -176,7 +176,7 @@ export class Order implements TableValue {
     }
 
     public on_click_url(current_path): string {
-        return `/order?id=${this.id}&back=${encodeURI(current_path)}`;
+        return `/order?id=${this.id}&back=${encodeURIComponent(current_path)}`;
     }
 
     public get_order_type_display_fields(): DisplayField[] {

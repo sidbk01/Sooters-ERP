@@ -65,7 +65,7 @@ export function initialize_logger() {
 
     function report_bug() {
         window.sessionStorage.setItem("logs", JSON.stringify(LOGGER.get_logs()));
-        window.location.href = `/report?back=${encodeURI(window.location.pathname + window.location.search)}`;
+        window.location.href = `/report?back=${encodeURIComponent(window.location.pathname + window.location.search)}`;
     }
 
     let report = document.getElementById("report");
