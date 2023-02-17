@@ -2,7 +2,7 @@
 authors = ["Lance Hart (shipsimfan@hotmail.com)"]
 edition = "2021"
 name = "sooters_erp"
-version = "1.2.2"
+version = "1.2.3"
 
 [dependencies]
 json = { git = "https://github.com/shipsimfan/lib-json" }
