@@ -103,7 +103,7 @@ form select {
 }
 
 button,
-input[type=submit] {
+[type=submit] {
     position: relative;
 
     display: block;
@@ -118,22 +118,22 @@ input[type=submit] {
 }
 
 button:hover,
-input[type=submit]:hover {
+[type=submit]:hover {
     background-color: lightgray;
 }
 
 button:active,
-input[type=submit]:active {
+[type=submit]:active {
     -webkit-box-shadow: none;
     box-shadow: none;
 }
 
-input[type=text],
-input[type=email],
-input[type=number],
-input[type=date],
-input[type=datetime-local],
-input[type=tel],
+[type=text],
+[type=email],
+[type=number],
+[type=date],
+[type=datetime-local],
+[type=tel],
 select {
     border: 1px solid gray;
     border-radius: 0.25rem;
@@ -143,8 +143,8 @@ select {
     background-color: white;
 }
 
-input[type=checkbox],
-input[type=radio] {
+[type=checkbox],
+[type=radio] {
     border: 1px solid gray;
     border-radius: 0.25rem;
     height: 1.0rem;
@@ -152,7 +152,7 @@ input[type=radio] {
     margin: 0.5rem 0;
 }
 
-h2 input[type=text] {
+h2 [type=text] {
     font-size: 2.0rem;
     height: 3.0rem;
     padding: 0.5rem;
@@ -349,7 +349,7 @@ tr.clickable:active {
     padding: 0.5rem;
 }
 
-input[type=text].search {
+[type=text].search {
     margin: 0 0 0 auto;
     float: right;
 
@@ -395,4 +395,22 @@ input[type=text].search {
 
 .report:active {
     color: #888;
+}
+
+.confirm-button {
+    background-color: #080;
+    color: white;
+}
+
+.onfirm-button:hover {
+    background-color: #060;
+}
+
+.cancel-button {
+    background-color: #A00;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #800;
 }

@@ -87,11 +87,13 @@ export class Preferences {
         buttons_container.appendChild(this.edit_button);
 
         this.confirm_button = document.createElement("button");
+        this.confirm_button.classList.add("confirm-button");
         this.confirm_button.innerText = "Confirm";
         this.confirm_button.onclick = () => { this.confirm_edit(); };
         buttons_container.appendChild(this.confirm_button);
 
         this.cancel_button = document.createElement("button");
+        this.cancel_button.classList.add("cancel-button");
         this.cancel_button.innerText = "Cancel";
         this.cancel_button.onclick = () => { this.cancel_edit(); };
         buttons_container.appendChild(this.cancel_button);

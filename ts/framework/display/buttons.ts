@@ -20,12 +20,14 @@ export class DisplayButtons<B extends DisplayBuilder> {
 
         let confirm = document.createElement("button");
         confirm.type = "button";
+        confirm.classList.add("confirm-button");
         confirm.innerText = "Confirm";
         confirm.onclick = () => { parent.confirm_edit(); };
         this.end_buttons.appendChild(confirm);
 
         let cancel = document.createElement("button");
         cancel.type = "button";
+        cancel.classList.add("cancel-button");
         cancel.innerText = "Cancel";
         cancel.onclick = () => { parent.cancel_edit(); };
         this.end_buttons.appendChild(cancel);

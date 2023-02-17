@@ -6,6 +6,7 @@ export class FormSubmit {
 
         this.element = document.createElement("input");
         this.element.type = "submit";
+        this.element.classList.add("confirm-button");
         this.element.value = text;
     }
 
