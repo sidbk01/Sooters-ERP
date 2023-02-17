@@ -25,8 +25,6 @@ pub(super) fn get(
     let mut context = Context::new();
     context.insert("back", &back);
 
-    println!("{back}");
-
     state.render("report.html", context)
 }
 

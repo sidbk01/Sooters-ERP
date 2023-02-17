@@ -66,7 +66,10 @@ pub(super) async fn post_create(
     info.order_type.add_queries(&mut queries);
 
     // Perform query
-    let id = state.database().execute_transaction_id(queries).await?;
+    let id = state
+        .database()
+        .execute_transaction_id(queries, Some("SELECT @order_id AS ID"))
+        .await?;
 
     Ok(format!("{}", id))
 }

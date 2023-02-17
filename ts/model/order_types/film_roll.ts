@@ -6,25 +6,31 @@ export enum FilmType {
     _120mm,
 }
 
+export enum Exposures {
+    _24 = 1,
+    _36,
+    _12
+}
+
 export class FilmRoll {
     private id: number;
     private amount: number;
-    private exposures: number;
+    private exposures: ExposuresOption;
     private type: FilmTypeOption;
 
     public static async get_rolls(id: number): Promise<FilmRoll[]> {
         return ajax("GET", `/orders/film_rolls?id=${id}`, new FilmRollsParser());
     }
 
-    public constructor(id: number, amount: number, exposures: number, type: FilmType) {
+    public constructor(id: number, amount: number, exposures: Exposures, type: FilmType) {
         this.id = id;
         this.amount = amount;
-        this.exposures = exposures;
+        this.exposures = new ExposuresOption(exposures);
         this.type = new FilmTypeOption(type);
     }
 
     public to_string(): string {
-        return `${this.amount} ${this.type.get_select_text()} ${this.amount == 1 ? "roll" : "rolls"} with ${this.exposures} exposures`;
+        return `${this.amount} ${this.type.get_select_text()} ${this.amount == 1 ? "roll" : "rolls"} with ${this.exposures.get_select_text()} exposures`;
     }
 }
 
@@ -69,9 +75,42 @@ class FilmRollsParser implements AjaxParser<FilmRoll[]> {
             return new FilmRoll(
                 roll.id,
                 roll.amount,
-                roll.exposures,
+                roll.exposures as Exposures,
                 roll.film_type as FilmType,
             );
         });
+    }
+}
+
+export class ExposuresOption implements SelectOption {
+    private exposures: Exposures;
+
+    public static get(): ExposuresOption[] {
+        return [
+            new ExposuresOption(Exposures._24),
+            new ExposuresOption(Exposures._36),
+            new ExposuresOption(Exposures._12),
+        ];
+    }
+
+    public constructor(exposures: Exposures) {
+        this.exposures = exposures;
+    }
+
+    public get_select_text(): string {
+        switch (this.exposures) {
+            case Exposures._24:
+                return "24/27";
+
+            case Exposures._36:
+                return "36";
+
+            case Exposures._12:
+                return "12";
+        }
+    }
+
+    public get_select_value(): number {
+        return this.exposures as number;
     }
 }

@@ -45,7 +45,10 @@ pub(crate) async fn update(
     )];
     info.order_type.add_update_queries(&mut queries, id);
 
-    state.database().execute_transaction_id(queries).await?;
+    state
+        .database()
+        .execute_transaction_id(queries, None)
+        .await?;
 
     Ok(String::new())
 }

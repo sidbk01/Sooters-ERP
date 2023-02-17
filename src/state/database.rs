@@ -92,7 +92,7 @@ impl Database {
                 .map_err(|error| DatabaseError::QueryError(error))?;
 
             let id = transaction
-                .exec::<ID, _, _>("SELECT LAST_INSERT_ID()", Params::Empty)
+                .exec::<ID, _, _>("SELECT LAST_INSERT_ID() AS ID", Params::Empty)
                 .map_err(|error| DatabaseError::QueryError(error))?
                 .pop()
                 .unwrap();
@@ -112,6 +112,7 @@ impl Database {
     >(
         &self,
         queries: Vec<(Q, P)>,
+        id_query: Option<Q>,
     ) -> Result<usize, DatabaseError> {
         let pool = self.connection.clone();
         rocket::tokio::task::spawn_blocking(move || {
@@ -127,7 +128,13 @@ impl Database {
             }
 
             let id = transaction
-                .exec::<ID, _, _>("SELECT LAST_INSERT_ID()", Params::Empty)
+                .exec::<ID, _, _>(
+                    id_query
+                        .as_ref()
+                        .map(|id_query| id_query.as_ref())
+                        .unwrap_or("SELECT LAST_INSERT_ID() AS ID"),
+                    Params::Empty,
+                )
                 .map_err(|error| DatabaseError::QueryError(error))?
                 .pop()
                 .unwrap();
@@ -156,7 +163,7 @@ impl FromRow for ID {
     where
         Self: Sized,
     {
-        row.take("LAST_INSERT_ID()")
+        row.take("ID")
             .map(|id| ID(id))
             .ok_or(mysql::FromRowError(row))
     }

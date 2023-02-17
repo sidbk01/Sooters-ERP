@@ -1,11 +1,11 @@
 import { Error, FormInput } from "../../framework/index";
-import { FilmTypeOption } from "./film_roll";
+import { Exposures, ExposuresOption, FilmTypeOption } from "./film_roll";
 
 class FilmRollInput {
     private container: HTMLDivElement;
     private amount: HTMLInputElement;
     private type: HTMLSelectElement;
-    private exposures: HTMLInputElement;
+    private exposures: HTMLSelectElement;
     private error: Error;
 
     private parent: FilmRollsInput;
@@ -33,11 +33,15 @@ class FilmRollInput {
         }
         this.container.appendChild(this.type);
 
-        this.exposures = document.createElement("input");
-        this.exposures.type = "number";
-        this.exposures.max = "99";
+        this.exposures = document.createElement("select");
         this.exposures.style.width = "4rem";
         this.exposures.value = "24";
+        for (let exposures of ExposuresOption.get()) {
+            let option = document.createElement("option");
+            option.innerText = exposures.get_select_text();
+            option.value = exposures.get_select_value().toString();
+            this.exposures.appendChild(option);
+        }
         this.container.appendChild(this.exposures);
 
         this.error = new Error();
