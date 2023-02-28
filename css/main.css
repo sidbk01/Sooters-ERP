@@ -231,7 +231,7 @@ textarea {
 
 .info-inputs div {
     text-align: left;
-    height: 2.0rem;
+    height: min(fit-content, 2.0rem);
     line-height: 2.0rem;
 }
 

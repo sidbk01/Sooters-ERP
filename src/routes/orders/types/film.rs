@@ -1,6 +1,9 @@
 use crate::{routes::RouteError, state::State, util::take_from_row};
 use mysql::{params, prelude::FromRow, serde_json, Params};
-use rocket::response::content::RawJson;
+use rocket::{
+    response::content::{RawJson, RawText},
+    serde::json::Json,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize)]
@@ -31,6 +34,19 @@ pub struct FilmRoll {
     film_type: usize,
 }
 
+#[derive(Deserialize)]
+pub struct NewFilmScancode {
+    tag: usize,
+    scancode: String,
+}
+
+#[derive(Serialize)]
+pub struct FilmScancode {
+    id: usize,
+    tag: usize,
+    scancode: String,
+}
+
 #[get("/orders/film?<id>")]
 pub(super) async fn get_film(
     id: usize,
@@ -55,6 +71,25 @@ pub(super) async fn get_film(
     Ok(RawJson(serde_json::to_string(&order).unwrap()))
 }
 
+#[get("/orders/film_scancodes?<id>")]
+pub(super) async fn get_scancodes(
+    id: usize,
+    state: &rocket::State<State>,
+) -> Result<RawJson<String>, RouteError> {
+    // Perform the query
+    let orders: Vec<FilmScancode> = state
+        .database()
+        .execute_query_parameters(
+            "SELECT * FROM Film_Scancodes WHERE OrderID = :id",
+            params! {
+                "id" => id,
+            },
+        )
+        .await?;
+
+    Ok(RawJson(serde_json::to_string(&orders).unwrap()))
+}
+
 #[get("/orders/film_rolls?<id>")]
 pub(super) async fn get_rolls(
     id: usize,
@@ -72,6 +107,26 @@ pub(super) async fn get_rolls(
         .await?;
 
     Ok(RawJson(serde_json::to_string(&orders).unwrap()))
+}
+
+#[post("/orders/film_scancodes?<id>", data = "<info>")]
+pub(super) async fn new_scancodes(
+    id: usize,
+    info: Json<Vec<NewFilmScancode>>,
+    state: &rocket::State<State>,
+) -> Result<RawText<String>, RouteError> {
+    // Perform the query
+    let queries: Vec<_> = info
+        .iter()
+        .map(|new_scancode| new_scancode.generate_query(&id))
+        .collect();
+
+    state
+        .database()
+        .execute_transaction_id(queries, None)
+        .await?;
+
+    Ok(RawText(String::new()))
 }
 
 impl NewFilmOrder {
@@ -152,5 +207,31 @@ impl FromRow for FilmRoll {
             exposures,
             film_type,
         })
+    }
+}
+
+impl NewFilmScancode {
+    pub fn generate_query(&self, order_id: &usize) -> (&'static str, Params) {
+        (
+            "INSERT INTO Film_Scancodes (OrderID, Tag, Scancode) VALUES (:order_id, :tag, :scancode)",
+            params! {
+                "order_id" => order_id,
+                "tag" => &self.tag,
+                "scancode" => &self.scancode,
+            }
+        )
+    }
+}
+
+impl FromRow for FilmScancode {
+    fn from_row_opt(row: mysql::Row) -> Result<Self, mysql::FromRowError>
+    where
+        Self: Sized,
+    {
+        let (row, id) = take_from_row(row, "ID")?;
+        let (row, tag) = take_from_row(row, "Tag")?;
+        let (_, scancode) = take_from_row(row, "Scancode")?;
+
+        Ok(Self { id, tag, scancode })
     }
 }

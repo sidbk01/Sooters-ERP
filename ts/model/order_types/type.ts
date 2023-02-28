@@ -11,6 +11,7 @@ enum OrderTypeInner {
     Film = 1,
     Framing,
     Photoshoot,
+    // TODO: Add photo resoration
 }
 
 export class OrderType implements GroupOption {

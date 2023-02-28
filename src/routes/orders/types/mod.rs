@@ -29,6 +29,8 @@ pub(super) fn add_routes(server: Rocket<Build>) -> Rocket<Build> {
             photoshoot::get,
             film::get_film,
             film::get_rolls,
+            film::get_scancodes,
+            film::new_scancodes,
         ],
     )
 }

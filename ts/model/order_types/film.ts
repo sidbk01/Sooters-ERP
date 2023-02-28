@@ -1,6 +1,8 @@
 import { AjaxParser, CheckboxDisplayField, CheckboxInput, DisplayField, FormInput, SelectDisplayField, SelectInput, SelectOption, TextDisplayField, ajax } from "../../framework/index";
 import { FilmRoll } from "./film_roll";
 import { FilmRollsInput } from "./film_rolls_input";
+import { FilmScanCode } from "./film_scancodes";
+import { FilmScanCodeInput } from "./film_scancode_input";
 import { OrderTypeInfo } from "./type";
 
 export enum Prints {
@@ -13,6 +15,7 @@ export class FilmOrder implements OrderTypeInfo {
     private prints: Prints;
     private digital: boolean;
     private rolls: FilmRoll[];
+    private scancodes: FilmScanCode[];
 
     public static parse(order_info: any): FilmOrder {
         if (typeof order_info === "undefined")
@@ -38,7 +41,7 @@ export class FilmOrder implements OrderTypeInfo {
                 throw `Unknown print type ${order_info.prints}`;
         }
 
-        return new FilmOrder(prints, order_info.digital, []);
+        return new FilmOrder(prints, order_info.digital, [], []);
     }
 
 
@@ -54,10 +57,11 @@ export class FilmOrder implements OrderTypeInfo {
         return ajax("GET", `/orders/film?id=${id}`, new FilmOrderParser(id));
     }
 
-    public constructor(prints: Prints, digital: boolean, rolls: FilmRoll[]) {
+    public constructor(prints: Prints, digital: boolean, rolls: FilmRoll[], scancodes: FilmScanCode[]) {
         this.prints = prints;
         this.digital = digital;
         this.rolls = rolls;
+        this.scancodes = scancodes;
     }
 
     public get_display_fields(): DisplayField[] {
@@ -68,6 +72,23 @@ export class FilmOrder implements OrderTypeInfo {
 
         for (let i = 0; i < this.rolls.length; i++)
             fields.push(new DisplayField("", `Roll Set ${i + 1}`, new TextDisplayField(this.rolls[i].to_string(), 0)))
+
+        let text = "";
+        for (let i = 0; i < this.scancodes.length; i++) {
+            text += `${this.scancodes[i].get_scancode()} (${this.scancodes[i].get_tag()})`;
+
+            if (i < this.scancodes.length - 1)
+                text += ", ";
+
+            if (i != 0 && i % 2 == 1)
+                text += "\n";
+        }
+
+        if (text == "")
+            text = "None";
+
+        fields.push(new DisplayField("", `Scancodes`, new TextDisplayField(text, 0)));
+        fields.push(new DisplayField("", "", new FilmScanCodeInput()));
 
         return fields;
     }
@@ -117,7 +138,10 @@ class FilmOrderParser implements AjaxParser<FilmOrder> {
         // Get rolls
         let rolls = await FilmRoll.get_rolls(this.order_id);
 
+        // Get scancodes
+        let scancodes = await FilmScanCode.get_scancodes(this.order_id);
+
         // Create order
-        return new FilmOrder(object.prints as Prints, object.digital, rolls);
+        return new FilmOrder(object.prints as Prints, object.digital, rolls, scancodes);
     }
 }
