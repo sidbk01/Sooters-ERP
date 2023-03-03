@@ -1,6 +1,7 @@
 import { DisplayField, FilterOption, FormInput, GroupOption, SelectOption, TextDisplayField } from "../../framework/index";
 import { FilmOrder } from "./film";
 import { FramingOrder } from "./framing";
+import { PhotoRestoration } from "./photo_restoration";
 import { Photoshoot } from "./photoshoot";
 
 export interface OrderTypeInfo {
@@ -11,7 +12,7 @@ enum OrderTypeInner {
     Film = 1,
     Framing,
     Photoshoot,
-    // TODO: Add photo resoration
+    PhotoRestoration
 }
 
 export class OrderType implements GroupOption {
@@ -23,6 +24,7 @@ export class OrderType implements GroupOption {
             new OrderType(OrderTypeInner.Film),
             new OrderType(OrderTypeInner.Framing),
             new OrderType(OrderTypeInner.Photoshoot),
+            new OrderType(OrderTypeInner.PhotoRestoration),
         ];
     }
 
@@ -36,6 +38,9 @@ export class OrderType implements GroupOption {
 
             case 3:
                 return new OrderType(OrderTypeInner.Photoshoot);
+
+            case 4:
+                return new OrderType(OrderTypeInner.PhotoRestoration);
 
             default:
                 throw `Unknown order type "${order.order_type}"`;
@@ -63,6 +68,9 @@ export class OrderType implements GroupOption {
 
             case OrderTypeInner.Photoshoot:
                 return new FilterOption("Photoshoot", OrderTypeInner.Photoshoot);
+
+            case OrderTypeInner.PhotoRestoration:
+                return new FilterOption("Photo Restoration", OrderTypeInner.PhotoRestoration);
         }
     }
 
@@ -76,6 +84,9 @@ export class OrderType implements GroupOption {
 
             case OrderTypeInner.Photoshoot:
                 return "Photoshoot";
+
+            case OrderTypeInner.PhotoRestoration:
+                return "Photo Restoration";
         }
     }
 
@@ -97,6 +108,9 @@ export class OrderType implements GroupOption {
 
             case OrderTypeInner.Photoshoot:
                 return Photoshoot.get_group_inputs();
+
+            case OrderTypeInner.PhotoRestoration:
+                return PhotoRestoration.get_group_inputs();
         }
     }
 
@@ -110,6 +124,9 @@ export class OrderType implements GroupOption {
 
             case OrderTypeInner.Photoshoot:
                 return "Photoshoot";
+
+            case OrderTypeInner.PhotoRestoration:
+                return "PhotoRestoration";
         }
     }
 
@@ -123,6 +140,9 @@ export class OrderType implements GroupOption {
 
             case OrderTypeInner.Photoshoot:
                 return Photoshoot.get_info(id);
+
+            case OrderTypeInner.PhotoRestoration:
+                return PhotoRestoration.get_info(id);
         }
     }
 
