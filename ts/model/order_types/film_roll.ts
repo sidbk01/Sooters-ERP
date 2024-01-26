@@ -4,6 +4,7 @@ export enum FilmType {
     Color = 1,
     BlackWhite,
     _120mm,
+    APS,
 }
 
 export enum Exposures {
@@ -42,6 +43,7 @@ export class FilmTypeOption implements SelectOption {
             new FilmTypeOption(FilmType.Color),
             new FilmTypeOption(FilmType.BlackWhite),
             new FilmTypeOption(FilmType._120mm),
+            new FilmTypeOption(FilmType.APS),
         ];
     }
 
