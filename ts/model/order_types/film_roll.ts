@@ -62,7 +62,7 @@ export class FilmTypeOption implements SelectOption {
             case FilmType._120mm:
                 return "120mm";
 
-            case FilmType.APS;
+            case FilmType.APS:
                 return "APS";
         }
     }
