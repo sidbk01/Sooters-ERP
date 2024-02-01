@@ -51,7 +51,12 @@ pub(crate) async fn customer_data(
 pub(crate) async fn upcoming(state: &rocket::State<State>) -> Result<RawJson<String>, RouteError> {
     let orders: Vec<Order> = state
         .database()
-        .execute_query("SELECT * FROM Orders WHERE DateDue BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 7 DAY) ORDER BY DateDue ASC, FormattedID DESC")
+        .execute_query("
+            SELECT * FROM Orders 
+            WHERE (DateDue BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 14 DAY))
+            OR DateComplete IS NULL
+            ORDER BY DateDue ASC, FormattedID ASC
+        ")
         .await?;
 
     Ok(RawJson(serde_json::to_string(&orders).unwrap()))
@@ -68,7 +73,7 @@ pub(crate) async fn recent_data(
 ) -> Result<RawJson<String>, RouteError> {
     let orders: Vec<Order> = state
         .database()
-        .execute_query("SELECT * FROM Orders WHERE DateReceived BETWEEN DATE_SUB(NOW(), INTERVAL 2 DAY) AND NOW()  ORDER BY DateDue ASC, FormattedID DESC")
+        .execute_query("SELECT * FROM Orders WHERE DateReceived >= DATE_SUB(NOW(), INTERVAL 30 DAY) ORDER BY DateReceived ASC, FormattedID ASC")
         .await?;
 
     Ok(RawJson(serde_json::to_string(&orders).unwrap()))
