@@ -1,11 +1,11 @@
 [package]
-authors = ["Lance Hart (shipsimfan@hotmail.com)"]
-edition = "2021"
+authors = ["Siddardha Mayakuntla (sidbk01@gmail.com)"]
+edition = "2024"
 name = "sooters_erp"
-version = "1.2.5"
+version = "1.2.6"
 
 [dependencies]
-json = { git = "https://github.com/shipsimfan/lib-json" }
+json = { git = "https://github.com/sidbk01/lib-json" }
 mysql = "*"
 rocket = { version = "0.5.0-rc.2", features = ["json"] }
 rustc-hash = "1.1.0"
